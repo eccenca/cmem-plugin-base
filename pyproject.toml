@@ -24,3 +24,27 @@ defusedxml = "^0.7.1"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.pylint.MASTER]
+load-plugins="pylint_junit"
+
+[tool.pylint.General]
+ignore = "version.py"
+
+[tool.pylint.'MESSAGES CONTROL']
+extension-pkg-whitelist = "pydantic"
+disable = "fixme"
+
+# https://black.readthedocs.io/en/stable/guides/using_black_with_other_tools.html#pylint
+[tool.pylint.messages_control]
+disable = "C0330, C0326, R0903"
+
+[tool.pylint.format]
+max-line-length = "88"
+
+[tool.mypy]
+warn_return_any = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = ""
