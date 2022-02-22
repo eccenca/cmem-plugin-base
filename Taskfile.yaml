@@ -1,0 +1,182 @@
+# https://taskfile.dev
+---
+version: '3'
+
+vars:
+  PACKAGE: cmem_plugin_base
+  DIST_DIR: dist
+  PWD:
+    sh: pwd
+  DOCKER_IMAGE: docker-registry.eccenca.com/eccenca-python:v3.7.0
+  DOCKER_RUN_PLAIN: run -i -t -e SHELL=/bin/bash --workdir /data --rm -v {{.PWD}}:/data {{.DOCKER_IMAGE}}
+  VERSION:
+    sh: git describe --always --dirty
+  VERSION_FILE: "{{.PACKAGE}}/version.py"
+
+tasks:
+
+  default:
+    summary: |
+      Just a list of documented tasks.
+    silent: true
+    cmds:
+      - task --list
+
+  clean:
+    desc: Removes dist dir, *.pyc and version files.
+    cmds:
+      - rm -rf {{.DIST_DIR}}
+      - find . -name "*.pyc" -print0 | xargs -0 rm || echo ""
+      - rm -f {{.VERSION_FILE}}
+
+  clean:dist:
+    desc: Same as clean task + git clean up.
+    deps:
+      - clean
+    cmds:
+      - git clean -d --force -X
+
+
+  dockerized:
+    desc: Run tasks dockerized with 'task dockerized -- TASK'
+    cmds:
+      - docker {{.DOCKER_RUN_PLAIN}} bash -c "task {{.CLI_ARGS}}"
+
+  check:prepare:
+    summary: |
+      prepare check targets by creating appropriate directory
+    run: once
+    cmds:
+      - mkdir -p {{.DIST_DIR}}/coverage
+
+  patch-version:
+    cmds:
+      - rm -f {{.VERSION_FILE}}
+      - echo '"""Version information."""' > {{.VERSION_FILE}}
+      - echo "VERSION = '{{.VERSION}}'" >> {{.VERSION_FILE}}
+
+  build:
+    desc: Build tarball and a wheel package.
+    deps:
+      - poetry:install
+      - check:prepare
+      - patch-version
+    cmds:
+      - poetry build
+
+  check:
+    desc: Run whole test suite.
+    deps:
+      - check:bandit
+      - check:flake8
+      - check:mypy
+      - check:pylint
+      - check:pytest
+      - check:safety
+
+  check:pytest:
+    desc: Run pytest suite.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run pytest --junitxml={{.JUNIT_FILE}} --cov-report term  --cov-report xml:{{.COVERAGE_FILE}} --cov-report html:{{.COVERAGE_DIR}} --cov={{.PACKAGE}}
+      - poetry run genbadge coverage -l -i {{.COVERAGE_FILE}} -o {{.BADGE_COVERAGE}}
+      - poetry run genbadge tests -l -i {{.JUNIT_FILE}} -o {{.BADGE_TESTS}}
+    vars:
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-pytest.xml
+      COVERAGE_FILE: ./{{.DIST_DIR}}/coverage.xml
+      COVERAGE_DIR: ./{{.DIST_DIR}}/coverage
+      BADGE_COVERAGE: ./{{.DIST_DIR}}/badge-coverage.svg
+      BADGE_TESTS: ./{{.DIST_DIR}}/badge-tests.svg
+
+
+  check:pylint:
+    desc: Check source code with pylint.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run pylint --exit-zero {{.PACKAGE}}
+      - poetry run pylint {{.PACKAGE}} {{.XML_PARAMS}}
+    vars:
+      FORMAT: --output-format=pylint_junit.JUnitReporter
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-pylint.xml
+      XML_PARAMS: --output={{.JUNIT_FILE}} {{.FORMAT}}
+
+  check:mypy:
+    desc: Check source code with mypy.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run mypy -p {{.PACKAGE}} --junit-xml {{.JUNIT_FILE}}
+    vars:
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-mypy.xml
+
+  check:safety:
+    desc: Check source code with safety.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run safety check
+
+  check:bandit:
+    desc: Check source code with bandit.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run bandit --exit-zero -r {{.PACKAGE}}
+      - poetry run bandit --format xml -r {{.PACKAGE}} -o {{.JUNIT_FILE}}
+    vars:
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-bandit.xml
+
+  check:flake8:
+    desc: Check source code with flake8.
+    deps:
+      - poetry:install
+      - check:prepare
+    cmds:
+      - poetry run flake8 --exit-zero {{.PACKAGE}} {{.XML_PARAMS}}
+      # - poetry run genbadge flake8 -l -i {{.STAT_FILE}} -o {{.BADGE_FLAKE8}}
+      - poetry run flake8 {{.PACKAGE}}
+    vars:
+      JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
+      XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
+      # STAT_FILE: ./{{.DIST_DIR}}/stats-flake8.txt
+      # STAT_PARAMS: --statistics --tee --output-file {{.STAT_FILE}}
+      # BADGE_FLAKE8: ./{{.DIST_DIR}}/badge-flake8.svg
+
+  python:format:
+    desc: Format Python files.
+    deps:
+      - task: poetry:install
+    cmds:
+      - poetry run black .
+
+  poetry:install:
+    desc: Install dependencies managed by Poetry.
+    run: once
+    cmds:
+      - poetry install
+
+  poetry:update:
+    desc: Update dependencies managed by Poetry to their newest versions.
+    run: once
+    cmds:
+      - poetry update
+
+  poetry:init:
+    desc: Initialze poetry env and add dev dependencies used in this taskfile.
+    cmds:
+      - poetry env use 3.9
+      - poetry add -D pytest pytest-cov black bandit pylint-junit safety genbadge flake8-formatter-junit-xml typed-ast mypy coverage defusedxml
+
+  poetry:shell:
+    desc: Open a poetry shell.
+    interactive: true
+    cmds:
+      - poetry shell
+

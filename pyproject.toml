@@ -1,14 +1,25 @@
 [tool.poetry]
 name = "cmem-plugin-base"
 version = "0.1.0"
-description = ""
+description = "Base classes for developing eccenca Coporate Memory plugins."
 authors = ["Sebastian Tramp <sebastian.tramp@eccenca.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.9"
 
 [tool.poetry.dev-dependencies]
-pytest = "^5.2"
+pytest = "^7.0"
+pytest-cov = "^3.0.0"
+black = "^22.1.0"
+bandit = "^1.7.2"
+pylint-junit = "^0.3.2"
+safety = "^1.10.3"
+genbadge = "^1.0.6"
+flake8-formatter-junit-xml = "^0.0.6"
+typed-ast = "^1.5.2"
+mypy = "^0.931"
+coverage = "^6.3.2"
+defusedxml = "^0.7.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
