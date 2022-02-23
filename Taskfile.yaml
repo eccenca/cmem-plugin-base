@@ -140,14 +140,10 @@ tasks:
       - check:prepare
     cmds:
       - poetry run flake8 --exit-zero {{.PACKAGE}} {{.XML_PARAMS}}
-      # - poetry run genbadge flake8 -l -i {{.STAT_FILE}} -o {{.BADGE_FLAKE8}}
       - poetry run flake8 {{.PACKAGE}}
     vars:
       JUNIT_FILE: ./{{.DIST_DIR}}/junit-flake8.xml
       XML_PARAMS: --format junit-xml --output-file {{.JUNIT_FILE}}
-      # STAT_FILE: ./{{.DIST_DIR}}/stats-flake8.txt
-      # STAT_PARAMS: --statistics --tee --output-file {{.STAT_FILE}}
-      # BADGE_FLAKE8: ./{{.DIST_DIR}}/badge-flake8.svg
 
   python:format:
     desc: Format Python files.
