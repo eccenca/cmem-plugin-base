@@ -1,9 +1,26 @@
+"""Package and plugin discovery module."""
+import json
+from subprocess import check_output
+from typing import Dict, List
 import importlib
 import importlib.util
 import pkgutil
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
 from typing import Iterator, Sequence, Optional
 
+def get_packages() -> List[Dict]:
+    """Get installed python packages.
+
+    Returns a list of dict with the following keys:
+     - name - package name
+     - version - package version
+    """
+    return json.loads(
+        check_output(
+            ["pip", "list", "--format", "json"],
+            shell=False
+        )
+    )
 
 class PluginParameter:
     """A plugin parameter.
