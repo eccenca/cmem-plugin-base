@@ -8,7 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+## [0.0.1] 2022-02-23
+
 ### Added
 
+- WorkflowPlugin v1
 - initial project with Taskfile.yml and pre-commit hooks
 
