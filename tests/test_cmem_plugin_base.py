@@ -28,6 +28,5 @@ def test_readonly_plugin():
     """Test example Workflow Plugin."""
     output_only = OutputOnlyPlugin()
     result = output_only.execute()
-    assert len(result.schema.paths) == 2
-    print(type(result.entities[0]))
-    #   [-    assert __version__ == "0.1.0"-]{+__init__(self):+}
+    for item in result.entities:
+        assert len(item.values) == len(result.schema.paths)
