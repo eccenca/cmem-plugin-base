@@ -1,8 +1,22 @@
 [tool.poetry]
 name = "cmem-plugin-base"
-version = "0.1.0"
+version = "0.0.1"
+license = "Apache-2.0"
 description = "Base classes for developing eccenca Coporate Memory plugins."
-authors = ["Sebastian Tramp <sebastian.tramp@eccenca.com>"]
+authors = ["eccenca <cmempy-developer@eccenca.com>"]
+maintainers = [
+    "Sebastian Tramp <sebastian.tramp@eccenca.com>"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Plugins",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+readme = "README-public.md"
+keywords = [
+    "eccenca Corporate Memory", "plugins", "DataIntegration"
+]
+include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
