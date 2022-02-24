@@ -19,6 +19,7 @@ class WorkflowPlugin:
             or none (no outgoing connection).
         """
 
+
 class TransformPlugin:
     """
     Base class of all transform operator plugins.
