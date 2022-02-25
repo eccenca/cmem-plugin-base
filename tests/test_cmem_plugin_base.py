@@ -7,7 +7,7 @@ from cmem_plugin_base.dataintegration.entity import (
     EntityPath,
 )
 from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
-from dataintegration.discovery import discover_plugins, get_packages
+from cmem_plugin_base.dataintegration.discovery import discover_plugins, get_packages
 
 
 @Plugin(
