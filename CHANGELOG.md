@@ -8,6 +8,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+### Added
+
+- parameter and description annotation of plugins
+- discovery methods of plugins
+
 ## [0.0.1] 2022-02-23
 
 ### Added

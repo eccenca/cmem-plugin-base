@@ -6,13 +6,31 @@ from cmem_plugin_base.dataintegration.entity import (
     EntitySchema,
     EntityPath,
 )
+from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
+from dataintegration.discovery import discover_plugins, get_packages
 
 
+@Plugin(
+    label="My Plugin",
+    description="Plugin Description",
+    documentation="""# Plugin Documentation
+    is in markdown
+    ## nice
+    """,
+    parameters=[
+        PluginParameter(
+            name="param1",
+            label="My First Parameter",
+            description="My first description",
+            default_value="default value"
+        )
+    ]
+)
 class OutputOnlyPlugin(WorkflowPlugin):
     """Example Plugin - only Output."""
 
-    def __init__(self):
-        pass
+    def __init__(self, param1: str) -> None:
+        self.param1 = param1
 
     def execute(self, inputs=()) -> Entities:
         entity1 = Entity(uri="urn:my:1", values=(["value1"], ["value2"]))
@@ -26,7 +44,7 @@ class OutputOnlyPlugin(WorkflowPlugin):
 
 def test_readonly_plugin():
     """Test example Workflow Plugin."""
-    output_only = OutputOnlyPlugin()
+    output_only = OutputOnlyPlugin(param1="test")
     result = output_only.execute()
     for item in result.entities:
         assert len(item.values) == len(result.schema.paths)
