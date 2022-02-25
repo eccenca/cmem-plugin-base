@@ -29,14 +29,6 @@ tasks:
       - find . -name "*.pyc" -print0 | xargs -0 rm || echo ""
       - rm -f {{.VERSION_FILE}}
 
-  clean:dist:
-    desc: Same as clean task + git clean up.
-    deps:
-      - clean
-    cmds:
-      - git clean -d --force -X
-
-
   dockerized:
     desc: Run tasks dockerized with 'task dockerized -- TASK'
     cmds:
