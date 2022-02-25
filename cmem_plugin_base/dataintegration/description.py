@@ -79,7 +79,14 @@ class PluginDescription:
 
 
 class Plugin:
-    """Annotate classes with plugin descriptions."""
+    """Annotate classes with plugin descriptions.
+
+    :param label: A human-readable label of the plugin
+    :param description: A short (few sentence) description of this plugin.
+    :param documentation: Documentation for this plugin in Markdown.
+    :param categories: The categories to which this plugin belongs to.
+    :param parameters: Available plugin parameters
+    """
     plugins: list[PluginDescription] = []
 
     def __init__(
