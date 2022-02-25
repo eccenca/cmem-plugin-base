@@ -39,6 +39,9 @@ defusedxml = "^0.7.1"
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
 
+[tool.isort]
+profile = "black"
+
 [tool.pylint.MASTER]
 load-plugins="pylint_junit"
 
@@ -55,6 +58,9 @@ disable = "C0330, C0326, R0903"
 
 [tool.pylint.format]
 max-line-length = "88"
+disable = "C0330, C0326"
+max-args = "8"
+max-attributes = "9"
 
 [tool.mypy]
 warn_return_any = true
@@ -62,3 +68,4 @@ ignore_missing_imports = true
 
 [tool.pytest.ini_options]
 addopts = ""
+

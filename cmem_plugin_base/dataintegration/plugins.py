@@ -28,8 +28,8 @@ class TransformPlugin:
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
         """
         Transforms a collection of values.
-        :param inputs: A sequence which contains as many elements as there are input operators for this transformation.
-                       For each input operator it contains a sequence of values.
+        :param inputs: A sequence which contains as many elements as there are input
+            operators for this transformation.
+            For each input operator it contains a sequence of values.
         :return: The transformed values.
         """
-        pass
