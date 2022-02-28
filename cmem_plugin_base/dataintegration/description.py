@@ -2,6 +2,7 @@
 from typing import Optional, List
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
+from cmem_plugin_base.dataintegration.utils import generate_id
 
 
 class PluginParameter:
@@ -45,6 +46,7 @@ class PluginDescription:
         self,
         plugin_class,
         label: str,
+        plugin_id: str,
         description: str = "",
         documentation: str = "",
         categories: List[str] = None,
@@ -65,6 +67,10 @@ class PluginDescription:
         self.plugin_class = plugin_class
         self.module_name = plugin_class.__module__
         self.class_name = plugin_class.__name__
+        if plugin_id is None:
+            self.plugin_id = generate_id((self.module_name + "-" + self.class_name).replace(".", "-"))
+        else:
+            self.plugin_id = plugin_id
         if categories is None:
             self.categories = []
         else:
@@ -82,6 +88,8 @@ class Plugin:
     """Annotate classes with plugin descriptions.
 
     :param label: A human-readable label of the plugin
+    :param plugin_id: Optionally sets the plugin identifier.
+                      If not set, an identifier will be generated from the module and class name.
     :param description: A short (few sentence) description of this plugin.
     :param documentation: Documentation for this plugin in Markdown.
     :param categories: The categories to which this plugin belongs to.
@@ -92,6 +100,7 @@ class Plugin:
     def __init__(
         self,
         label: str,
+        plugin_id: Optional[str] = None,
         description: str = "",
         documentation: str = "",
         categories: List[str] = None,
@@ -100,6 +109,7 @@ class Plugin:
         self.label = label
         self.description = description
         self.documentation = documentation
+        self.plugin_id = plugin_id
         if categories is None:
             self.categories = []
         else:
@@ -113,6 +123,7 @@ class Plugin:
         plugin_desc = PluginDescription(
             plugin_class=func,
             label=self.label,
+            plugin_id=self.plugin_id,
             description=self.description,
             documentation=self.documentation,
             categories=self.categories,
