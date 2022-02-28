@@ -94,7 +94,9 @@ class Plugin:
     :param plugin_id: Optionally sets the plugin identifier.
         If not set, an identifier will be generated from the module and class name.
     :param description: A short (few sentence) description of this plugin.
-    :param documentation: Documentation for this plugin in Markdown.
+    :param documentation: Documentation for this plugin in Markdown. Note that you
+        do not need to add a first level heading to the markdown since the
+        documentation rendering component will add a heading anyway.
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     """
