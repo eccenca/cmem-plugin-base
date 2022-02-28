@@ -20,7 +20,7 @@ def get_packages():
 
 
 def discover_plugins_in_module(
-        package_name: str = "cmem"
+    package_name: str = "cmem",
 ) -> Sequence[PluginDescription]:
     """Finds all plugins within a base package.
 

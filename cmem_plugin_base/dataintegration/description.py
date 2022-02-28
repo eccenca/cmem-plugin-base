@@ -41,12 +41,13 @@ class PluginDescription:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     """
+    # pylint: disable=too-many-instance-attributes
 
     def __init__(
         self,
         plugin_class,
         label: str,
-        plugin_id: str,
+        plugin_id: str = None,
         description: str = "",
         documentation: str = "",
         categories: List[str] = None,
@@ -68,7 +69,9 @@ class PluginDescription:
         self.module_name = plugin_class.__module__
         self.class_name = plugin_class.__name__
         if plugin_id is None:
-            self.plugin_id = generate_id((self.module_name + "-" + self.class_name).replace(".", "-"))
+            self.plugin_id = generate_id(
+                (self.module_name + "-" + self.class_name).replace(".", "-")
+            )
         else:
             self.plugin_id = plugin_id
         if categories is None:
@@ -89,12 +92,13 @@ class Plugin:
 
     :param label: A human-readable label of the plugin
     :param plugin_id: Optionally sets the plugin identifier.
-                      If not set, an identifier will be generated from the module and class name.
+        If not set, an identifier will be generated from the module and class name.
     :param description: A short (few sentence) description of this plugin.
     :param documentation: Documentation for this plugin in Markdown.
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     """
+
     plugins: list[PluginDescription] = []
 
     def __init__(

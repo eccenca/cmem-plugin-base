@@ -22,9 +22,9 @@ from cmem_plugin_base.dataintegration.discovery import discover_plugins, get_pac
             name="param1",
             label="My First Parameter",
             description="My first description",
-            default_value="default value"
+            default_value="default value",
         )
-    ]
+    ],
 )
 class OutputOnlyPlugin(WorkflowPlugin):
     """Example Plugin - only Output."""
