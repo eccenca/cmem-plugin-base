@@ -167,7 +167,7 @@ class Plugin:
         # Mapping between Python type and DataIntegration ParameterType name
         type_map = {
             str: 'string',
-            int: 'long',
+            int: 'Long',
             float: 'double',
             bool: 'boolean'
         }
