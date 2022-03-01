@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+## [0.0.6] 2022-02-28
+
+### Added
+
+- optional plugin identifier
+
+### Changed
+
+- plugin discovery no for multiple base moduls of a prefix
+
 ## [0.0.2] 2022-02-25
 
 ### Added
