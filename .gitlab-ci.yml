@@ -33,7 +33,7 @@ build:
       - ./dist/*.tar.gz
       - ./dist/*.whl
 
-build:
+deploy:
   stage: deploy
   script:
     - ls
