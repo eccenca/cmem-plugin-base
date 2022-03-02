@@ -1,0 +1,12 @@
+---
+default:
+  image: docker-registry.eccenca.com/eccenca-python:v3.7.0
+
+stages:
+  - test
+
+install:
+  stage: test
+  script:
+    - task poetry:install
+
