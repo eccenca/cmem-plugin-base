@@ -21,3 +21,12 @@ check:
       - ./dist/badge-tests.svg
       - ./dist/coverage
       - ./dist/coverage.xml
+
+build:
+  script:
+    - task build
+  artifacts:
+    when: always
+    paths:
+      - ./dist/*.tar.gz
+      - ./dist/*.whl
