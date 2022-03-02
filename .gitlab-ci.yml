@@ -3,6 +3,7 @@ default:
   image: docker-registry.eccenca.com/eccenca-python:v3.7.0
 
 check:
+  stage: test
   script:
     - task check
   artifacts:
@@ -23,6 +24,7 @@ check:
       - ./dist/coverage.xml
 
 build:
+  stage: build
   script:
     - task build
   artifacts:
@@ -30,3 +32,8 @@ build:
     paths:
       - ./dist/*.tar.gz
       - ./dist/*.whl
+
+build:
+  stage: deploy
+  script:
+    - ls
