@@ -9,4 +9,3 @@ install:
   stage: test
   script:
     - task poetry:install
-
