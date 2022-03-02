@@ -96,8 +96,8 @@ class PluginDescription:
 
 
 class Categories:
-    """A list of common plugin categories.
-    At the moment, in the UI, categories are only utilized for rule operators, such as transform plugins."""
+    """A list of common plugin categories. At the moment, in the UI,
+    categories are only utilized for rule operators, such as transform plugins."""
 
     # Plugins in the 'Recommended' category will be shown preferably
     RECOMMENDED: str = "Recommended"
