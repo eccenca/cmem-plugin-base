@@ -5,4 +5,19 @@ default:
 check:
   script:
     - task check
-
+  artifacts:
+    when: always
+    reports:
+      junit:
+        - ./dist/junit-bandit.xml
+        - ./dist/junit-flake8.xml
+        - ./dist/junit-mypy.xml
+        - ./dist/junit-pylint.xml
+        - ./dist/junit-pytest.xml
+      # gitlab-ee feature? :-(
+      # cobertura: ./dist/coverage.xml
+    paths:
+      - ./dist/badge-coverage.svg
+      - ./dist/badge-tests.svg
+      - ./dist/coverage
+      - ./dist/coverage.xml
