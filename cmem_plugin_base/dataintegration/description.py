@@ -95,6 +95,36 @@ class PluginDescription:
             self.parameters = parameters
 
 
+class Categories:
+    """A list of common plugin categories.
+    At the moment, in the UI, categories are only utilized for rule operators, such as transform plugins."""
+
+    # Plugins in the 'Recommended' category will be shown preferably
+    RECOMMENDED: str = "Recommended"
+
+    # Common transform categories
+    COMBINE: str = "Combine"
+    CONDITIONAL: str = "Conditional"
+    CONVERSION: str = "Conversion"
+    DATE: str = "Date"
+    EXCEL: str = "Excel"
+    EXTRACT: str = "Extract"
+    FILTER: str = "Filter"
+    GEO: str = "Geo"
+    LINGUISTIC: str = "Linguistic"
+    NORMALIZE: str = "Normalize"
+    NUMERIC: str = "Numeric"
+    PARSER: str = "Parser"
+    REPLACE: str = "Replace"
+    SCRIPTING: str = "Scripting"
+    SELECTION: str = "Selection"
+    SEQUENCE: str = "Sequence"
+    SUBSTRING: str = "Substring"
+    TOKENIZATION: str = "Tokenization"
+    VALIDATION: str = "Validation"
+    VALUE: str = "Value"
+
+
 class Plugin:
     """Annotate classes with plugin descriptions.
 

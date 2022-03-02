@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+### Added
+
+- Added constants for common categories.
+
 ## [0.0.7] 2022-03-02
 
 ### Added
