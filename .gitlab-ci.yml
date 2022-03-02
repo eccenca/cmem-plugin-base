@@ -5,7 +5,32 @@ default:
 stages:
   - test
 
-install:
+check-bandit:
   stage: test
   script:
-    - task poetry:install
+    - task check:bandit
+
+check-flake8:
+  stage: test
+  script:
+    - task check:flake8
+
+check-mypy:
+  stage: test
+  script:
+    - task check:mypy
+
+check-pylint:
+  stage: test
+  script:
+    - task check:pylint
+
+check-pytest:
+  stage: test
+  script:
+    - task check:pytest
+
+check-safety:
+  stage: test
+  script:
+    - task check:safety
