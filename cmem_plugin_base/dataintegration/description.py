@@ -1,4 +1,6 @@
 """Classes for describing plugins"""
+import inspect
+from inspect import Parameter
 from typing import Optional, List
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
@@ -11,6 +13,9 @@ class PluginParameter:
     :param name: The name of the parameter
     :param label: A human-readable label of the parameter
     :param description: A human-readable description of the parameter
+    :param type_name: Optionally overrides the parameter type.
+        Usually does not have to be set manually as it will be inferred from the
+        plugin automatically.
     :param default_value: The parameter default value (optional)
     :param advanced: True, if this is an advanced parameter that should only be
         changed by experienced users
@@ -21,12 +26,14 @@ class PluginParameter:
         name: str,
         label: str = "",
         description: str = "",
+        type_name: Optional[str] = None,
         default_value: Optional[str] = None,
         advanced: bool = False,
     ) -> None:
         self.name = name
         self.label = label
         self.description = description
+        self.type_name = type_name
         self.default_value = default_value
         self.advanced = advanced
 
@@ -41,6 +48,7 @@ class PluginDescription:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     """
+
     # pylint: disable=too-many-instance-attributes
 
     def __init__(
@@ -133,7 +141,43 @@ class Plugin:
             description=self.description,
             documentation=self.documentation,
             categories=self.categories,
-            parameters=self.parameters,
+            parameters=self.retrieve_parameters(func),
         )
         Plugin.plugins.append(plugin_desc)
         return func
+
+    def retrieve_parameters(self, plugin_class) -> List[PluginParameter]:
+        """Retrieves parameters from a plugin class and matches them with the user
+        parameter definitions."""
+
+        params = []
+        sig = inspect.signature(plugin_class.__init__)
+        for name in sig.parameters:
+            if name != "self":
+                param = next((p for p in self.parameters if p.name == name), None)
+                if param is None:
+                    param = PluginParameter(name)
+                param.type_name = self.param_type_name(sig.parameters[name])
+                params.append(param)
+        return params
+
+    @staticmethod
+    def param_type_name(param: Parameter):
+        """Determines the DataIntegration type name for a parameter."""
+
+        # Mapping between Python type and DataIntegration ParameterType name
+        type_map = {str: "string", int: "Long", float: "double", bool: "boolean"}
+        supported_types_str = (
+            "Supported types are: "
+            f"${', '.join(list(map(lambda c: c.__name__,type_map)))}."
+        )
+        if param.annotation == Parameter.empty:
+            # If there is no type annotation, DI should send the parameter as a string
+            return "string"
+        type_name = type_map.get(param.annotation)
+        if type_name is None:
+            raise ValueError(
+                f"Parameter '{param.name}' has an unsupported type "
+                f"{param.annotation.__name__}. {supported_types_str}"
+            )
+        return type_name
