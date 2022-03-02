@@ -2,35 +2,7 @@
 default:
   image: docker-registry.eccenca.com/eccenca-python:v3.7.0
 
-stages:
-  - test
-
-check-bandit:
-  stage: test
+check:
   script:
-    - task check:bandit
+    - task check
 
-check-flake8:
-  stage: test
-  script:
-    - task check:flake8
-
-check-mypy:
-  stage: test
-  script:
-    - task check:mypy
-
-check-pylint:
-  stage: test
-  script:
-    - task check:pylint
-
-check-pytest:
-  stage: test
-  script:
-    - task check:pytest
-
-check-safety:
-  stage: test
-  script:
-    - task check:safety
