@@ -1,10 +1,57 @@
 """All Plugins base classes."""
+import logging
 from typing import Sequence, Optional
 
 from .entity import Entities
 
 
-class WorkflowPlugin:
+class PluginLogger:
+    """Logging API for Plugins.
+       If a plugin is running within DataIntegration, this class
+       will be replaced to log into DI using the path: plugins.python.<plugin_id>."""
+
+    # pylint: disable=no-self-use
+
+    def debug(self, message: str) -> None:
+        """Log a message with severity 'DEBUG'."""
+        logging.debug(message)
+
+    def info(self, message: str) -> None:
+        """Log a message with severity 'INFO'."""
+        logging.info(message)
+
+    def warning(self, message: str) -> None:
+        """Log a message with severity 'WARNING'."""
+        logging.warning(message)
+
+    def error(self, message: str) -> None:
+        """Log a message with severity 'ERROR'."""
+        logging.error(message)
+
+
+class PluginConfig:
+    """Configuration API for Plugins.
+       If a plugin is running within DataIntegration,
+       this class will be replaced to retrieve the DI configuration
+       in the path: plugins.python.<plugin_id>."""
+
+    # pylint: disable=no-self-use
+
+    def get(self) -> str:
+        """Retrieve plugin configuration as a JSON string.
+        This test implementation will return an empty string."""
+        return ""
+
+
+class PluginBase:
+    """Base class of all plugins."""
+
+    log: PluginLogger = PluginLogger()
+
+    config: PluginConfig = PluginConfig()
+
+
+class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
 
     def execute(self, inputs: Sequence[Entities]) -> Optional[Entities]:
@@ -20,7 +67,7 @@ class WorkflowPlugin:
         """
 
 
-class TransformPlugin:
+class TransformPlugin(PluginBase):
     """
     Base class of all transform operator plugins.
     """

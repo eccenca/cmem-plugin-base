@@ -11,6 +11,7 @@ TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security se
 ### Added
 
 - Added constants for common categories.
+- Added plugin APIs for logging and retrieving configuration.
 
 ## [0.0.7] 2022-03-02
 
