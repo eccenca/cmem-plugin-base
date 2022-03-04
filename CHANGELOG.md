@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [0.0.8] 2022-03-04
+
+### Added
+
+- Added constants for common categories.
+- Added plugin APIs for logging and retrieving configuration.
+
 ## [0.0.7] 2022-03-02
 
 ### Added
