@@ -180,6 +180,10 @@ class Plugin:
         """Retrieves parameters from a plugin class and matches them with the user
         parameter definitions."""
 
+        # Only return parameters for user-defined init methods.
+        if not hasattr(plugin_class.__init__, '__code__'):
+            return []
+        # Collect parameters from init method
         params = []
         sig = inspect.signature(plugin_class.__init__)
         for name in sig.parameters:
