@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [0.0.9] 2022-03-09
+
+### Fixed
+
+- Only return parameters for user-defined init methods
+
 ## [0.0.8] 2022-03-04
 
 ### Added
