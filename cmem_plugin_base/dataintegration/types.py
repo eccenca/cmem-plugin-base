@@ -57,7 +57,7 @@ class ParameterType(Generic[ValueType]):
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
-        :param query_terms: A list of lower case search terms.
+        :param query_terms: A list of lower case conjunctive search terms.
         :param project_id: The identifier of the project.
         """
         return []
