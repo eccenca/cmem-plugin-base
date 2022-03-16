@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [0.0.11] 2022-03-16
+
+### Fixed
+
+- Fixed discover_plugins_in_module: Need to reload modules that have been imported already.
+
 ## [0.0.10] 2022-03-16
 
 ### Added
