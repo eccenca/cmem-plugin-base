@@ -3,6 +3,7 @@ import importlib
 import importlib.util
 import json
 import pkgutil
+import sys
 from subprocess import check_output  # nosec
 from typing import Sequence
 
@@ -31,7 +32,10 @@ def discover_plugins_in_module(
     def import_submodules(package):
         for _loader, name, is_pkg in pkgutil.walk_packages(package.__path__):
             full_name = package.__name__ + "." + name
+            module_is_imported = full_name in sys.modules
             module = importlib.import_module(full_name)
+            if module_is_imported:
+                importlib.reload(module)  # need to reload in order to discover plugins
             if is_pkg:
                 import_submodules(module)
 
