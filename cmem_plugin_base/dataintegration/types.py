@@ -67,6 +67,11 @@ class ParameterType(Generic[ValueType]):
         """
         return None
 
+    def autocompletion_enabled(self) -> bool:
+        """True, if autocompletion should be enabled on this type.
+        By default, checks if the type implements its own autocomplete method."""
+        return type(self).autocomplete != ParameterType.autocomplete
+
 
 class StringParameterType(ParameterType[str]):
     """String type"""
