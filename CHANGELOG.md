@@ -4,11 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [0.0.13] 2022-03-21
+
+### Changed
+
+- python >= 3.7 dependency
+- examples dev-dependency
+- update dependencies
+
 ## [0.0.12] 2022-03-21
 
 ### Added
 
-- Added `autocompletion_enabled` method to ParameterType class to signal whether autocompletion should be enabled.
+- `autocompletion_enabled` method to ParameterType class to signal whether autocompletion should be enabled.
 
 ### Changed
 
