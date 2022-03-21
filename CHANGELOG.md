@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Added `autocompletion_enabled` method to ParameterType class to signal whether autocompletion should be enabled.
 
+### Changed
+
+- downgrade needed python version to 3.7+
+
 ## [0.0.11] 2022-03-16
 
 ### Fixed
