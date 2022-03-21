@@ -6,13 +6,16 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Changed
+
+- examples dev-dependency
+- update dependencies
 
 ## [0.0.12] 2022-03-21
 
 ### Added
 
-- Added `autocompletion_enabled` method to ParameterType class to signal whether autocompletion should be enabled.
+- `autocompletion_enabled` method to ParameterType class to signal whether autocompletion should be enabled.
 
 ### Changed
 
