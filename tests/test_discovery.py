@@ -6,5 +6,5 @@ def test_discover_plugins():
     """test plugin discovery."""
     plugins = discover_plugins("cmem_plugin")
 
-    # cmem_plugin_examples has currently one plugin
-    assert len(plugins) == 1
+    # cmem_plugin_examples should have at least one plugin
+    assert len(plugins) > 0

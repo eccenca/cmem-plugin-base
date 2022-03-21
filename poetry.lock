@@ -108,6 +108,17 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 importlib-metadata = {version = "*", markers = "python_version < \"3.8\""}
 
 [[package]]
+name = "cmem-plugin-examples"
+version = "0.0.6"
+description = "Example plugins for eccenca Corporate Memory."
+category = "dev"
+optional = false
+python-versions = ">=3.7,<4.0"
+
+[package.dependencies]
+cmem-plugin-base = "*"
+
+[[package]]
 name = "colorama"
 version = "0.4.4"
 description = "Cross-platform colored terminal text."
@@ -630,7 +641,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "7f655d6262c9e3df38c4dabdbb3f9b6da6115e3b6ca6a9686f2b4ba174018f9c"
+content-hash = "3fa65e8b1b187c8c6dd77c565fa612c654eb740b2ec6d2a8bf54b08c046ab54c"
 
 [metadata.files]
 astroid = [
@@ -685,6 +696,10 @@ charset-normalizer = [
 click = [
     {file = "click-8.0.4-py3-none-any.whl", hash = "sha256:6a7a62563bbfabfda3a38f3023a1db4a35978c0abd76f6c9605ecd6554d6d9b1"},
     {file = "click-8.0.4.tar.gz", hash = "sha256:8458d7b1287c5fb128c90e23381cf99dcde74beaf6c7ff6384ce84d6fe090adb"},
+]
+cmem-plugin-examples = [
+    {file = "cmem-plugin-examples-0.0.6.tar.gz", hash = "sha256:e45659f418506b19f17a69cdab37a4313683b71ad9d0020bd225716f7063bc0c"},
+    {file = "cmem_plugin_examples-0.0.6-py3-none-any.whl", hash = "sha256:e095b48dbd785aa1986899d9228a4b70b6d9302a6b3de9fb8ac76ea7ee1e61c5"},
 ]
 colorama = [
     {file = "colorama-0.4.4-py2.py3-none-any.whl", hash = "sha256:9f47eda37229f68eee03b24b9748937c7dc3868f906e8ba69fbcbdd3bc5dc3e2"},
