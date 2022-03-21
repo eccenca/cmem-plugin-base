@@ -8,6 +8,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Changed
 
+- python >= 3.7 dependency
 - examples dev-dependency
 - update dependencies
 
