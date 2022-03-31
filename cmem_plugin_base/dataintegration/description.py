@@ -183,7 +183,7 @@ class Plugin:
         parameter definitions."""
 
         # Only return parameters for user-defined init methods.
-        if not hasattr(plugin_class.__init__, '__code__'):
+        if not hasattr(plugin_class.__init__, "__code__"):
             return []
         # Collect parameters from init method
         params = []

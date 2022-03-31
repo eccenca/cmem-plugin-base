@@ -5,21 +5,24 @@ from typing import Sequence
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 from cmem_plugin_base.dataintegration.description import Plugin
-from cmem_plugin_base.dataintegration.types import StringParameterType, FloatParameterType
+from cmem_plugin_base.dataintegration.types import (
+    StringParameterType,
+    FloatParameterType,
+)
 
 
 class PluginTest(unittest.TestCase):
-
     def test__basic_parameters(self):
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
         class MyTransformPlugin(TransformPlugin):
-
-            def __init__(self,
-                         no_default_param: str,
-                         string_param: str = "value",
-                         float_param: float = 1.5) -> None:
+            def __init__(
+                self,
+                no_default_param: str,
+                string_param: str = "value",
+                float_param: float = 1.5,
+            ) -> None:
                 self.no_default_param = no_default_param
                 self.string_param = string_param
                 self.float_param = float_param
@@ -42,5 +45,5 @@ class PluginTest(unittest.TestCase):
         self.assertEqual(float_par.default_value, 1.5)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

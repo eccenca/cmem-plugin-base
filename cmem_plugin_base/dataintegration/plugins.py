@@ -7,8 +7,8 @@ from .entity import Entities
 
 class PluginLogger:
     """Logging API for Plugins.
-       If a plugin is running within DataIntegration, this class
-       will be replaced to log into DI using the path: plugins.python.<plugin_id>."""
+    If a plugin is running within DataIntegration, this class
+    will be replaced to log into DI using the path: plugins.python.<plugin_id>."""
 
     # pylint: disable=no-self-use
 
@@ -31,9 +31,9 @@ class PluginLogger:
 
 class PluginConfig:
     """Configuration API for Plugins.
-       If a plugin is running within DataIntegration,
-       this class will be replaced to retrieve the DI configuration
-       in the path: plugins.python.<plugin_id>."""
+    If a plugin is running within DataIntegration,
+    this class will be replaced to retrieve the DI configuration
+    in the path: plugins.python.<plugin_id>."""
 
     # pylint: disable=no-self-use
 

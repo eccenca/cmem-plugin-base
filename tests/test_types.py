@@ -1,21 +1,24 @@
 import unittest
 from enum import Enum
 
-from cmem_plugin_base.dataintegration.types import EnumParameterType, Autocompletion, get_type
+from cmem_plugin_base.dataintegration.types import (
+    EnumParameterType,
+    Autocompletion,
+    get_type,
+)
 
 
 class TypesTest(unittest.TestCase):
-
     class MissingType:
         pass
 
     def test_missing_type(self):
-        self.assertRaisesRegex(ValueError, "unsupported type",
-                               lambda: get_type(TypesTest.MissingType))
+        self.assertRaisesRegex(
+            ValueError, "unsupported type", lambda: get_type(TypesTest.MissingType)
+        )
 
 
 class BasicTypesTest(unittest.TestCase):
-
     def test_detection(self):
         self.assertEqual(get_type(str).name, "string")
         self.assertEqual(get_type(int).name, "Long")
@@ -33,7 +36,6 @@ class BasicTypesTest(unittest.TestCase):
 
 
 class EnumTest(unittest.TestCase):
-
     class Color(Enum):
         RED = 1
         GREEN = 2
@@ -49,19 +51,29 @@ class EnumTest(unittest.TestCase):
 
     def test_invalid_values(self):
         enum = EnumParameterType(EnumTest.Color)
-        self.assertRaisesRegex(ValueError, "Empty value is not allowed",
-                               lambda: enum.from_string(""))
-        self.assertRaisesRegex(ValueError, "not a valid value",
-                               lambda: enum.from_string("CYAN"))
+        self.assertRaisesRegex(
+            ValueError, "Empty value is not allowed", lambda: enum.from_string("")
+        )
+        self.assertRaisesRegex(
+            ValueError, "not a valid value", lambda: enum.from_string("CYAN")
+        )
 
     def test_autocomplete(self):
         enum = EnumParameterType(EnumTest.Color)
-        self.assertListEqual(list(enum.autocomplete(["red"])), [Autocompletion("RED", "RED")])
-        self.assertListEqual(list(enum.autocomplete(["een"])), [Autocompletion("GREEN", "GREEN")])
-        self.assertListEqual(list(enum.autocomplete(["r"])),
-                             [Autocompletion("RED", "RED"), Autocompletion("GREEN", "GREEN")])
-        self.assertListEqual(list(enum.autocomplete(["e", "b"])), [Autocompletion("BLUE", "BLUE")])
+        self.assertListEqual(
+            list(enum.autocomplete(["red"])), [Autocompletion("RED", "RED")]
+        )
+        self.assertListEqual(
+            list(enum.autocomplete(["een"])), [Autocompletion("GREEN", "GREEN")]
+        )
+        self.assertListEqual(
+            list(enum.autocomplete(["r"])),
+            [Autocompletion("RED", "RED"), Autocompletion("GREEN", "GREEN")],
+        )
+        self.assertListEqual(
+            list(enum.autocomplete(["e", "b"])), [Autocompletion("BLUE", "BLUE")]
+        )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
