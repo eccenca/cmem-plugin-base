@@ -16,12 +16,12 @@ class Autocompletion:
     """An optional label that a human user would see instead."""
 
 
-ValueType = TypeVar('ValueType')
+T = TypeVar("T")
 
 
-class ParameterType(Generic[ValueType]):
+class ParameterType(Generic[T]):
     """Represents a plugin parameter type.
-    Provides string-based serialization and autocompletion. """
+    Provides string-based serialization and autocompletion."""
 
     name: str
     """The name by which this type can be identified. If available,
@@ -42,18 +42,18 @@ class ParameterType(Generic[ValueType]):
         """Retrieves the type that is supported by a given instance."""
         return self.__orig_bases__[0].__args__[0]
 
-    def from_string(self, value: str) -> ValueType:
+    def from_string(self, value: str) -> T:
         """Parses strings into parameter values."""
 
     # pylint: disable=no-self-use
-    def to_string(self, value: ValueType) -> str:
-        """Converts parameter values into their string representation.
-        """
+    def to_string(self, value: T) -> str:
+        """Converts parameter values into their string representation."""
         return str(value)
 
     # pylint: disable=unused-argument
-    def autocomplete(self, query_terms: list[str],
-                     project_id: Optional[str] = None) -> list[Autocompletion]:
+    def autocomplete(
+        self, query_terms: list[str], project_id: Optional[str] = None
+    ) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
@@ -63,8 +63,7 @@ class ParameterType(Generic[ValueType]):
         return []
 
     def label(self, value: str, project_id: Optional[str] = None) -> Optional[str]:
-        """Returns the label if exists for the given value.
-        """
+        """Returns the label if exists for the given value."""
         return None
 
     def autocompletion_enabled(self) -> bool:
@@ -130,21 +129,23 @@ class EnumParameterType(ParameterType[Enum]):
         if not value:
             raise ValueError("Empty value is not allowed.")
         if value not in values:
-            vals = ', '.join(list(values.keys()))
+            vals = ", ".join(list(values.keys()))
             raise ValueError(f"'{value}' is not a valid value. Valid values: {vals}.")
         return values[value]
 
     def to_string(self, value: Enum) -> str:
         return value.name
 
-    def autocomplete(self, query_terms: list[str],
-                     project_id: Optional[str] = None) -> list[Autocompletion]:
+    def autocomplete(
+        self, query_terms: list[str], project_id: Optional[str] = None
+    ) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
 
     @staticmethod
-    def find_matches(lower_case_terms: list[str],
-                     values: Iterable[str]) -> Iterable[Autocompletion]:
+    def find_matches(
+        lower_case_terms: list[str], values: Iterable[str]
+    ) -> Iterable[Autocompletion]:
         """Finds autocompletions in a list of values"""
         for value in values:
             if EnumParameterType.matches_search_term(lower_case_terms, value.lower()):
@@ -157,8 +158,12 @@ class EnumParameterType(ParameterType[Enum]):
         return all(search_term in lower_case_text for search_term in lower_case_terms)
 
 
-basic_types: list[ParameterType] = [StringParameterType(), BoolParameterType(),
-                                    IntParameterType(), FloatParameterType()]
+basic_types: list[ParameterType] = [
+    StringParameterType(),
+    BoolParameterType(),
+    IntParameterType(),
+    FloatParameterType(),
+]
 
 
 def get_type(param_type: Type) -> ParameterType:
@@ -166,8 +171,9 @@ def get_type(param_type: Type) -> ParameterType:
 
     if issubclass(param_type, Enum):
         return EnumParameterType(param_type)
-    found_type = next((t for t in basic_types
-                       if issubclass(param_type, t.get_type())), None)
+    found_type = next(
+        (t for t in basic_types if issubclass(param_type, t.get_type())), None
+    )
     if found_type is None:
         mapped = map(lambda t: str(t.get_type().__name__), basic_types)
         raise ValueError(
