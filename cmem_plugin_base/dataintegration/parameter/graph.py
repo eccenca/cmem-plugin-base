@@ -1,14 +1,14 @@
 """Knowledge Graph Parameter Type."""
-import os
 from typing import Optional, Set, List
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
+from cmem_plugin_base.dataintegration.utils import setup_cmempy_super_user_access
 
 
 class GraphParameterType(StringParameterType):
-    """Graphs parameter type"""
+    """Knowledge Graph parameter type."""
 
     allow_only_autocompleted_values: bool = False
 
@@ -21,31 +21,32 @@ class GraphParameterType(StringParameterType):
         show_di_graphs: bool = False,
         show_system_graphs: bool = False,
         classes: List[str] = None,
-        allow_only_autocompleted_values: bool = False,
+        allow_only_autocompleted_values: bool = True,
     ):
         """
-        The type of Knowledge Graphs from Dataplatform
+        Knowledge Graph parameter type.
 
         :param show_di_graphs: show DI project graphs
         :param show_system_graphs: show system graphs such as shape and query catalogs
         :param classes: allowed classes of the shown graphs
-        :param allow_only_autocompleted_values: allow to enter new graph URLs as well
+            defaults to di:Dataset and void:Dataset
+        :param allow_only_autocompleted_values: allow entering new graph URLs
         """
         self.show_di_graphs = show_di_graphs
         self.show_system_graphs = show_system_graphs
         self.allow_only_autocompleted_values = allow_only_autocompleted_values
         if classes:
             self.classes = set(classes)
+        else:
+            self.classes = {
+                "https://vocab.eccenca.com/di/Dataset",
+                "http://rdfs.org/ns/void#Dataset"
+            }
 
     def autocomplete(
         self, query_terms: list[str], project_id: Optional[str] = None
     ) -> list[Autocompletion]:
-        os.environ["OAUTH_CLIENT_ID"] = os.environ[
-            "DATAINTEGRATION_CMEM_SERVICE_CLIENT"
-        ]
-        os.environ["OAUTH_CLIENT_SECRET"] = os.environ[
-            "DATAINTEGRATION_CMEM_SERVICE_CLIENT_SECRET"
-        ]
+        setup_cmempy_super_user_access()
         graphs = get_graphs_list()
         result = []
         for graph in graphs:
@@ -73,4 +74,4 @@ class GraphParameterType(StringParameterType):
                 # add any graph to list if no search terms are given
                 result.append(Autocompletion(value=iri, label=label))
         result.sort(key=lambda x: x.label)  # type: ignore
-        return result
+        return list(set(result))
