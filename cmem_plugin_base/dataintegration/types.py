@@ -5,7 +5,7 @@ from inspect import Parameter
 from typing import Optional, TypeVar, Generic, Type, Iterable
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class Autocompletion:
     """A single auto-completion result."""
 
