@@ -6,7 +6,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- Plugin discovery had an issue that plugins that are in the root module of a package have not been re-discovered on the second call. 
 
 ## [1.0.0] 2022-04-01
 
