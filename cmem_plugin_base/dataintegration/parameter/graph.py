@@ -49,23 +49,24 @@ class GraphParameterType(StringParameterType):
         setup_cmempy_super_user_access()
         graphs = get_graphs_list()
         result = []
-        for graph in graphs:
-            if self.show_di_graphs is False and graph["diProjectGraph"] is True:
-                # filter out DI project graphs
+        for _ in graphs:
+            iri = _["iri"]
+            title = _["label"]["title"]
+            label = f"{title} ({iri})"
+            if self.show_di_graphs is False and _["diProjectGraph"] is True:
+                # ignore DI project graphs
                 continue
-            if self.show_system_graphs is False and graph["systemResource"] is True:
-                # filter out system resource graphs
+            if self.show_system_graphs is False and _["systemResource"] is True:
+                # ignore system resource graphs
                 continue
-            graph_classes = set(graph["assignedClasses"])
+            graph_classes = set(_["assignedClasses"])
             if (
                 self.classes is not None
+                and len(graph_classes) > 0
                 and len(self.classes.intersection(graph_classes)) == 0
             ):
-                # filter out graphs which do not match the requested classes
+                # ignore graphs which do not match the requested classes
                 continue
-            iri = graph["iri"]
-            title = graph["label"]["title"]
-            label = f"{title} ({iri})"
             for term in query_terms:
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=iri, label=label))
