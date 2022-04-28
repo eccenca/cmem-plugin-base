@@ -41,7 +41,7 @@ class OutputOnlyPlugin(WorkflowPlugin):
         return Entities(entities=[entity1, entity2], schema=schema)
 
 
-def test_readonly_plugin():
+def test_output_only_plugin():
     """Test example Workflow Plugin."""
     output_only = OutputOnlyPlugin(param1="test")
     result = output_only.execute()
