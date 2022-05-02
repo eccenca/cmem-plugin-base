@@ -112,6 +112,11 @@ class BoolParameterType(ParameterType[bool]):
             return False
         raise ValueError("Value must be either 'true' or 'false'")
 
+    def to_string(self, value: bool) -> str:
+        if value:
+            return "true"
+        return "false"
+
 
 class EnumParameterType(ParameterType[Enum]):
     """Enumeration type"""
