@@ -18,13 +18,16 @@ def setup_cmempy_super_user_access():
     If not, it will try to use the configured DI environment.
     """
     try:
-        len(os.environ["CMEM_BASE_URI"])
         os.environ["OAUTH_GRANT_TYPE"] = "client_credentials"
+        if "CMEM_BASE_URI" not in os.environ:
+            os.environ["CMEM_BASE_URI"] = os.environ[
+                "DEPLOY_BASE_URL"
+            ]
         if "OAUTH_CLIENT_ID" not in os.environ:
             os.environ["OAUTH_CLIENT_ID"] = os.environ[
                 "DATAINTEGRATION_CMEM_SERVICE_CLIENT"
             ]
-        if "OAUTH_CLIENT_ID" not in os.environ:
+        if "OAUTH_CLIENT_SECRET" not in os.environ:
             os.environ["OAUTH_CLIENT_SECRET"] = os.environ[
                 "DATAINTEGRATION_CMEM_SERVICE_CLIENT_SECRET"
             ]
