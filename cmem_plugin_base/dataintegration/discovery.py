@@ -5,6 +5,7 @@ import json
 import pkgutil
 import sys
 from subprocess import check_output  # nosec
+from types import ModuleType
 from typing import Sequence
 
 from cmem_plugin_base.dataintegration.description import PluginDescription, Plugin
@@ -29,18 +30,21 @@ def discover_plugins_in_module(
         of this package.
     """
 
-    def import_submodules(package):
-        for _loader, name, is_pkg in pkgutil.walk_packages(package.__path__):
-            full_name = package.__name__ + "." + name
-            module_is_imported = full_name in sys.modules
-            module = importlib.import_module(full_name)
-            if module_is_imported:
-                importlib.reload(module)  # need to reload in order to discover plugins
+    def load_module(module_name: str) -> ModuleType:
+        module_is_imported = module_name in sys.modules
+        module = importlib.import_module(module_name)
+        if module_is_imported:
+            importlib.reload(module)  # need to reload in order to discover plugins
+        return module
+
+    def import_submodules(module: ModuleType):
+        for _loader, name, is_pkg in pkgutil.walk_packages(module.__path__):
+            sub_module = load_module(module.__name__ + "." + name)
             if is_pkg:
-                import_submodules(module)
+                import_submodules(sub_module)
 
     Plugin.plugins = []
-    import_submodules(importlib.import_module(package_name))
+    import_submodules(load_module(package_name))
     return Plugin.plugins
 
 
