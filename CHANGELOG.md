@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- DatasetParameterType - for selecting DI datasets
+- GraphParameterType - for selecting DP Knowledge Graphs
+
 ### Fixed
 
 - Plugin discovery had an issue that plugins that are in the root module of a package have not been re-discovered on the second call. 
