@@ -5,7 +5,7 @@ from inspect import Parameter
 from typing import Optional, TypeVar, Generic, Type, Iterable
 
 
-@dataclass
+@dataclass(frozen=True, eq=True)
 class Autocompletion:
     """A single auto-completion result."""
 
@@ -111,6 +111,11 @@ class BoolParameterType(ParameterType[bool]):
         if lower in ("false", "0"):
             return False
         raise ValueError("Value must be either 'true' or 'false'")
+
+    def to_string(self, value: bool) -> str:
+        if value:
+            return "true"
+        return "false"
 
 
 class EnumParameterType(ParameterType[Enum]):
