@@ -20,6 +20,7 @@ class GraphParameterType(StringParameterType):
         self,
         show_di_graphs: bool = False,
         show_system_graphs: bool = False,
+        show_graphs_without_class: bool = False,
         classes: List[str] = None,
         allow_only_autocompleted_values: bool = True,
     ):
@@ -29,11 +30,12 @@ class GraphParameterType(StringParameterType):
         :param show_di_graphs: show DI project graphs
         :param show_system_graphs: show system graphs such as shape and query catalogs
         :param classes: allowed classes of the shown graphs
-            defaults to di:Dataset and void:Dataset
+            - if None -> defaults to di:Dataset and void:Dataset
         :param allow_only_autocompleted_values: allow entering new graph URLs
         """
         self.show_di_graphs = show_di_graphs
         self.show_system_graphs = show_system_graphs
+        self.show_graphs_without_class = show_graphs_without_class
         self.allow_only_autocompleted_values = allow_only_autocompleted_values
         if classes:
             self.classes = set(classes)
@@ -53,26 +55,33 @@ class GraphParameterType(StringParameterType):
             iri = _["iri"]
             title = _["label"]["title"]
             label = f"{title} ({iri})"
+            assigned_classes = set(_["assignedClasses"])
+            # ignore DI project graphs
             if self.show_di_graphs is False and _["diProjectGraph"] is True:
-                # ignore DI project graphs
                 continue
+            # ignore system resource graphs
             if self.show_system_graphs is False and _["systemResource"] is True:
-                # ignore system resource graphs
                 continue
-            graph_classes = set(_["assignedClasses"])
+            # show graphs without assigned classes only if explicitly wanted
+            if len(assigned_classes) == 0:
+                if self.show_graphs_without_class is True:
+                    result.append(Autocompletion(value=iri, label=label))
+                continue
+            # ignore graphs which do not match the requested classes
             if (
                 self.classes is not None
-                and len(graph_classes) > 0
-                and len(self.classes.intersection(graph_classes)) == 0
+                and len(assigned_classes) > 0
+                and len(self.classes.intersection(assigned_classes)) == 0
             ):
-                # ignore graphs which do not match the requested classes
                 continue
+            # if no search terms are given: add all remaining graphs to list
+            if len(query_terms) == 0:
+                result.append(Autocompletion(value=iri, label=label))
+                continue
+            # show only graphs which match the given terms
             for term in query_terms:
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=iri, label=label))
                     continue
-            if len(query_terms) == 0:
-                # add any graph to list if no search terms are given
-                result.append(Autocompletion(value=iri, label=label))
         result.sort(key=lambda x: x.label)  # type: ignore
         return list(set(result))
