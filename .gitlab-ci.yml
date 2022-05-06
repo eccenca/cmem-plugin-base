@@ -28,6 +28,7 @@ check:
       - ./dist/badge-tests.svg
       - ./dist/coverage
       - ./dist/coverage.xml
+      - ./dist/junit-*.xml
 
 sonarqube:
   stage: sonarqube
