@@ -29,6 +29,7 @@ check:
       - ./dist/coverage.xml
 
 check-sq:
+  stage: test
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
