@@ -4,6 +4,7 @@ default:
 
 stages:
   - test
+  - sonarqube
   - build
   - deploy
 
