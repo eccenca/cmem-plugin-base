@@ -29,7 +29,6 @@ check:
       - ./dist/coverage.xml
 
 sonarqube-check:
-  stage: test
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
@@ -44,7 +43,7 @@ sonarqube-check:
     - sonar-scanner
   allow_failure: true
   only:
-    - develop # or the name of your main branch
+    - develop
 
 build:
   stage: build
