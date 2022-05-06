@@ -28,8 +28,8 @@ check:
       - ./dist/coverage
       - ./dist/coverage.xml
 
-check-sq:
-  stage: test
+sonarqube:
+  stage: sonarqube
   image: 
     name: sonarsource/sonar-scanner-cli:latest
     entrypoint: [""]
