@@ -1,6 +1,6 @@
 """graph parameter type tests"""
 from cmem_plugin_base.dataintegration.parameter.graph import GraphParameterType
-from ..utils  import needs_cmem
+from ..utils import needs_cmem
 
 
 @needs_cmem

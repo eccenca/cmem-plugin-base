@@ -42,7 +42,7 @@ class GraphParameterType(StringParameterType):
         else:
             self.classes = {
                 "https://vocab.eccenca.com/di/Dataset",
-                "http://rdfs.org/ns/void#Dataset"
+                "http://rdfs.org/ns/void#Dataset",
             }
 
     def autocomplete(

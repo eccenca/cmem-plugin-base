@@ -2,8 +2,12 @@
 from typing import Optional
 
 from cmem.cmempy.workspace.search import list_items
+from cmem.cmempy.workspace.tasks import get_task
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_super_user_access
+from cmem_plugin_base.dataintegration.utils import (
+    setup_cmempy_super_user_access,
+    split_task_id
+)
 
 
 class DatasetParameterType(StringParameterType):
@@ -21,6 +25,15 @@ class DatasetParameterType(StringParameterType):
         """Dataset parameter type."""
         self.dataset_type = dataset_type
 
+    def label(self, value: str, project_id: Optional[str] = None) -> Optional[str]:
+        """Returns the label for the given dataset."""
+        setup_cmempy_super_user_access()
+        project_part, task_part = split_task_id(value)
+        task_label = str(
+            get_task(project=project_part, task=task_part)["metadata"]["label"]
+        )
+        return f"{task_label}"
+
     def autocomplete(
         self, query_terms: list[str], project_id: Optional[str] = None
     ) -> list[Autocompletion]:
@@ -32,7 +45,7 @@ class DatasetParameterType(StringParameterType):
 
         result = []
         for _ in datasets:
-            identifier = _["id"]
+            identifier = f"{_['projectId']}:{_['id']}"
             title = _["label"]
             label = f"{title} ({identifier})"
             if self.dataset_type is not None and self.dataset_type != _["pluginId"]:
