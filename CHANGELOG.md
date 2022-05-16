@@ -8,7 +8,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Fixed
 
-- DatasetParameterType provides correct label now
+- DatasetParameterType provides labels now
+- DatasetParameterType returns combined dataset ID now
 
 ## [1.1.0] 2022-05-04
 

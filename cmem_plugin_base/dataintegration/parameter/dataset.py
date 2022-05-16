@@ -54,7 +54,6 @@ class DatasetParameterType(StringParameterType):
             for term in query_terms:
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=identifier, label=label))
-                    continue
             if len(query_terms) == 0:
                 # add any dataset to list if no search terms are given
                 result.append(Autocompletion(value=identifier, label=label))
