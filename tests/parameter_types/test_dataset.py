@@ -1,6 +1,9 @@
 """graph parameter type tests"""
 import pytest
-from cmem.cmempy.workspace.projects.datasets.dataset import make_new_dataset, get_dataset
+from cmem.cmempy.workspace.projects.datasets.dataset import (
+    make_new_dataset,
+    get_dataset,
+)
 from cmem.cmempy.workspace.projects.project import make_new_project, delete_project
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
@@ -14,12 +17,13 @@ RESOURCE_NAME = "test.json"
 @pytest.fixture(scope="module")
 def setup(request):
     make_new_project(PROJECT_NAME)
-    make_new_dataset(project_name=PROJECT_NAME,
-                     dataset_name=DATASET_NAME,
-                     dataset_type="json",
-                     parameters={"file": RESOURCE_NAME},
-                     autoconfigure=False
-                     )
+    make_new_dataset(
+        project_name=PROJECT_NAME,
+        dataset_name=DATASET_NAME,
+        dataset_type="json",
+        parameters={"file": RESOURCE_NAME},
+        autoconfigure=False,
+    )
 
     def teardown():
         delete_project(PROJECT_NAME)

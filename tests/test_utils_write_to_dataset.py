@@ -4,7 +4,10 @@ import json
 
 import pytest
 import requests.exceptions
-from cmem.cmempy.workspace.projects.datasets.dataset import make_new_dataset, get_dataset
+from cmem.cmempy.workspace.projects.datasets.dataset import (
+    make_new_dataset,
+    get_dataset,
+)
 from cmem.cmempy.workspace.projects.project import make_new_project, delete_project
 from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
 
@@ -20,12 +23,13 @@ RESOURCE_NAME = "sample_test.json"
 @pytest.fixture(scope="module")
 def setup(request):
     make_new_project(PROJECT_NAME)
-    make_new_dataset(project_name=PROJECT_NAME,
-                     dataset_name=DATASET_NAME,
-                     dataset_type="json",
-                     parameters={"file": RESOURCE_NAME},
-                     autoconfigure=False
-                     )
+    make_new_dataset(
+        project_name=PROJECT_NAME,
+        dataset_name=DATASET_NAME,
+        dataset_type="json",
+        parameters={"file": RESOURCE_NAME},
+        autoconfigure=False,
+    )
 
     def teardown():
         delete_project(PROJECT_NAME)
@@ -50,11 +54,15 @@ def test_write_to_json_dataset(setup):
 
 @needs_cmem
 def test_write_to_not_valid_dataset():
-    with pytest.raises(requests.exceptions.HTTPError,
-                       match=r"404 Client Error: Not Found for url.*tasks/INVALID_DATASET.*"):
+    with pytest.raises(
+        requests.exceptions.HTTPError,
+        match=r"404 Client Error: Not Found for url.*tasks/INVALID_DATASET.*",
+    ):
         write_to_dataset(f"f{PROJECT_NAME}:INVALID_DATASET", io.StringIO("{}"))
 
 
 def test_write_to_invalid_format_dataset_id():
-    with pytest.raises(ValueError, match=r"INVALID_DATASET_ID_FORMAT is not a valid task ID."):
+    with pytest.raises(
+        ValueError, match=r"INVALID_DATASET_ID_FORMAT is not a valid task ID."
+    ):
         write_to_dataset("INVALID_DATASET_ID_FORMAT", io.StringIO("{}"))

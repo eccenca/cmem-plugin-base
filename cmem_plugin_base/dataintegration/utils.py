@@ -59,24 +59,21 @@ def split_task_id(task_id: str) -> tuple:
 def write_to_dataset(dataset_id: str, file_resource=None):
     """Write to a dataset.
 
-        Args:
-            dataset_id (str): The combined task ID.
-            file_resource (file stream): Already opened byte file stream
+    Args:
+        dataset_id (str): The combined task ID.
+        file_resource (file stream): Already opened byte file stream
 
-        Returns:
-            requests.Response object
+    Returns:
+        requests.Response object
 
-        Raises:
-            ValueError: in case the task ID is not splittable
-            ValueError: missing parameter
-        """
+    Raises:
+        ValueError: in case the task ID is not splittable
+        ValueError: missing parameter
+    """
     project_id, task_id = split_task_id(dataset_id)
 
-    task_meta_data = get_task(
-        project=project_id,
-        task=task_id
-    )
-    resource_name = str(task_meta_data['data']["parameters"]["file"]["value"])
+    task_meta_data = get_task(project=project_id, task=task_id)
+    resource_name = str(task_meta_data["data"]["parameters"]["file"]["value"])
 
     return create_resource(
         project_name=project_id,
