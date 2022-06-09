@@ -6,7 +6,7 @@ from cmem.cmempy.workspace.tasks import get_task
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
 from cmem_plugin_base.dataintegration.utils import (
     setup_cmempy_super_user_access,
-    split_task_id
+    split_task_id,
 )
 
 
@@ -19,9 +19,7 @@ class DatasetParameterType(StringParameterType):
 
     dataset_type: Optional[str] = None
 
-    def __init__(
-        self, dataset_type: str = None
-    ):
+    def __init__(self, dataset_type: str = None):
         """Dataset parameter type."""
         self.dataset_type = dataset_type
 
@@ -38,10 +36,7 @@ class DatasetParameterType(StringParameterType):
         self, query_terms: list[str], project_id: Optional[str] = None
     ) -> list[Autocompletion]:
         setup_cmempy_super_user_access()
-        datasets = list_items(
-            item_type="dataset",
-            project=project_id
-        )["results"]
+        datasets = list_items(item_type="dataset", project=project_id)["results"]
 
         result = []
         for _ in datasets:
