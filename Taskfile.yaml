@@ -112,7 +112,7 @@ tasks:
       - poetry:install
       - check:prepare
     cmds:
-      - poetry run safety check --ignore 41014
+      - poetry run safety check -i 48547
 
   check:bandit:
     desc: Check source code with bandit.

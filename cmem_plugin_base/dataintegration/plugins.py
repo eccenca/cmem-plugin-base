@@ -10,8 +10,6 @@ class PluginLogger:
     If a plugin is running within DataIntegration, this class
     will be replaced to log into DI using the path: plugins.python.<plugin_id>."""
 
-    # pylint: disable=no-self-use
-
     def debug(self, message: str) -> None:
         """Log a message with severity 'DEBUG'."""
         logging.debug(message)
@@ -34,8 +32,6 @@ class PluginConfig:
     If a plugin is running within DataIntegration,
     this class will be replaced to retrieve the DI configuration
     in the path: plugins.python.<plugin_id>."""
-
-    # pylint: disable=no-self-use
 
     def get(self) -> str:
         """Retrieve plugin configuration as a JSON string.
