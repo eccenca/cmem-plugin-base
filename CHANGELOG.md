@@ -6,8 +6,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
 ### Added
 
+- `write_to_dataset` function to utils module to write to a dataset
 - Added MultilineStringParameterType
 
 ## [1.1.1] 2022-05-16
