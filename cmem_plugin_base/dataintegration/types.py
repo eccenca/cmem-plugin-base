@@ -45,7 +45,6 @@ class ParameterType(Generic[T]):
     def from_string(self, value: str) -> T:
         """Parses strings into parameter values."""
 
-    # pylint: disable=no-self-use
     def to_string(self, value: T) -> str:
         """Converts parameter values into their string representation."""
         return str(value)
