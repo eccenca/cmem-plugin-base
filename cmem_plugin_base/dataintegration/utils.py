@@ -70,6 +70,7 @@ def write_to_dataset(dataset_id: str, file_resource=None):
         ValueError: in case the task ID is not splittable
         ValueError: missing parameter
     """
+    setup_cmempy_super_user_access()
     project_id, task_id = split_task_id(dataset_id)
 
     task_meta_data = get_task(project=project_id, task=task_id)

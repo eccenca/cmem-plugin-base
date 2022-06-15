@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cmem-plugin-base"
-version = "1.2.0a1"
+version = "1.2.0a2"
 license = "Apache-2.0"
 description = "Base classes for developing eccenca Coporate Memory plugins."
 authors = ["eccenca <cmempy-developer@eccenca.com>"]
