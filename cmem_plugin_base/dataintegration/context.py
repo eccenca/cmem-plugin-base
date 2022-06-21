@@ -1,7 +1,7 @@
 """Contains classes to pass context information into plugins."""
 
-from dataclasses import dataclass
-from typing import Optional
+from dataclasses import dataclass, field
+from typing import Optional, Tuple
 
 
 class UserContext:
@@ -48,11 +48,11 @@ class ExecutionReport:
     operation_desc: str = "entities processed"
     "Short description of the operation (plural, past tense)."
 
-    summary: list[(str, str)] = ()
+    summary: list[Tuple[str, str]] = field(default_factory=list)
     """Generates a short summary of this report.
        A sequence of key-value pairs representing the summary table """
 
-    warnings: list[str] = ()
+    warnings: list[str] = field(default_factory=list)
     """If issues occurred during execution, this contains a list of user-friendly
     messages. """
 
