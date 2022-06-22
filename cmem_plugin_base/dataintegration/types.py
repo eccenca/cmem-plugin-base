@@ -4,6 +4,8 @@ from enum import Enum
 from inspect import Parameter
 from typing import Optional, TypeVar, Generic, Type, Iterable
 
+from cmem_plugin_base.dataintegration.context import PluginContext
+
 
 @dataclass(frozen=True, eq=True)
 class Autocompletion:
@@ -50,19 +52,22 @@ class ParameterType(Generic[T]):
         return str(value)
 
     # pylint: disable=unused-argument
-    def autocomplete(
-        self, query_terms: list[str], project_id: Optional[str] = None
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
-        :param project_id: The identifier of the project.
+        :param context: The context in which the autocompletion is requested.
         """
         return []
 
-    def label(self, value: str, project_id: Optional[str] = None) -> Optional[str]:
-        """Returns the label if exists for the given value."""
+    def label(self, value: str, context: PluginContext) -> Optional[str]:
+        """Returns the label if exists for the given value.
+
+        :param value: The value for which a label should be generated.
+        :param context: The context in which the label is requested.
+        """
         return None
 
     def autocompletion_enabled(self) -> bool:
@@ -140,9 +145,8 @@ class EnumParameterType(ParameterType[Enum]):
     def to_string(self, value: Enum) -> str:
         return value.name
 
-    def autocomplete(
-        self, query_terms: list[str], project_id: Optional[str] = None
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
 
@@ -150,7 +154,7 @@ class EnumParameterType(ParameterType[Enum]):
     def find_matches(
         lower_case_terms: list[str], values: Iterable[str]
     ) -> Iterable[Autocompletion]:
-        """Finds autocompletions in a list of values"""
+        """Finds auto completions in a list of values"""
         for value in values:
             if EnumParameterType.matches_search_term(lower_case_terms, value.lower()):
                 yield Autocompletion(value, value)

@@ -29,9 +29,6 @@ class TaskContext:
     def task_id(self) -> str:
         """The identifier of the task."""
 
-    def prefixes(self) -> dict[str, str]:
-        """The prefixes, which are defined on the project level."""
-
 
 @dataclass()
 class ExecutionReport:
@@ -68,11 +65,29 @@ class ReportContext:
         May be called repeatedly during operator execution."""
 
 
-class ExecutionContext:
-    """Combines context objects that are available during execution."""
+class PluginContext:
+    """Combines context objects that are available during plugin creation or update."""
 
     user: Optional[UserContext]
+    """The user that creates or updates the plugin. If the plugin is loaded from an
+    existing project, this might be the configured super user. If DataIntegration is
+    run outside of a Corporate Memory environment, no user is available.
+    Note that after creation, the plugin may be updated or executed by another user."""
+
+    project_id: str
+    """The project that contains / will contain this plugin."""
+
+
+class ExecutionContext:
+    """Combines context objects that are available during plugin execution."""
+
+    user: Optional[UserContext]
+    """The user that issued the plugin execution. If a scheduler initiated the
+    execution, this might be the configured super user. If DataIntegration is
+    run outside of a Corporate Memory environment, no user is available."""
 
     task: TaskContext
+    """Task metadata about the executed plugin."""
 
     report: ReportContext
+    """Allows to update the execution report."""

@@ -3,6 +3,7 @@ from typing import Optional, Set, List
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
+from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
 from cmem_plugin_base.dataintegration.utils import setup_cmempy_super_user_access
 
@@ -45,9 +46,8 @@ class GraphParameterType(StringParameterType):
                 "http://rdfs.org/ns/void#Dataset",
             }
 
-    def autocomplete(
-        self, query_terms: list[str], project_id: Optional[str] = None
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
         setup_cmempy_super_user_access()
         graphs = get_graphs_list()
         result = []
