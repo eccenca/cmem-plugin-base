@@ -7,7 +7,7 @@ from cmem.cmempy.workspace.projects.datasets.dataset import (
 from cmem.cmempy.workspace.projects.project import make_new_project, delete_project
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
-from ..utils import needs_cmem
+from ..utils import needs_cmem, TestPluginContext
 
 PROJECT_NAME = "dateset_test_project"
 DATASET_NAME = "testjson"
@@ -37,5 +37,8 @@ def setup(request):
 def test_dataset_parameter_type_completion(setup):
     parameter = DatasetParameterType(dataset_type="json")
     dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
-    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[])]
-    assert len(parameter.autocomplete(query_terms=["lkshfkdsjfhsd"])) == 0
+    context = TestPluginContext(PROJECT_NAME)
+    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                  context=context)]
+    assert len(parameter.autocomplete(query_terms=["lkshfkdsjfhsd"],
+                                      context=context)) == 0
