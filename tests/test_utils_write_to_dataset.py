@@ -13,7 +13,7 @@ from cmem.cmempy.workspace.projects.resources.resource import get_resource_respo
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
 from cmem_plugin_base.dataintegration.utils import write_to_dataset
-from .utils import needs_cmem
+from .utils import needs_cmem, TestPluginContext
 
 PROJECT_NAME = "dateset_test_project"
 DATASET_NAME = "sample_test"
@@ -44,7 +44,9 @@ def test_write_to_json_dataset(setup):
     sample_dataset = setup
     parameter = DatasetParameterType(dataset_type="json")
     dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
-    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[])]
+    context = TestPluginContext(PROJECT_NAME)
+    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                  context=context)]
 
     write_to_dataset(dataset_id, io.StringIO(json.dumps(sample_dataset)))
 
@@ -61,6 +63,7 @@ def test_write_to_not_valid_dataset():
         write_to_dataset(f"f{PROJECT_NAME}:INVALID_DATASET", io.StringIO("{}"))
 
 
+@needs_cmem
 def test_write_to_invalid_format_dataset_id():
     with pytest.raises(
         ValueError, match=r"INVALID_DATASET_ID_FORMAT is not a valid task ID."

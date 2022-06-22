@@ -1,23 +1,16 @@
 import unittest
 from enum import Enum
 
-from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import (
     EnumParameterType,
     Autocompletion,
     get_type,
 )
-
-
-class TestPluginContext(PluginContext):
-
-    def __init__(self):
-        self.user = None
-        self.project_id = "DummyProject"
+from tests.utils import TestPluginContext
 
 
 # dummy plugin context to be used in tests
-pluginContext = TestPluginContext()
+test_plugin_context = TestPluginContext()
 
 
 class TypesTest(unittest.TestCase):
@@ -73,19 +66,19 @@ class EnumTest(unittest.TestCase):
     def test_autocomplete(self):
         enum = EnumParameterType(EnumTest.Color)
         self.assertListEqual(
-            list(enum.autocomplete(["red"], pluginContext)),
+            list(enum.autocomplete(["red"], test_plugin_context)),
             [Autocompletion("RED", "RED")]
         )
         self.assertListEqual(
-            list(enum.autocomplete(["een"], pluginContext)),
+            list(enum.autocomplete(["een"], test_plugin_context)),
             [Autocompletion("GREEN", "GREEN")]
         )
         self.assertListEqual(
-            list(enum.autocomplete(["r"], pluginContext)),
+            list(enum.autocomplete(["r"], test_plugin_context)),
             [Autocompletion("RED", "RED"), Autocompletion("GREEN", "GREEN")],
         )
         self.assertListEqual(
-            list(enum.autocomplete(["e", "b"], pluginContext)),
+            list(enum.autocomplete(["e", "b"], test_plugin_context)),
             [Autocompletion("BLUE", "BLUE")]
         )
 
