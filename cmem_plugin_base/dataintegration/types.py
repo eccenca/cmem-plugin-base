@@ -44,7 +44,7 @@ class ParameterType(Generic[T]):
         """Retrieves the type that is supported by a given instance."""
         return self.__orig_bases__[0].__args__[0]
 
-    def from_string(self, value: str) -> T:
+    def from_string(self, value: str, context: PluginContext) -> T:
         """Parses strings into parameter values."""
 
     def to_string(self, value: T) -> str:
@@ -81,7 +81,7 @@ class StringParameterType(ParameterType[str]):
 
     name = "string"
 
-    def from_string(self, value: str) -> str:
+    def from_string(self, value: str, context: PluginContext) -> str:
         return value
 
 
@@ -90,7 +90,7 @@ class IntParameterType(ParameterType[int]):
 
     name = "Long"
 
-    def from_string(self, value: str) -> int:
+    def from_string(self, value: str, context: PluginContext) -> int:
         return int(value)
 
 
@@ -99,7 +99,7 @@ class FloatParameterType(ParameterType[float]):
 
     name = "double"
 
-    def from_string(self, value: str) -> float:
+    def from_string(self, value: str, context: PluginContext) -> float:
         return float(value)
 
 
@@ -108,7 +108,7 @@ class BoolParameterType(ParameterType[bool]):
 
     name = "boolean"
 
-    def from_string(self, value: str) -> bool:
+    def from_string(self, value: str, context: PluginContext) -> bool:
         lower = value.lower()
         if lower in ("true", "1"):
             return True
@@ -133,7 +133,7 @@ class EnumParameterType(ParameterType[Enum]):
         super().__init__()
         self.enum_type = enum_type
 
-    def from_string(self, value: str) -> Enum:
+    def from_string(self, value: str, context: PluginContext) -> Enum:
         values = self.enum_type.__members__
         if not value:
             raise ValueError("Empty value is not allowed.")

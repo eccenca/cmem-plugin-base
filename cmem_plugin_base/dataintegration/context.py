@@ -4,6 +4,13 @@ from dataclasses import dataclass, field
 from typing import Optional, Tuple
 
 
+class SystemContext:
+    """Passed into methods to request general system information."""
+
+    def di_version(self) -> str:
+        """The version of the running DataIntegration instance."""
+
+
 class UserContext:
     """Passed into methods that are triggered by a user interaction."""
 
@@ -19,9 +26,6 @@ class UserContext:
 
 class TaskContext:
     """Passed into objects that are part of a DataIntegration task/project."""
-
-    def di_version(self) -> str:
-        """The version of the running DataIntegration instance."""
 
     def project_id(self) -> str:
         """The identifier of the project."""
@@ -68,6 +72,9 @@ class ReportContext:
 class PluginContext:
     """Combines context objects that are available during plugin creation or update."""
 
+    system: SystemContext
+    """General system information."""
+
     user: Optional[UserContext]
     """The user that creates or updates the plugin. If the plugin is loaded from an
     existing project, this might be the configured super user. If DataIntegration is
@@ -80,6 +87,9 @@ class PluginContext:
 
 class ExecutionContext:
     """Combines context objects that are available during plugin execution."""
+
+    system: SystemContext
+    """General system information."""
 
     user: Optional[UserContext]
     """The user that issued the plugin execution. If a scheduler initiated the
