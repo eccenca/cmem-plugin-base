@@ -2,7 +2,7 @@
 import logging
 from typing import Sequence, Optional
 
-from cmem_plugin_base.dataintegration.context import ExecutionContext, PluginContext
+from cmem_plugin_base.dataintegration.context import ExecutionContext
 
 from .entity import Entities
 
@@ -51,13 +51,6 @@ class PluginBase:
 
 class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
-
-    def on_create(self, context: PluginContext) -> None:
-        """
-        Called directly after __init__.
-
-        :param context The context in which this plugin has been created.
-        """
 
     def execute(self, inputs: Sequence[Entities],
                 context: ExecutionContext) -> Optional[Entities]:

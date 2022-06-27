@@ -122,6 +122,18 @@ class BoolParameterType(ParameterType[bool]):
         return "false"
 
 
+class PluginContextParameterType(ParameterType[PluginContext]):
+    """Used to pass context information into plugins"""
+
+    name = "PluginContext"
+
+    def from_string(self, value: str, context: PluginContext) -> PluginContext:
+        return context
+
+    def to_string(self, value: PluginContext) -> str:
+        return ""
+
+
 class EnumParameterType(ParameterType[Enum]):
     """Enumeration type"""
 
@@ -171,6 +183,7 @@ basic_types: list[ParameterType] = [
     BoolParameterType(),
     IntParameterType(),
     FloatParameterType(),
+    PluginContextParameterType()
 ]
 
 
