@@ -4,11 +4,12 @@ import importlib.util
 import json
 import pkgutil
 import sys
+import traceback
 from subprocess import check_output  # nosec
 from types import ModuleType
-from typing import Sequence
 
-from cmem_plugin_base.dataintegration.description import PluginDescription, Plugin
+from cmem_plugin_base.dataintegration.description import PluginDescription, Plugin, \
+    PluginDiscoveryResult, PluginDiscoveryError
 
 
 def get_packages():
@@ -23,7 +24,7 @@ def get_packages():
 
 def discover_plugins_in_module(
     package_name: str = "cmem",
-) -> Sequence[PluginDescription]:
+) -> list[PluginDescription]:
     """Finds all plugins within a base package.
 
     :param package_name: The base package. Will recurse into all submodules
@@ -48,7 +49,7 @@ def discover_plugins_in_module(
     return Plugin.plugins
 
 
-def discover_plugins(package_name: str = "cmem_plugin"):
+def discover_plugins(package_name: str = "cmem_plugin") -> PluginDiscoveryResult:
     """Discover plugin descriptions in packages.
 
     This is the main discovery method which is executed by DataIntegration.
@@ -57,14 +58,24 @@ def discover_plugins(package_name: str = "cmem_plugin"):
 
     :param package_name: The package prefix.
     """
+    # pylint: disable=broad-except
+
     target_packages = []
-    plugin_descriptions = []
+    plugin_descriptions = PluginDiscoveryResult()
     # select prefixed packages
     for module in pkgutil.iter_modules():
         name = module.name
         if name.startswith(package_name) and name != "cmem_plugin_base":
             target_packages.append(name)
     for name in target_packages:
-        for plugin in discover_plugins_in_module(package_name=name):
-            plugin_descriptions.append(plugin)
+        try:
+            for plugin in discover_plugins_in_module(package_name=name):
+                plugin_descriptions.plugins.append(plugin)
+        except BaseException as ex:
+            error = PluginDiscoveryError(package_name=name,
+                                         error_message=str(ex),
+                                         error_type=type(ex).__name__,
+                                         stack_trace=traceback.format_exc())
+            plugin_descriptions.errors.append(error)
+
     return plugin_descriptions
