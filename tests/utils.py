@@ -15,8 +15,9 @@ needs_cmem = pytest.mark.skipif(
 class TestPluginContext(PluginContext):
     """dummy plugin context that can be used in tests"""
 
+    __test__ = False
+
     def __init__(self, project_id: str = "dummyProject",
                  user: Optional[UserContext] = None):
         self.project_id = project_id
         self.user = user
-
