@@ -58,7 +58,8 @@ class ExecutionReport:
     messages. """
 
     error: Optional[str] = None
-    """Error message in case a fatal error occurred."""
+    """Error message in case a fatal error occurred. If an error is set, the workflow 
+    execution will be stopped after the operator has been executed. """
 
 
 class ReportContext:
