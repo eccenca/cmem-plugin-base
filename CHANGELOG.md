@@ -8,6 +8,29 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+## Added
+
+- Added context classes to various functions (CMEM-4173).
+
+## Migration Notes
+
+Due to the added context classes, the signature of a number of functions has been changed.
+The following changes need to be made to implementation of these classes:
+
+### WorkflowPlugin
+
+- The execute function has a new parameter `context`:
+  - `def execute(self, inputs: Sequence[Entities], context: ExecutionContext)`
+
+### ParameterType
+
+- The `project_id` parameters of the label and the autocompletion functions have been replaced by the PluginContext:
+  - `def autocomplete(self, query_terms: list[str], context: PluginContext) -> list[Autocompletion]`
+  - `def label(self, value: str, context: PluginContext) -> Optional[str]`
+  - The project identifier can still be accessed via `context.project_id`
+- The `fromString` function has a new parameter `context`:
+  - `def from_string(self, value: str, context: PluginContext) -> T`
+
 ## [1.2.0] 2022-06-15
 
 ### Added
