@@ -4,7 +4,8 @@ from inspect import _empty
 from typing import Optional, List, Type, Any
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
-from cmem_plugin_base.dataintegration.types import ParameterType, get_param_type
+from cmem_plugin_base.dataintegration.types import ParameterType, get_param_type, \
+    PluginContextParameterType
 from cmem_plugin_base.dataintegration.utils import generate_id
 
 
@@ -21,6 +22,7 @@ class PluginParameter:
         Will be inferred from the plugin automatically.
     :param advanced: True, if this is an advanced parameter that should only be
         changed by experienced users
+    :param visible: If true, the parameter will be displayed to the user in the UI.
     """
 
     def __init__(
@@ -31,6 +33,7 @@ class PluginParameter:
         param_type: Optional[ParameterType] = None,
         default_value: Optional[Any] = None,
         advanced: bool = False,
+        visible: bool = True
     ) -> None:
         self.name = name
         self.label = label
@@ -38,6 +41,7 @@ class PluginParameter:
         self.param_type = param_type
         self.default_value = default_value
         self.advanced = advanced
+        self.visible = visible
 
 
 class PluginDescription:
@@ -71,7 +75,7 @@ class PluginDescription:
             self.plugin_type = "TransformPlugin"
         else:
             raise ValueError(
-                f"Class {plugin_class.__name__} does not implement a supported"
+                f"Class {plugin_class.__name__} does not implement a supported "
                 f"plugin base class (e.g., WorkflowPlugin)."
             )
 
@@ -196,6 +200,12 @@ class Plugin:
                 sig_param = sig.parameters[name]
                 if param.param_type is None:
                     param.param_type = get_param_type(sig_param)
+
+                # Special handling of PluginContext parameter
+                if isinstance(param.param_type, PluginContextParameterType):
+                    param.visible = False  # Should never be visible in the UI
+                    param.default_value = ""  # dummy value
+
                 if param.default_value is None and sig_param.default != _empty:
                     param.default_value = sig_param.default
                 params.append(param)
