@@ -1,5 +1,6 @@
 """Classes for describing plugins"""
 import inspect
+from dataclasses import dataclass, field
 from inspect import _empty
 from typing import Optional, List, Type, Any
 
@@ -99,6 +100,34 @@ class PluginDescription:
             self.parameters = []
         else:
             self.parameters = parameters
+
+
+@dataclass
+class PluginDiscoveryError:
+    """Generated if a plugin package could not be loaded."""
+
+    package_name: str
+    """The name of the package that failed to be loaded."""
+
+    error_message: str
+    """The error message"""
+
+    error_type: str
+    """The name of the raised exception"""
+
+    stack_trace: str
+    """The stack trace of the raised exception"""
+
+
+@dataclass
+class PluginDiscoveryResult:
+    """Result of running a plugin discovery"""
+
+    plugins: list[PluginDescription] = field(default_factory=list)
+    """The list of discovered plugins"""
+
+    errors: list[PluginDiscoveryError] = field(default_factory=list)
+    """Errors that occurred during discovering plugins."""
 
 
 class Categories:
