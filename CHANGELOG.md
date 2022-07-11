@@ -10,6 +10,7 @@ TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security se
 
 ## Added
 
+- Added ChoiceParameterType
 - Added context classes to various functions (CMEM-4173).
 
 ## Migration Notes
