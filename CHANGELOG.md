@@ -6,16 +6,18 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- ChoiceParameterType: to_string and from_string need to be the inverse of each other.
 
 ## [2.0.0] 2022-07-12
 
-## Added
+### Added
 
 - Added ChoiceParameterType
 - Added context classes to various functions (CMEM-4173).
 
-## Migration Notes
+### Migration Notes
 
 Due to the added context classes, the signature of a number of functions has been changed.
 The following changes need to be made to implementation of these classes:
