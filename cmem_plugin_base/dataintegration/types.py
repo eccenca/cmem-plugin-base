@@ -4,6 +4,8 @@ from enum import Enum
 from inspect import Parameter
 from typing import Optional, TypeVar, Generic, Type, Iterable
 
+from cmem_plugin_base.dataintegration.context import PluginContext
+
 
 @dataclass(frozen=True, eq=True)
 class Autocompletion:
@@ -42,7 +44,7 @@ class ParameterType(Generic[T]):
         """Retrieves the type that is supported by a given instance."""
         return self.__orig_bases__[0].__args__[0]
 
-    def from_string(self, value: str) -> T:
+    def from_string(self, value: str, context: PluginContext) -> T:
         """Parses strings into parameter values."""
 
     def to_string(self, value: T) -> str:
@@ -50,19 +52,22 @@ class ParameterType(Generic[T]):
         return str(value)
 
     # pylint: disable=unused-argument
-    def autocomplete(
-        self, query_terms: list[str], project_id: Optional[str] = None
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
-        :param project_id: The identifier of the project.
+        :param context: The context in which the autocompletion is requested.
         """
         return []
 
-    def label(self, value: str, project_id: Optional[str] = None) -> Optional[str]:
-        """Returns the label if exists for the given value."""
+    def label(self, value: str, context: PluginContext) -> Optional[str]:
+        """Returns the label if exists for the given value.
+
+        :param value: The value for which a label should be generated.
+        :param context: The context in which the label is requested.
+        """
         return None
 
     def autocompletion_enabled(self) -> bool:
@@ -76,7 +81,7 @@ class StringParameterType(ParameterType[str]):
 
     name = "string"
 
-    def from_string(self, value: str) -> str:
+    def from_string(self, value: str, context: PluginContext) -> str:
         return value
 
 
@@ -85,7 +90,7 @@ class IntParameterType(ParameterType[int]):
 
     name = "Long"
 
-    def from_string(self, value: str) -> int:
+    def from_string(self, value: str, context: PluginContext) -> int:
         return int(value)
 
 
@@ -94,7 +99,7 @@ class FloatParameterType(ParameterType[float]):
 
     name = "double"
 
-    def from_string(self, value: str) -> float:
+    def from_string(self, value: str, context: PluginContext) -> float:
         return float(value)
 
 
@@ -103,7 +108,7 @@ class BoolParameterType(ParameterType[bool]):
 
     name = "boolean"
 
-    def from_string(self, value: str) -> bool:
+    def from_string(self, value: str, context: PluginContext) -> bool:
         lower = value.lower()
         if lower in ("true", "1"):
             return True
@@ -117,6 +122,18 @@ class BoolParameterType(ParameterType[bool]):
         return "false"
 
 
+class PluginContextParameterType(ParameterType[PluginContext]):
+    """Used to pass context information into plugins"""
+
+    name = "PluginContext"
+
+    def from_string(self, value: str, context: PluginContext) -> PluginContext:
+        return context
+
+    def to_string(self, value: PluginContext) -> str:
+        return ""
+
+
 class EnumParameterType(ParameterType[Enum]):
     """Enumeration type"""
 
@@ -128,7 +145,7 @@ class EnumParameterType(ParameterType[Enum]):
         super().__init__()
         self.enum_type = enum_type
 
-    def from_string(self, value: str) -> Enum:
+    def from_string(self, value: str, context: PluginContext) -> Enum:
         values = self.enum_type.__members__
         if not value:
             raise ValueError("Empty value is not allowed.")
@@ -140,9 +157,8 @@ class EnumParameterType(ParameterType[Enum]):
     def to_string(self, value: Enum) -> str:
         return value.name
 
-    def autocomplete(
-        self, query_terms: list[str], project_id: Optional[str] = None
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
 
@@ -150,7 +166,7 @@ class EnumParameterType(ParameterType[Enum]):
     def find_matches(
         lower_case_terms: list[str], values: Iterable[str]
     ) -> Iterable[Autocompletion]:
-        """Finds autocompletions in a list of values"""
+        """Finds auto completions in a list of values"""
         for value in values:
             if EnumParameterType.matches_search_term(lower_case_terms, value.lower()):
                 yield Autocompletion(value, value)
@@ -167,6 +183,7 @@ basic_types: list[ParameterType] = [
     BoolParameterType(),
     IntParameterType(),
     FloatParameterType(),
+    PluginContextParameterType()
 ]
 
 
