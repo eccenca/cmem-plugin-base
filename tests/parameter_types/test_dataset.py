@@ -25,10 +25,7 @@ def setup(request):
         autoconfigure=False,
     )
 
-    def teardown():
-        delete_project(PROJECT_NAME)
-
-    request.addfinalizer(teardown)
+    request.addfinalizer(lambda: delete_project(PROJECT_NAME))
 
     return get_dataset(PROJECT_NAME, DATASET_NAME)
 
@@ -36,9 +33,8 @@ def setup(request):
 @needs_cmem
 def test_dataset_parameter_type_completion(setup):
     parameter = DatasetParameterType(dataset_type="json")
-    dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
     context = TestPluginContext(PROJECT_NAME)
-    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[],
-                                                                  context=context)]
+    assert DATASET_NAME in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                    context=context)]
     assert len(parameter.autocomplete(query_terms=["lkshfkdsjfhsd"],
                                       context=context)) == 0

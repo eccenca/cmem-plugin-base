@@ -31,10 +31,7 @@ def setup(request):
         autoconfigure=False,
     )
 
-    def teardown():
-        delete_project(PROJECT_NAME)
-
-    request.addfinalizer(teardown)
+    request.addfinalizer(lambda: delete_project(PROJECT_NAME))
 
     return get_dataset(PROJECT_NAME, DATASET_NAME)
 
@@ -45,8 +42,8 @@ def test_write_to_json_dataset(setup):
     parameter = DatasetParameterType(dataset_type="json")
     dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
     context = TestPluginContext(PROJECT_NAME)
-    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[],
-                                                                  context=context)]
+    assert DATASET_NAME in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                    context=context)]
 
     write_to_dataset(dataset_id, io.StringIO(json.dumps(sample_dataset)))
 
