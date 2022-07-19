@@ -72,12 +72,15 @@ def split_task_id(task_id: str) -> tuple:
     return project_part, task_part
 
 
-def write_to_dataset(dataset_id: str, file_resource=None):
+def write_to_dataset(dataset_id: str, file_resource=None,
+                     context: Optional[UserContext] = None):
     """Write to a dataset.
 
     Args:
         dataset_id (str): The combined task ID.
         file_resource (file stream): Already opened byte file stream
+        context (UserContext):
+            The user context to setup environment for accessing CMEM with cmempy.
 
     Returns:
         requests.Response object
@@ -86,7 +89,7 @@ def write_to_dataset(dataset_id: str, file_resource=None):
         ValueError: in case the task ID is not splittable
         ValueError: missing parameter
     """
-    setup_cmempy_super_user_access()
+    setup_cmempy_user_access(context=context)
     project_id, task_id = split_task_id(dataset_id)
 
     task_meta_data = get_task(project=project_id, task=task_id)
