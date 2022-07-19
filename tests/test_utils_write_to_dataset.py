@@ -31,10 +31,7 @@ def setup(request):
         autoconfigure=False,
     )
 
-    def teardown():
-        delete_project(PROJECT_NAME)
-
-    request.addfinalizer(teardown)
+    request.addfinalizer(lambda: delete_project(PROJECT_NAME))
 
     return get_dataset(PROJECT_NAME, DATASET_NAME)
 
@@ -45,10 +42,10 @@ def test_write_to_json_dataset(setup):
     parameter = DatasetParameterType(dataset_type="json")
     dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
     context = TestPluginContext(PROJECT_NAME)
-    assert dataset_id in [x.value for x in parameter.autocomplete(query_terms=[],
-                                                                  context=context)]
+    assert DATASET_NAME in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                    context=context)]
 
-    write_to_dataset(dataset_id, io.StringIO(json.dumps(sample_dataset)))
+    write_to_dataset(dataset_id, io.StringIO(json.dumps(sample_dataset)), TestPluginContext().user)
 
     with get_resource_response(PROJECT_NAME, RESOURCE_NAME) as response:
         assert sample_dataset == response.json()
@@ -60,7 +57,7 @@ def test_write_to_not_valid_dataset():
         requests.exceptions.HTTPError,
         match=r"404 Client Error: Not Found for url.*tasks/INVALID_DATASET.*",
     ):
-        write_to_dataset(f"f{PROJECT_NAME}:INVALID_DATASET", io.StringIO("{}"))
+        write_to_dataset(f"f{PROJECT_NAME}:INVALID_DATASET", io.StringIO("{}"), TestPluginContext().user)
 
 
 @needs_cmem
@@ -68,4 +65,4 @@ def test_write_to_invalid_format_dataset_id():
     with pytest.raises(
         ValueError, match=r"INVALID_DATASET_ID_FORMAT is not a valid task ID."
     ):
-        write_to_dataset("INVALID_DATASET_ID_FORMAT", io.StringIO("{}"))
+        write_to_dataset("INVALID_DATASET_ID_FORMAT", io.StringIO("{}"), TestPluginContext().user)
