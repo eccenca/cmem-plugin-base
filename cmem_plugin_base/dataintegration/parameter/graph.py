@@ -5,7 +5,7 @@ from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_super_user_access
+from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 
 
 class GraphParameterType(StringParameterType):
@@ -48,7 +48,7 @@ class GraphParameterType(StringParameterType):
 
     def autocomplete(self, query_terms: list[str],
                      context: PluginContext) -> list[Autocompletion]:
-        setup_cmempy_super_user_access()
+        setup_cmempy_user_access(context=context.user)
         graphs = get_graphs_list()
         result = []
         for _ in graphs:

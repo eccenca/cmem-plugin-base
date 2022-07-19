@@ -6,10 +6,7 @@ from cmem.cmempy.workspace.tasks import get_task
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
-from cmem_plugin_base.dataintegration.utils import (
-    setup_cmempy_super_user_access,
-    split_task_id,
-)
+from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 
 
 class DatasetParameterType(StringParameterType):
@@ -27,22 +24,21 @@ class DatasetParameterType(StringParameterType):
 
     def label(self, value: str, context: PluginContext) -> Optional[str]:
         """Returns the label for the given dataset."""
-        setup_cmempy_super_user_access()
-        project_part, task_part = split_task_id(value)
+        setup_cmempy_user_access(context.user)
         task_label = str(
-            get_task(project=project_part, task=task_part)["metadata"]["label"]
+            get_task(project=context.project_id, task=value)["metadata"]["label"]
         )
         return f"{task_label}"
 
     def autocomplete(self, query_terms: list[str],
                      context: PluginContext) -> list[Autocompletion]:
-        setup_cmempy_super_user_access()
+        setup_cmempy_user_access(context.user)
         datasets = list_items(item_type="dataset",
                               project=context.project_id)["results"]
 
         result = []
         for _ in datasets:
-            identifier = f"{_['projectId']}:{_['id']}"
+            identifier = _['id']
             title = _["label"]
             label = f"{title} ({identifier})"
             if self.dataset_type is not None and self.dataset_type != _["pluginId"]:
