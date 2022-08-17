@@ -17,7 +17,6 @@ readme = "README-public.md"
 keywords = [
     "eccenca Corporate Memory", "plugins", "DataIntegration"
 ]
-include = ["CHANGELOG.md"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
