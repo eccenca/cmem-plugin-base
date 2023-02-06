@@ -38,4 +38,5 @@ def test_dataset_parameter_type_completion(setup):
                                                                     depend_on_parameter_values=[],
                                                                     context=context)]
     assert len(parameter.autocomplete(query_terms=["lkshfkdsjfhsd"],
+                                      depend_on_parameter_values=[],
                                       context=context)) == 0
