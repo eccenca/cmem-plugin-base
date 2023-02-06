@@ -24,9 +24,9 @@ class ChoiceParameterType(StringParameterType):
         """Returns the label for the given choice value."""
         return self.choice_list[value]
 
-    def autocomplete(
-        self, query_terms: list[str], context: PluginContext
-    ) -> list[Autocompletion]:
+    def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[str],
+                     context: PluginContext) -> list[Autocompletion]:
 
         result = []
         for identifier in self.choice_list:

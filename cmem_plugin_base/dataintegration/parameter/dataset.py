@@ -31,6 +31,7 @@ class DatasetParameterType(StringParameterType):
         return f"{task_label}"
 
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[str],
                      context: PluginContext) -> list[Autocompletion]:
         setup_cmempy_user_access(context.user)
         datasets = list_items(item_type="dataset",

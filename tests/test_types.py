@@ -68,19 +68,19 @@ class EnumTest(unittest.TestCase):
     def test_autocomplete(self):
         enum = EnumParameterType(EnumTest.Color)
         self.assertListEqual(
-            list(enum.autocomplete(["red"], context)),
+            list(enum.autocomplete(["red"], [], context)),
             [Autocompletion("RED", "RED")]
         )
         self.assertListEqual(
-            list(enum.autocomplete(["een"], context)),
+            list(enum.autocomplete(["een"], [], context)),
             [Autocompletion("GREEN", "GREEN")]
         )
         self.assertListEqual(
-            list(enum.autocomplete(["r"], context)),
+            list(enum.autocomplete(["r"], [], context)),
             [Autocompletion("RED", "RED"), Autocompletion("GREEN", "GREEN")],
         )
         self.assertListEqual(
-            list(enum.autocomplete(["e", "b"], context)),
+            list(enum.autocomplete(["e", "b"], [], context)),
             [Autocompletion("BLUE", "BLUE")]
         )
 

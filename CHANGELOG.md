@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
 
+### Migration Notes
+
+The signature of the autocomplete function has been changed.
+All autocomplete implementations need to be updated to the following signature:
+`def autocomplete(self, query_terms: list[str], depend_on_parameter_values: list[str], context: PluginContext) -> list[Autocompletion]`
+
 ## [2.1.0] 2022-07-19
 
 ### Changed

@@ -38,6 +38,12 @@ class ParameterType(Generic[T]):
     """Signals that the auto-completed values have labels that must be
     displayed to the user."""
 
+    autocompletion_depends_on_parameters: list[str] = []
+    """The other plugin parameters the auto-completion depends on.
+    Without those values given no auto-completion is possible.
+    The values of all parameters specified here will be provided
+    to the autocomplete function."""
+
     # flake8: noqa
     # pylint: disable=no-member
     def get_type(self):
@@ -53,11 +59,14 @@ class ParameterType(Generic[T]):
 
     # pylint: disable=unused-argument
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[str],
                      context: PluginContext) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
+        :param depend_on_parameter_values The values of the parameters specified
+        by 'autocompletion_depends_on_parameters'.
         :param context: The context in which the autocompletion is requested.
         """
         return []
@@ -158,6 +167,7 @@ class EnumParameterType(ParameterType[Enum]):
         return value.name
 
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[str],
                      context: PluginContext) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
