@@ -6,12 +6,42 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- Autocompleted parameter types may declare dependent parameters.
+    For instance, a parameter 'city' may declare that its completed values depend on another parameter 'country':
+    ```
+    class CityParameterType(StringParameterType):
+        autocompletion_depends_on_parameters: list[str] = ["country"]
+
+        def autocomplete(self,
+                         query_terms: list[str],
+                         depend_on_parameter_values: list[str],
+                         context: PluginContext) -> list[Autocompletion]:
+           # 'depend_on_parameter_values' contains the value of the country parameter
+           return ...
+    ```
+
+- Password plugin parameter type.
+    Passwords will be encrypted in the backend and not shown to users:
+    ```
+    @Plugin(label="My Plugin")
+    class MyTestPlugin(TransformPlugin):
+
+    def __init__(self, password: Password):
+        self.password = password
+  
+    # The decrypted password can be accessed using:
+    self.password.decrypt()
+    ```
+  
+- Custom parameter types can be registered. See implementation of PasswordParameterType for an example.
 
 ### Migration Notes
 
 The signature of the autocomplete function has been changed.
 All autocomplete implementations need to be updated to the following signature:
+
 `def autocomplete(self, query_terms: list[str], depend_on_parameter_values: list[str], context: PluginContext) -> list[Autocompletion]`
 
 ## [2.1.0] 2022-07-19
