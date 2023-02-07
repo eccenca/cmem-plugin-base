@@ -39,7 +39,10 @@ class PasswordParameterType(ParameterType[Password]):
     def to_string(self, value: Password) -> str:
         """Converts parameter values into their string representation.
            Encrypts the password so that it won't be stored verbatim."""
-        return str(value)
+        if value.encrypted_value == "":
+            return ""
+        else:
+            return self.preamble + value.encrypted_value
 
 
 register_type(PasswordParameterType())
