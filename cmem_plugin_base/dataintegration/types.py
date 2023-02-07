@@ -188,13 +188,19 @@ class EnumParameterType(ParameterType[Enum]):
         return all(search_term in lower_case_text for search_term in lower_case_terms)
 
 
-basic_types: list[ParameterType] = [
+registered_types: set[ParameterType] = {
     StringParameterType(),
     BoolParameterType(),
     IntParameterType(),
     FloatParameterType(),
     PluginContextParameterType()
-]
+}
+
+
+def register_type(param_type: ParameterType) -> None:
+    """Registers a new custom parameter type.
+    All registered types will be detected in plugin constructors."""
+    registered_types.add(param_type)
 
 
 def get_type(param_type: Type) -> ParameterType:
@@ -203,10 +209,10 @@ def get_type(param_type: Type) -> ParameterType:
     if issubclass(param_type, Enum):
         return EnumParameterType(param_type)
     found_type = next(
-        (t for t in basic_types if issubclass(param_type, t.get_type())), None
+        (t for t in registered_types if issubclass(param_type, t.get_type())), None
     )
     if found_type is None:
-        mapped = map(lambda t: str(t.get_type().__name__), basic_types)
+        mapped = map(lambda t: str(t.get_type().__name__), registered_types)
         raise ValueError(
             f"Parameter has an unsupported type {param_type.__name__}. "
             "Supported types are: Enum, "
