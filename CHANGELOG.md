@@ -44,6 +44,8 @@ All autocomplete implementations need to be updated to the following signature:
 
 `def autocomplete(self, query_terms: list[str], depend_on_parameter_values: list[str], context: PluginContext) -> list[Autocompletion]`
 
+Parameters using the old signature will continue to work for one release, but a warning will be printed in the log.
+
 ## [2.1.0] 2022-07-19
 
 ### Changed
