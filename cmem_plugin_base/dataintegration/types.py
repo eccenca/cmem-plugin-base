@@ -188,19 +188,22 @@ class EnumParameterType(ParameterType[Enum]):
         return all(search_term in lower_case_text for search_term in lower_case_terms)
 
 
-registered_types: set[ParameterType] = {
+registered_types: list[ParameterType] = [
     StringParameterType(),
     BoolParameterType(),
     IntParameterType(),
     FloatParameterType(),
     PluginContextParameterType()
-}
+]
 
 
 def register_type(param_type: ParameterType) -> None:
-    """Registers a new custom parameter type.
-    All registered types will be detected in plugin constructors."""
-    registered_types.add(param_type)
+    """Registers a new custom parameter type. All registered types will be detected
+    in plugin constructors. If a type with an existing name is registered, it will
+    overwrite the previous one."""
+    global registered_types
+    registered_types = [t for t in registered_types if t.name != param_type.name]
+    registered_types.append(param_type)
 
 
 def get_type(param_type: Type) -> ParameterType:
