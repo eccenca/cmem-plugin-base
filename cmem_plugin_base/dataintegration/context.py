@@ -18,6 +18,7 @@ class SystemContext:
         """Decrypts a value using the secret key, which is configured
         in 'plugin.parameters.password.crypt.key'"""
 
+
 class UserContext:
     """Passed into methods that are triggered by a user interaction."""
 

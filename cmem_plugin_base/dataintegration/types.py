@@ -188,46 +188,51 @@ class EnumParameterType(ParameterType[Enum]):
         return all(search_term in lower_case_text for search_term in lower_case_terms)
 
 
-registered_types: list[ParameterType] = [
-    StringParameterType(),
-    BoolParameterType(),
-    IntParameterType(),
-    FloatParameterType(),
-    PluginContextParameterType()
-]
+class ParameterTypes:
+    """Manages the available parameter types."""
 
+    registered_types: list[ParameterType] = [
+        StringParameterType(),
+        BoolParameterType(),
+        IntParameterType(),
+        FloatParameterType(),
+        PluginContextParameterType()
+    ]
 
-def register_type(param_type: ParameterType) -> None:
-    """Registers a new custom parameter type. All registered types will be detected
-    in plugin constructors. If a type with an existing name is registered, it will
-    overwrite the previous one."""
-    global registered_types
-    registered_types = [t for t in registered_types if t.name != param_type.name]
-    registered_types.append(param_type)
+    @staticmethod
+    def register_type(param_type: ParameterType) -> None:
+        """Registers a new custom parameter type. All registered types will be detected
+        in plugin constructors. If a type with an existing name is registered, it will
+        overwrite the previous one."""
+        ParameterTypes.registered_types = [t for t in ParameterTypes.registered_types
+                                           if t.name != param_type.name]
+        ParameterTypes.registered_types.append(param_type)
 
+    @staticmethod
+    def get_type(param_type: Type) -> ParameterType:
+        """Retrieves the ParameterType instance for a given type."""
 
-def get_type(param_type: Type) -> ParameterType:
-    """Retrieves the ParameterType instance for a given type."""
-
-    if issubclass(param_type, Enum):
-        return EnumParameterType(param_type)
-    found_type = next(
-        (t for t in registered_types if issubclass(param_type, t.get_type())), None
-    )
-    if found_type is None:
-        mapped = map(lambda t: str(t.get_type().__name__), registered_types)
-        raise ValueError(
-            f"Parameter has an unsupported type {param_type.__name__}. "
-            "Supported types are: Enum, "
-            f"{', '.join(list(mapped))}."
+        if issubclass(param_type, Enum):
+            return EnumParameterType(param_type)
+        found_type = next(
+            (t for t in ParameterTypes.registered_types
+             if issubclass(param_type, t.get_type())), None
         )
-    return found_type
+        if found_type is None:
+            mapped = map(lambda t: str(t.get_type().__name__),
+                         ParameterTypes.registered_types)
+            raise ValueError(
+                f"Parameter has an unsupported type {param_type.__name__}. "
+                "Supported types are: Enum, "
+                f"{', '.join(list(mapped))}."
+            )
+        return found_type
 
+    @staticmethod
+    def get_param_type(param: Parameter) -> ParameterType:
+        """Retrieves the ParameterType instance for a given parameter."""
 
-def get_param_type(param: Parameter) -> ParameterType:
-    """Retrieves the ParameterType instance for a given parameter."""
-
-    if param.annotation == Parameter.empty:
-        # If there is no type annotation, DI should send the parameter as a string
-        return StringParameterType()
-    return get_type(param.annotation)
+        if param.annotation == Parameter.empty:
+            # If there is no type annotation, DI should send the parameter as a string
+            return StringParameterType()
+        return ParameterTypes.get_type(param.annotation)

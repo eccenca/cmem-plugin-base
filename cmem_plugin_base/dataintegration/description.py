@@ -5,7 +5,7 @@ from inspect import _empty
 from typing import Optional, List, Type, Any
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
-from cmem_plugin_base.dataintegration.types import ParameterType, get_param_type, \
+from cmem_plugin_base.dataintegration.types import ParameterType, ParameterTypes, \
     PluginContextParameterType
 from cmem_plugin_base.dataintegration.utils import generate_id
 
@@ -228,7 +228,7 @@ class Plugin:
                     param = PluginParameter(name)
                 sig_param = sig.parameters[name]
                 if param.param_type is None:
-                    param.param_type = get_param_type(sig_param)
+                    param.param_type = ParameterTypes.get_param_type(sig_param)
 
                 # Special handling of PluginContext parameter
                 if isinstance(param.param_type, PluginContextParameterType):

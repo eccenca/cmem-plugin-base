@@ -1,7 +1,7 @@
 """DI Password String Parameter Type."""
 
 from cmem_plugin_base.dataintegration.context import PluginContext, SystemContext
-from cmem_plugin_base.dataintegration.types import ParameterType, register_type
+from cmem_plugin_base.dataintegration.types import ParameterType, ParameterTypes
 
 
 class Password:
@@ -41,8 +41,7 @@ class PasswordParameterType(ParameterType[Password]):
            Encrypts the password so that it won't be stored verbatim."""
         if value.encrypted_value == "":
             return ""
-        else:
-            return self.preamble + value.encrypted_value
+        return self.preamble + value.encrypted_value
 
 
-register_type(PasswordParameterType())
+ParameterTypes.register_type(PasswordParameterType())
