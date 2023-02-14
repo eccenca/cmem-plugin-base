@@ -230,6 +230,12 @@ class Plugin:
                 if param.param_type is None:
                     param.param_type = ParameterTypes.get_param_type(sig_param)
 
+                # Make sure that the parameter type is valid
+                if not isinstance(param.param_type, ParameterType):
+                    raise ValueError(f"Parameter '{sig_param.name}' has an invalid "
+                                     f"type: '{param.param_type}' is not an instance "
+                                     "of 'ParameterType'.")
+
                 # Special handling of PluginContext parameter
                 if isinstance(param.param_type, PluginContextParameterType):
                     param.visible = False  # Should never be visible in the UI
