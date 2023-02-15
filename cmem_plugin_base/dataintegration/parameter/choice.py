@@ -1,6 +1,6 @@
 """DI Choice String Parameter Type."""
 import collections
-from typing import Optional
+from typing import Optional, Any
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
@@ -20,12 +20,13 @@ class ChoiceParameterType(StringParameterType):
     ):
         self.choice_list = choice_list
 
-    def label(self, value: str, context: PluginContext) -> Optional[str]:
+    def label(self, value: str, depend_on_parameter_values: list[Any],
+              context: PluginContext) -> Optional[str]:
         """Returns the label for the given choice value."""
         return self.choice_list[value]
 
     def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[str],
+                     depend_on_parameter_values: list[Any],
                      context: PluginContext) -> list[Autocompletion]:
 
         result = []

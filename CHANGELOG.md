@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
         def autocomplete(self,
                          query_terms: list[str],
-                         depend_on_parameter_values: list[str],
+                         depend_on_parameter_values: list[Any],
                          context: PluginContext) -> list[Autocompletion]:
            # 'depend_on_parameter_values' contains the value of the country parameter
            return ...
@@ -42,9 +42,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 The signature of the autocomplete function has been changed.
 All autocomplete implementations need to be updated to the following signature:
 
-`def autocomplete(self, query_terms: list[str], depend_on_parameter_values: list[str], context: PluginContext) -> list[Autocompletion]`
+`def autocomplete(self, query_terms: list[str], depend_on_parameter_values: list[Any], context: PluginContext) -> list[Autocompletion]`
 
 Parameters using the old signature will continue to work for one release, but a warning will be printed in the log.
+
+The same applies to the label function that has been updated to the following signature:
+
+`def label(self, value: str, depend_on_parameter_values: list[Any], context: PluginContext) -> Optional[str]`
 
 ## [2.1.0] 2022-07-19
 

@@ -1,5 +1,5 @@
 """Knowledge Graph Parameter Type."""
-from typing import Optional, Set, List
+from typing import Optional, Set, List, Any
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
@@ -47,7 +47,7 @@ class GraphParameterType(StringParameterType):
             }
 
     def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[str],
+                     depend_on_parameter_values: list[Any],
                      context: PluginContext) -> list[Autocompletion]:
         setup_cmempy_user_access(context=context.user)
         graphs = get_graphs_list()

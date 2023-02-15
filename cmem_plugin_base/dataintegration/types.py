@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
-from typing import Optional, TypeVar, Generic, Type, Iterable
+from typing import Optional, TypeVar, Generic, Type, Iterable, Any
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 
@@ -59,7 +59,7 @@ class ParameterType(Generic[T]):
 
     # pylint: disable=unused-argument
     def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[str],
+                     depend_on_parameter_values: list[Any],
                      context: PluginContext) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
@@ -71,10 +71,14 @@ class ParameterType(Generic[T]):
         """
         return []
 
-    def label(self, value: str, context: PluginContext) -> Optional[str]:
+    def label(self, value: str,
+              depend_on_parameter_values: list[Any],
+              context: PluginContext) -> Optional[str]:
         """Returns the label if exists for the given value.
 
         :param value: The value for which a label should be generated.
+        :param depend_on_parameter_values The values of the parameters specified
+        by 'autocompletion_depends_on_parameters'.
         :param context: The context in which the label is requested.
         """
         return None
