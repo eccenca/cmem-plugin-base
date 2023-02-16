@@ -65,8 +65,9 @@ class ParameterType(Generic[T]):
         Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
-        :param depend_on_parameter_values The values of the parameters specified
-        by 'autocompletion_depends_on_parameters'.
+        :param depend_on_parameter_values The values of the parameters specified by
+        'autocompletion_depends_on_parameters'. The type of each parameter value is the
+        same as in the init method, e.g., a password parameter will be typed Password.
         :param context: The context in which the autocompletion is requested.
         """
         return []
