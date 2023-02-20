@@ -245,21 +245,6 @@ requests-toolbelt = "*"
 six = "*"
 
 [[package]]
-name = "cmem-plugin-examples"
-version = "0.1.0"
-description = "Example plugins for eccenca Corporate Memory."
-category = "dev"
-optional = false
-python-versions = ">=3.9,<4.0"
-files = [
-    {file = "cmem_plugin_examples-0.1.0-py3-none-any.whl", hash = "sha256:f5a9864e2502f18d817559bebc556c7ea7049c51de0e860a5f8acef480abede0"},
-    {file = "cmem_plugin_examples-0.1.0.tar.gz", hash = "sha256:e6c09c9243f3b85d38c0f7e7f5a9dc9928d6bcb42128b014c6fbb32d1d759ab0"},
-]
-
-[package.dependencies]
-cmem-plugin-base = ">=2.1.0,<3.0.0"
-
-[[package]]
 name = "colorama"
 version = "0.4.6"
 description = "Cross-platform colored terminal text."
@@ -1325,4 +1310,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "3740d84caf08ac9c047a0ec51a3f302109e6dd0021ac01e40ea1657d0e78923f"
+content-hash = "5c28f66f2ab0c8baed3f2a130db5de1d1b46d53db37d7a018b1905ea51600911"
