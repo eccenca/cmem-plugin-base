@@ -37,7 +37,7 @@ mypy = "^0.942"
 coverage = "^6.3.2"
 defusedxml = "^0.7.1"
 # added in order to have something to discover (>=0.0.0 <1.0.0)
-cmem-plugin-examples = "*"
+# cmem-plugin-examples = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
