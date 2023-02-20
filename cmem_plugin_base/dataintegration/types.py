@@ -169,7 +169,7 @@ class EnumParameterType(ParameterType[Enum]):
         return values[value]
 
     def to_string(self, value: Enum) -> str:
-        return value.name
+        return str(value.name)
 
     def autocomplete(self, query_terms: list[str],
                      depend_on_parameter_values: list[str],
