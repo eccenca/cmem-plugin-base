@@ -43,6 +43,7 @@ def test_write_to_json_dataset(setup):
     dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
     context = TestPluginContext(PROJECT_NAME)
     assert DATASET_NAME in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                    depend_on_parameter_values=[],
                                                                     context=context)]
 
     write_to_dataset(dataset_id, io.StringIO(json.dumps(sample_dataset)), TestPluginContext().user)

@@ -2,7 +2,7 @@
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
-from typing import Optional, TypeVar, Generic, Type, Iterable
+from typing import Optional, TypeVar, Generic, Type, Iterable, Any
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 
@@ -38,6 +38,12 @@ class ParameterType(Generic[T]):
     """Signals that the auto-completed values have labels that must be
     displayed to the user."""
 
+    autocompletion_depends_on_parameters: list[str] = []
+    """The other plugin parameters the auto-completion depends on.
+    Without those values given no auto-completion is possible.
+    The values of all parameters specified here will be provided
+    to the autocomplete function."""
+
     # flake8: noqa
     # pylint: disable=no-member
     def get_type(self):
@@ -53,19 +59,27 @@ class ParameterType(Generic[T]):
 
     # pylint: disable=unused-argument
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[Any],
                      context: PluginContext) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
+        :param depend_on_parameter_values The values of the parameters specified by
+        'autocompletion_depends_on_parameters'. The type of each parameter value is the
+        same as in the init method, e.g., a password parameter will be typed Password.
         :param context: The context in which the autocompletion is requested.
         """
         return []
 
-    def label(self, value: str, context: PluginContext) -> Optional[str]:
+    def label(self, value: str,
+              depend_on_parameter_values: list[Any],
+              context: PluginContext) -> Optional[str]:
         """Returns the label if exists for the given value.
 
         :param value: The value for which a label should be generated.
+        :param depend_on_parameter_values The values of the parameters specified
+        by 'autocompletion_depends_on_parameters'.
         :param context: The context in which the label is requested.
         """
         return None
@@ -158,6 +172,7 @@ class EnumParameterType(ParameterType[Enum]):
         return value.name
 
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[str],
                      context: PluginContext) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
@@ -178,37 +193,51 @@ class EnumParameterType(ParameterType[Enum]):
         return all(search_term in lower_case_text for search_term in lower_case_terms)
 
 
-basic_types: list[ParameterType] = [
-    StringParameterType(),
-    BoolParameterType(),
-    IntParameterType(),
-    FloatParameterType(),
-    PluginContextParameterType()
-]
+class ParameterTypes:
+    """Manages the available parameter types."""
 
+    registered_types: list[ParameterType] = [
+        StringParameterType(),
+        BoolParameterType(),
+        IntParameterType(),
+        FloatParameterType(),
+        PluginContextParameterType()
+    ]
 
-def get_type(param_type: Type) -> ParameterType:
-    """Retrieves the ParameterType instance for a given type."""
+    @staticmethod
+    def register_type(param_type: ParameterType) -> None:
+        """Registers a new custom parameter type. All registered types will be detected
+        in plugin constructors. If a type with an existing name is registered, it will
+        overwrite the previous one."""
+        ParameterTypes.registered_types = [t for t in ParameterTypes.registered_types
+                                           if t.name != param_type.name]
+        ParameterTypes.registered_types.append(param_type)
 
-    if issubclass(param_type, Enum):
-        return EnumParameterType(param_type)
-    found_type = next(
-        (t for t in basic_types if issubclass(param_type, t.get_type())), None
-    )
-    if found_type is None:
-        mapped = map(lambda t: str(t.get_type().__name__), basic_types)
-        raise ValueError(
-            f"Parameter has an unsupported type {param_type.__name__}. "
-            "Supported types are: Enum, "
-            f"{', '.join(list(mapped))}."
+    @staticmethod
+    def get_type(param_type: Type) -> ParameterType:
+        """Retrieves the ParameterType instance for a given type."""
+
+        if issubclass(param_type, Enum):
+            return EnumParameterType(param_type)
+        found_type = next(
+            (t for t in ParameterTypes.registered_types
+             if issubclass(param_type, t.get_type())), None
         )
-    return found_type
+        if found_type is None:
+            mapped = map(lambda t: str(t.get_type().__name__),
+                         ParameterTypes.registered_types)
+            raise ValueError(
+                f"Parameter has an unsupported type {param_type.__name__}. "
+                "Supported types are: Enum, "
+                f"{', '.join(list(mapped))}."
+            )
+        return found_type
 
+    @staticmethod
+    def get_param_type(param: Parameter) -> ParameterType:
+        """Retrieves the ParameterType instance for a given parameter."""
 
-def get_param_type(param: Parameter) -> ParameterType:
-    """Retrieves the ParameterType instance for a given parameter."""
-
-    if param.annotation == Parameter.empty:
-        # If there is no type annotation, DI should send the parameter as a string
-        return StringParameterType()
-    return get_type(param.annotation)
+        if param.annotation == Parameter.empty:
+            # If there is no type annotation, DI should send the parameter as a string
+            return StringParameterType()
+        return ParameterTypes.get_type(param.annotation)

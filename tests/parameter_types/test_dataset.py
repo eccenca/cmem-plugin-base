@@ -35,6 +35,8 @@ def test_dataset_parameter_type_completion(setup):
     parameter = DatasetParameterType(dataset_type="json")
     context = TestPluginContext(PROJECT_NAME)
     assert DATASET_NAME in [x.value for x in parameter.autocomplete(query_terms=[],
+                                                                    depend_on_parameter_values=[],
                                                                     context=context)]
     assert len(parameter.autocomplete(query_terms=["lkshfkdsjfhsd"],
+                                      depend_on_parameter_values=[],
                                       context=context)) == 0

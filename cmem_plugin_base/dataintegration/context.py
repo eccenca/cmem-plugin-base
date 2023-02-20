@@ -10,6 +10,14 @@ class SystemContext:
     def di_version(self) -> str:
         """The version of the running DataIntegration instance."""
 
+    def encrypt(self, value: str) -> str:
+        """Encrypts a value using the secret key, which is configured
+        in 'plugin.parameters.password.crypt.key'"""
+
+    def decrypt(self, value: str) -> str:
+        """Decrypts a value using the secret key, which is configured
+        in 'plugin.parameters.password.crypt.key'"""
+
 
 class UserContext:
     """Passed into methods that are triggered by a user interaction."""

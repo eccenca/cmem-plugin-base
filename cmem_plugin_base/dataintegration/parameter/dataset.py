@@ -1,5 +1,5 @@
 """DI Dataset Parameter Type."""
-from typing import Optional
+from typing import Optional, Any
 
 from cmem.cmempy.workspace.search import list_items
 from cmem.cmempy.workspace.tasks import get_task
@@ -22,7 +22,9 @@ class DatasetParameterType(StringParameterType):
         """Dataset parameter type."""
         self.dataset_type = dataset_type
 
-    def label(self, value: str, context: PluginContext) -> Optional[str]:
+    def label(self, value: str,
+              depend_on_parameter_values: list[Any],
+              context: PluginContext) -> Optional[str]:
         """Returns the label for the given dataset."""
         setup_cmempy_user_access(context.user)
         task_label = str(
@@ -31,6 +33,7 @@ class DatasetParameterType(StringParameterType):
         return f"{task_label}"
 
     def autocomplete(self, query_terms: list[str],
+                     depend_on_parameter_values: list[Any],
                      context: PluginContext) -> list[Autocompletion]:
         setup_cmempy_user_access(context.user)
         datasets = list_items(item_type="dataset",
