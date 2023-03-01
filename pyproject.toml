@@ -24,27 +24,29 @@ cmem-cmempy = ">=22.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
-pytest-cov = "^3.0.0"
-black = "^22.1.0"
+pytest-cov = "^4.0.0"
+pytest-memray = "^1.3.0"
+black = "^23.1.0"
 bandit = "^1.7.2"
-pylint = "^2.12.2"
 pylint-junit = "^0.3.2"
 safety = "^1.10.3"
 genbadge = "^1.0.6"
 flake8-formatter-junit-xml = "^0.0.6"
 typed-ast = "^1.5.2"
-mypy = "^0.942"
-coverage = "^6.3.2"
+mypy = "^1.0.0"
+coverage = "^7.1.0"
 defusedxml = "^0.7.1"
 # added in order to have something to discover (>=0.0.0 <1.0.0)
 # cmem-plugin-examples = "*"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry_dynamic_versioning.backend"
 
-[tool.isort]
-profile = "black"
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+dirty = true
 
 [tool.pylint.MASTER]
 load-plugins="pylint_junit"
