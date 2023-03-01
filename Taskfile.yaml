@@ -22,6 +22,15 @@ tasks:
     cmds:
       - task --list
 
+  deploy:
+    desc: Install plugin package in Corporate Memory
+    deps:
+      - clean
+      - build
+    cmds:
+      - cmemc admin workspace python install dist/*.tar.gz
+      - cmemc admin workspace python list-plugins
+
   clean:
     desc: Removes dist dir, *.pyc and version files.
     cmds:
