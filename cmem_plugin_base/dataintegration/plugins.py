@@ -1,5 +1,6 @@
 """All Plugins base classes."""
 import logging
+from abc import abstractmethod
 from typing import Sequence, Optional
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext
@@ -52,6 +53,7 @@ class PluginBase:
 class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
 
+    @abstractmethod
     def execute(self, inputs: Sequence[Entities],
                 context: ExecutionContext) -> Optional[Entities]:
         """Executes the workflow plugin on a given collection of entities.
@@ -71,6 +73,7 @@ class TransformPlugin(PluginBase):
     Base class of all transform operator plugins.
     """
 
+    @abstractmethod
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
         """
         Transforms a collection of values.

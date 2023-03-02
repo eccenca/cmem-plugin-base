@@ -18,7 +18,7 @@ class DatasetParameterType(StringParameterType):
 
     dataset_type: Optional[str] = None
 
-    def __init__(self, dataset_type: str = None):
+    def __init__(self, dataset_type: Optional[str] = None):
         """Dataset parameter type."""
         self.dataset_type = dataset_type
 

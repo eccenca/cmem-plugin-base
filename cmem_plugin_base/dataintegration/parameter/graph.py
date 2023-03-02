@@ -22,7 +22,7 @@ class GraphParameterType(StringParameterType):
         show_di_graphs: bool = False,
         show_system_graphs: bool = False,
         show_graphs_without_class: bool = False,
-        classes: List[str] = None,
+        classes: Optional[List[str]] = None,
         allow_only_autocompleted_values: bool = True,
     ):
         """

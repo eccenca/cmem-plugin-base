@@ -1,5 +1,9 @@
-"""Contains classes to pass context information into plugins."""
-
+"""Contains classes to pass context information into plugins.
+The classes in this file are only for documentation purposes.
+The actual classes will be injected by DataIntegration and
+ will follow the signatures of the classes below.
+"""
+from abc import abstractmethod
 from dataclasses import dataclass, field
 from typing import Optional, Tuple
 
@@ -7,13 +11,16 @@ from typing import Optional, Tuple
 class SystemContext:
     """Passed into methods to request general system information."""
 
+    @abstractmethod
     def di_version(self) -> str:
         """The version of the running DataIntegration instance."""
 
+    @abstractmethod
     def encrypt(self, value: str) -> str:
         """Encrypts a value using the secret key, which is configured
         in 'plugin.parameters.password.crypt.key'"""
 
+    @abstractmethod
     def decrypt(self, value: str) -> str:
         """Decrypts a value using the secret key, which is configured
         in 'plugin.parameters.password.crypt.key'"""
@@ -22,12 +29,15 @@ class SystemContext:
 class UserContext:
     """Passed into methods that are triggered by a user interaction."""
 
+    @abstractmethod
     def user_uri(self) -> str:
         """The URI of the user."""
 
+    @abstractmethod
     def user_label(self) -> str:
         """The name of the user."""
 
+    @abstractmethod
     def token(self) -> str:
         """Retrieves the OAuth token for the user."""
 
@@ -35,9 +45,11 @@ class UserContext:
 class TaskContext:
     """Passed into objects that are part of a DataIntegration task/project."""
 
+    @abstractmethod
     def project_id(self) -> str:
         """The identifier of the project."""
 
+    @abstractmethod
     def task_id(self) -> str:
         """The identifier of the task."""
 

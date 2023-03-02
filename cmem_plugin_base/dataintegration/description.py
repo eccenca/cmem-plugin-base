@@ -62,11 +62,11 @@ class PluginDescription:
         self,
         plugin_class,
         label: str,
-        plugin_id: str = None,
+        plugin_id: Optional[str] = None,
         description: str = "",
         documentation: str = "",
-        categories: List[str] = None,
-        parameters: List[PluginParameter] = None,
+        categories: Optional[List[str]] = None,
+        parameters: Optional[List[PluginParameter]] = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -182,8 +182,8 @@ class Plugin:
         plugin_id: Optional[str] = None,
         description: str = "",
         documentation: str = "",
-        categories: List[str] = None,
-        parameters: List[PluginParameter] = None,
+        categories: Optional[List[str]] = None,
+        parameters: Optional[List[PluginParameter]] = None,
     ):
         self.label = label
         self.description = description
