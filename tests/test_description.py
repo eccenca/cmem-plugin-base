@@ -7,7 +7,8 @@ from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 from cmem_plugin_base.dataintegration.description import Plugin
 from cmem_plugin_base.dataintegration.types import (
     StringParameterType,
-    FloatParameterType, BoolParameterType,
+    FloatParameterType,
+    BoolParameterType,
 )
 
 
@@ -22,7 +23,7 @@ class PluginTest(unittest.TestCase):
                 no_default_param: str,
                 string_param: str = "value",
                 float_param: float = 1.5,
-                bool_param: bool = True
+                bool_param: bool = True,
             ) -> None:
                 self.no_default_param = no_default_param
                 self.string_param = string_param

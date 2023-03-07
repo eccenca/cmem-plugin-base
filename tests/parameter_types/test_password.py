@@ -3,8 +3,10 @@ import unittest
 from typing import Sequence
 
 from cmem_plugin_base.dataintegration.description import Plugin
-from cmem_plugin_base.dataintegration.parameter.password import Password, \
-    PasswordParameterType
+from cmem_plugin_base.dataintegration.parameter.password import (
+    Password,
+    PasswordParameterType,
+)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 

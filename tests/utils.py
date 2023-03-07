@@ -30,8 +30,10 @@ class TestPluginContext(PluginContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "dummyProject",
-                 user: Optional[UserContext] = TestUserContext()):
+    def __init__(
+        self,
+        project_id: str = "dummyProject",
+        user: Optional[UserContext] = TestUserContext(),
+    ):
         self.project_id = project_id
         self.user = user
-
