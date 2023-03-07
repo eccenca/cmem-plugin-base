@@ -1,10 +1,10 @@
 """discovery test module"""
-from unittest import skip
+import pytest
 
 from cmem_plugin_base.dataintegration.discovery import discover_plugins
 
 
-@skip
+@pytest.mark.skip(reason='cmem-plugin-examples is not added')
 def test_discover_plugins():
     """test plugin discovery."""
     plugins = discover_plugins("cmem_plugin").plugins
