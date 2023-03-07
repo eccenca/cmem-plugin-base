@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "cmem-plugin-base"
-version = "3.0.0"
+version = "0.0.0"
 license = "Apache-2.0"
 description = "Base classes for developing eccenca Coporate Memory plugins."
 authors = ["eccenca <cmempy-developer@eccenca.com>"]
@@ -39,6 +39,9 @@ defusedxml = "^0.7.1"
 wheel = "^0.38.3"
 # added in order to have something to discover (>=0.0.0 <1.0.0)
 # cmem-plugin-examples = "*"
+
+[tool.poetry.group.dev.dependencies]
+types-requests = "^2.28.11.15"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
