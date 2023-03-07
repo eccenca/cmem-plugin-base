@@ -21,8 +21,21 @@ class TestUserContext(UserContext):
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
-        self.token = lambda: access_token
+        self._user_uri = "uri:test-user-context"
+        self._user_label = "test-user"
+        self._token = get_token()["access_token"]
+
+    def user_uri(self) -> str:
+        """The URI of the user."""
+        return str(self._user_uri)
+
+    def user_label(self) -> str:
+        """The name of the user."""
+        return str(self._user_label)
+
+    def token(self) -> str:
+        """Retrieves the OAuth token for the user."""
+        return str(self._token)
 
 
 class TestPluginContext(PluginContext):
@@ -35,5 +48,5 @@ class TestPluginContext(PluginContext):
         project_id: str = "dummyProject",
         user: Optional[UserContext] = TestUserContext(),
     ):
-        self.project_id = project_id
         self.user = user
+        self.project_id = project_id
