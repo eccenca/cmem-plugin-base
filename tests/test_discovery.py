@@ -4,7 +4,7 @@ import pytest
 from cmem_plugin_base.dataintegration.discovery import discover_plugins
 
 
-@pytest.mark.skip(reason='cmem-plugin-examples is not added')
+@pytest.mark.skip(reason="cmem-plugin-examples is not added")
 def test_discover_plugins():
     """test plugin discovery."""
     plugins = discover_plugins("cmem_plugin").plugins

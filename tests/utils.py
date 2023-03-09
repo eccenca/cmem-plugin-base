@@ -50,3 +50,13 @@ class TestPluginContext(PluginContext):
     ):
         self.user = user
         self.project_id = project_id
+
+
+def get_autocomplete_values(parameter, query_terms, context):
+    """get autocomplete values"""
+    return [
+        x.value
+        for x in parameter.autocomplete(
+            query_terms=query_terms, depend_on_parameter_values=[], context=context
+        )
+    ]

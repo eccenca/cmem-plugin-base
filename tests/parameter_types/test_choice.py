@@ -8,6 +8,7 @@ CHOICE_LIST = collections.OrderedDict({"ONE": "First Option", "TWO": "Second Opt
 
 
 def test_dataset_parameter_type_completion():
+    """test dataset parameter type completion"""
     parameter = ChoiceParameterType(choice_list=CHOICE_LIST)
     context = TestPluginContext()
     assert "ONE" in {

@@ -1,3 +1,4 @@
+"""test description"""
 import unittest
 
 from typing import Sequence
@@ -13,11 +14,16 @@ from cmem_plugin_base.dataintegration.types import (
 
 
 class PluginTest(unittest.TestCase):
+    """Plugin Test Class"""
+
     def test__basic_parameters(self):
+        """test basic parameters"""
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
         class MyTransformPlugin(TransformPlugin):
+            """My Transform Plugin Class"""
+
             def __init__(
                 self,
                 no_default_param: str,
@@ -33,6 +39,7 @@ class PluginTest(unittest.TestCase):
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
                 return []
 
+        _ = MyTransformPlugin
         plugin = Plugin.plugins[0]
 
         no_default_par = plugin.parameters[0]

@@ -1,3 +1,4 @@
+"""test types"""
 import unittest
 from enum import Enum
 
@@ -14,10 +15,13 @@ context = TestPluginContext()
 
 
 class TypesTest(unittest.TestCase):
+    """Test Types"""
+
     class MissingType:
-        pass
+        """Test Missing Type"""
 
     def test_missing_type(self):
+        """test missing type"""
         self.assertRaisesRegex(
             ValueError,
             "unsupported type",
@@ -26,13 +30,17 @@ class TypesTest(unittest.TestCase):
 
 
 class BasicTypesTest(unittest.TestCase):
+    """Test Basic Types"""
+
     def test_detection(self):
+        """test detection"""
         self.assertEqual(ParameterTypes.get_type(str).name, "string")
         self.assertEqual(ParameterTypes.get_type(int).name, "Long")
         self.assertEqual(ParameterTypes.get_type(float).name, "double")
         self.assertEqual(ParameterTypes.get_type(bool).name, "boolean")
 
     def test_conversion(self):
+        """test conversion"""
         int_type = ParameterTypes.get_type(int)
         float_type = ParameterTypes.get_type(float)
         bool_type = ParameterTypes.get_type(bool)
@@ -45,20 +53,27 @@ class BasicTypesTest(unittest.TestCase):
 
 
 class EnumTest(unittest.TestCase):
+    """Test Enum Parameter"""
+
     class Color(Enum):
+        """Test Enum based class Color"""
+
         RED = 1
         GREEN = 2
         BLUE = 3
 
     def test_detection(self):
+        """test detection"""
         self.assertEqual(ParameterTypes.get_type(EnumTest.Color).name, "enumeration")
 
     def test_conversion(self):
+        """test conversion"""
         enum = EnumParameterType(EnumTest.Color)
         self.assertEqual(enum.to_string(enum.from_string("RED", context)), "RED")
         self.assertEqual(enum.to_string(enum.from_string("GREEN", context)), "GREEN")
 
     def test_invalid_values(self):
+        """test invalid values"""
         enum = EnumParameterType(EnumTest.Color)
         self.assertRaisesRegex(
             ValueError,
@@ -70,6 +85,7 @@ class EnumTest(unittest.TestCase):
         )
 
     def test_autocomplete(self):
+        """test autocomplete"""
         enum = EnumParameterType(EnumTest.Color)
         self.assertListEqual(
             list(enum.autocomplete(["red"], [], context)),
