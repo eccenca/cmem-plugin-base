@@ -44,7 +44,7 @@ jobs:
         run: |
           task check
           
-      - name: file locations
+      - name: list file locations
         run: ls -R
 
       - name: Publish Test Report in Action
