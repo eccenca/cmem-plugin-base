@@ -54,8 +54,9 @@ class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
 
     @abstractmethod
-    def execute(self, inputs: Sequence[Entities],
-                context: ExecutionContext) -> Optional[Entities]:
+    def execute(
+        self, inputs: Sequence[Entities], context: ExecutionContext
+    ) -> Optional[Entities]:
         """Executes the workflow plugin on a given collection of entities.
 
         :param inputs: Contains a separate collection of entities for each

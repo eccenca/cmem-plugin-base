@@ -60,9 +60,12 @@ class ParameterType(Generic[T]):
         return str(value)
 
     # pylint: disable=unused-argument
-    def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[Any],
-                     context: PluginContext) -> list[Autocompletion]:
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
         """Autocompletion request.
         Returns all results that match ALL provided query terms.
 
@@ -74,9 +77,9 @@ class ParameterType(Generic[T]):
         """
         return []
 
-    def label(self, value: str,
-              depend_on_parameter_values: list[Any],
-              context: PluginContext) -> Optional[str]:
+    def label(
+        self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
+    ) -> Optional[str]:
         """Returns the label if exists for the given value.
 
         :param value: The value for which a label should be generated.
@@ -173,9 +176,12 @@ class EnumParameterType(ParameterType[Enum]):
     def to_string(self, value: Enum) -> str:
         return str(value.name)
 
-    def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[str],
-                     context: PluginContext) -> list[Autocompletion]:
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[str],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
         values = self.enum_type.__members__.keys()
         return list(self.find_matches(query_terms, values))
 
@@ -203,7 +209,7 @@ class ParameterTypes:
         BoolParameterType(),
         IntParameterType(),
         FloatParameterType(),
-        PluginContextParameterType()
+        PluginContextParameterType(),
     ]
 
     @staticmethod
@@ -211,8 +217,9 @@ class ParameterTypes:
         """Registers a new custom parameter type. All registered types will be detected
         in plugin constructors. If a type with an existing name is registered, it will
         overwrite the previous one."""
-        ParameterTypes.registered_types = [t for t in ParameterTypes.registered_types
-                                           if t.name != param_type.name]
+        ParameterTypes.registered_types = [
+            t for t in ParameterTypes.registered_types if t.name != param_type.name
+        ]
         ParameterTypes.registered_types.append(param_type)
 
     @staticmethod
@@ -222,12 +229,17 @@ class ParameterTypes:
         if issubclass(param_type, Enum):
             return EnumParameterType(param_type)
         found_type = next(
-            (t for t in ParameterTypes.registered_types
-             if issubclass(param_type, t.get_type())), None
+            (
+                t
+                for t in ParameterTypes.registered_types
+                if issubclass(param_type, t.get_type())
+            ),
+            None,
         )
         if found_type is None:
-            mapped = map(lambda t: str(t.get_type().__name__),
-                         ParameterTypes.registered_types)
+            mapped = map(
+                lambda t: str(t.get_type().__name__), ParameterTypes.registered_types
+            )
             raise ValueError(
                 f"Parameter has an unsupported type {param_type.__name__}. "
                 "Supported types are: Enum, "

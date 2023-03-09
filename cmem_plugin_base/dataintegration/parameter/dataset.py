@@ -22,9 +22,9 @@ class DatasetParameterType(StringParameterType):
         """Dataset parameter type."""
         self.dataset_type = dataset_type
 
-    def label(self, value: str,
-              depend_on_parameter_values: list[Any],
-              context: PluginContext) -> Optional[str]:
+    def label(
+        self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
+    ) -> Optional[str]:
         """Returns the label for the given dataset."""
         setup_cmempy_user_access(context.user)
         task_label = str(
@@ -32,16 +32,20 @@ class DatasetParameterType(StringParameterType):
         )
         return f"{task_label}"
 
-    def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[Any],
-                     context: PluginContext) -> list[Autocompletion]:
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
         setup_cmempy_user_access(context.user)
-        datasets = list_items(item_type="dataset",
-                              project=context.project_id)["results"]
+        datasets = list_items(item_type="dataset", project=context.project_id)[
+            "results"
+        ]
 
         result = []
         for _ in datasets:
-            identifier = _['id']
+            identifier = _["id"]
             title = _["label"]
             label = f"{title} ({identifier})"
             if self.dataset_type is not None and self.dataset_type != _["pluginId"]:

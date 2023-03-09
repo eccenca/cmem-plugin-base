@@ -5,8 +5,11 @@ from inspect import _empty
 from typing import Optional, List, Type, Any
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
-from cmem_plugin_base.dataintegration.types import ParameterType, ParameterTypes, \
-    PluginContextParameterType
+from cmem_plugin_base.dataintegration.types import (
+    ParameterType,
+    ParameterTypes,
+    PluginContextParameterType,
+)
 from cmem_plugin_base.dataintegration.utils import generate_id
 
 
@@ -34,7 +37,7 @@ class PluginParameter:
         param_type: Optional[ParameterType] = None,
         default_value: Optional[Any] = None,
         advanced: bool = False,
-        visible: bool = True
+        visible: bool = True,
     ) -> None:
         self.name = name
         self.label = label
@@ -232,9 +235,11 @@ class Plugin:
 
                 # Make sure that the parameter type is valid
                 if not isinstance(param.param_type, ParameterType):
-                    raise ValueError(f"Parameter '{sig_param.name}' has an invalid "
-                                     f"type: '{param.param_type}' is not an instance "
-                                     "of 'ParameterType'.")
+                    raise ValueError(
+                        f"Parameter '{sig_param.name}' has an invalid "
+                        f"type: '{param.param_type}' is not an instance "
+                        "of 'ParameterType'."
+                    )
 
                 # Special handling of PluginContext parameter
                 if isinstance(param.param_type, PluginContextParameterType):

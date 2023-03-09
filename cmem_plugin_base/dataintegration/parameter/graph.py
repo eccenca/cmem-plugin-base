@@ -46,9 +46,12 @@ class GraphParameterType(StringParameterType):
                 "http://rdfs.org/ns/void#Dataset",
             }
 
-    def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[Any],
-                     context: PluginContext) -> list[Autocompletion]:
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
         setup_cmempy_user_access(context=context.user)
         graphs = get_graphs_list()
         result = []
