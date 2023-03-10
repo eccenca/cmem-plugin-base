@@ -21,7 +21,7 @@ class TestUserContext(UserContext):
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
+        access_token: str = get_token()["access_token"]  # type: ignore
         self.token = lambda: access_token
 
 
