@@ -1,5 +1,4 @@
 """Parameter types."""
-from abc import abstractmethod
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
@@ -51,7 +50,6 @@ class ParameterType(Generic[T]):
         """Retrieves the type that is supported by a given instance."""
         return self.__orig_bases__[0].__args__[0]
 
-    @abstractmethod
     def from_string(self, value: str, context: PluginContext) -> T:
         """Parses strings into parameter values."""
 

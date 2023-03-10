@@ -76,6 +76,14 @@ max-attributes = "9"
 warn_return_any = true
 ignore_missing_imports = true
 
+[[tool.mypy.overrides]]
+module = [
+    "cmem_plugin_base.dataintegration.context",
+    "cmem_plugin_base.dataintegration.plugins",
+    "cmem_plugin_base.dataintegration.types"
+]
+disable_error_code = "empty-body"
+
 [tool.pytest.ini_options]
 addopts = ""
 
