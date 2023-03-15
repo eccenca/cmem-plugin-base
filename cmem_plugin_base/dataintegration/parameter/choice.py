@@ -15,20 +15,21 @@ class ChoiceParameterType(StringParameterType):
 
     choice_list: collections.OrderedDict[str, str]
 
-    def __init__(
-        self, choice_list: collections.OrderedDict[str, str]
-    ):
+    def __init__(self, choice_list: collections.OrderedDict[str, str]):
         self.choice_list = choice_list
 
-    def label(self, value: str, depend_on_parameter_values: list[Any],
-              context: PluginContext) -> Optional[str]:
+    def label(
+        self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
+    ) -> Optional[str]:
         """Returns the label for the given choice value."""
         return self.choice_list[value]
 
-    def autocomplete(self, query_terms: list[str],
-                     depend_on_parameter_values: list[Any],
-                     context: PluginContext) -> list[Autocompletion]:
-
+    def autocomplete(
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
+    ) -> list[Autocompletion]:
         result = []
         for identifier in self.choice_list:
             label = self.choice_list[identifier]

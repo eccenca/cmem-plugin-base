@@ -1,5 +1,8 @@
-"""Contains classes to pass context information into plugins."""
-
+"""Contains classes to pass context information into plugins.
+The classes in this file are only for documentation purposes.
+The actual classes will be injected by DataIntegration and
+ will follow the signatures of the classes below.
+"""
 from dataclasses import dataclass, field
 from typing import Optional, Tuple
 

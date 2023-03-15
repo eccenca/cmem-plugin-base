@@ -21,7 +21,7 @@ class TestUserContext(UserContext):
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
+        access_token: str = get_token()["access_token"]  # type: ignore
         self.token = lambda: access_token
 
 
@@ -30,8 +30,20 @@ class TestPluginContext(PluginContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "dummyProject",
-                 user: Optional[UserContext] = TestUserContext()):
+    def __init__(
+        self,
+        project_id: str = "dummyProject",
+        user: Optional[UserContext] = TestUserContext(),
+    ):
         self.project_id = project_id
         self.user = user
 
+
+def get_autocomplete_values(parameter, query_terms, context):
+    """get autocomplete values"""
+    return [
+        x.value
+        for x in parameter.autocomplete(
+            query_terms=query_terms, depend_on_parameter_values=[], context=context
+        )
+    ]

@@ -17,8 +17,7 @@ def generate_id(name: str) -> str:
 
 
 def setup_cmempy_user_access(context: Optional[UserContext]):
-    """Setup environment for accessing CMEM with cmempy.
-    """
+    """Setup environment for accessing CMEM with cmempy."""
     if context is None:
         raise ValueError("No UserContext given.")
     if context.token() is None:
@@ -72,8 +71,9 @@ def split_task_id(task_id: str) -> tuple:
     return project_part, task_part
 
 
-def write_to_dataset(dataset_id: str, file_resource=None,
-                     context: Optional[UserContext] = None):
+def write_to_dataset(
+    dataset_id: str, file_resource=None, context: Optional[UserContext] = None
+):
     """Write to a dataset.
 
     Args:

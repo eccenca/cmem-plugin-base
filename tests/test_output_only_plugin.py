@@ -31,14 +31,14 @@ class OutputOnlyPlugin(WorkflowPlugin):
     def __init__(self, param1: str) -> None:
         self.param1 = param1
 
-    def execute(self, inputs=()) -> Entities:
+    def execute(self, inputs=(), context=()) -> Entities:
         entity1 = Entity(uri="urn:my:1", values=(["value1"], ["value2"]))
         entity2 = Entity(uri="urn:my:2", values=(["value3"], ["value4"]))
         schema = EntitySchema(
             type_uri="urn:my-entity",
             paths=(EntityPath(path="urn:name"), EntityPath(path="urn:desc")),
         )
-        return Entities(entities=[entity1, entity2], schema=schema)
+        return Entities(entities=iter([entity1, entity2]), schema=schema)
 
 
 def test_output_only_plugin():

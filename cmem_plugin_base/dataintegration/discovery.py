@@ -8,8 +8,12 @@ import traceback
 from subprocess import check_output  # nosec
 from types import ModuleType
 
-from cmem_plugin_base.dataintegration.description import PluginDescription, Plugin, \
-    PluginDiscoveryResult, PluginDiscoveryError
+from cmem_plugin_base.dataintegration.description import (
+    PluginDescription,
+    Plugin,
+    PluginDiscoveryResult,
+    PluginDiscoveryError,
+)
 
 
 def get_packages():
@@ -72,10 +76,12 @@ def discover_plugins(package_name: str = "cmem_plugin") -> PluginDiscoveryResult
             for plugin in discover_plugins_in_module(package_name=name):
                 plugin_descriptions.plugins.append(plugin)
         except BaseException as ex:
-            error = PluginDiscoveryError(package_name=name,
-                                         error_message=str(ex),
-                                         error_type=type(ex).__name__,
-                                         stack_trace=traceback.format_exc())
+            error = PluginDiscoveryError(
+                package_name=name,
+                error_message=str(ex),
+                error_type=type(ex).__name__,
+                stack_trace=traceback.format_exc(),
+            )
             plugin_descriptions.errors.append(error)
 
     return plugin_descriptions
