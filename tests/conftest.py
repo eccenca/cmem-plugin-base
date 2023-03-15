@@ -12,8 +12,8 @@ DATASET_NAME = "sample_test"
 RESOURCE_NAME = "sample_test.json"
 
 
-@pytest.fixture(name="setup_json_dataset", scope="module")
-def _setup_json_dataset(request):
+@pytest.fixture(name="json_dataset", scope="module")
+def _json_dataset():
     """setup"""
     make_new_project(PROJECT_NAME)
     make_new_dataset(
@@ -23,7 +23,5 @@ def _setup_json_dataset(request):
         parameters={"file": RESOURCE_NAME},
         autoconfigure=False,
     )
-
-    request.addfinalizer(lambda: delete_project(PROJECT_NAME))
-
-    return get_dataset(PROJECT_NAME, DATASET_NAME)
+    yield get_dataset(PROJECT_NAME, DATASET_NAME)
+    delete_project(PROJECT_NAME)

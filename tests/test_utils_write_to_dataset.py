@@ -10,26 +10,25 @@ from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterT
 from cmem_plugin_base.dataintegration.utils import write_to_dataset
 from tests.utils import needs_cmem, TestPluginContext, get_autocomplete_values
 
-PROJECT_NAME = "dateset_test_project"
-DATASET_NAME = "sample_test"
-RESOURCE_NAME = "sample_test.json"
-
 
 @needs_cmem
-def test_write_to_json_dataset(setup_json_dataset):
+def test_write_to_json_dataset(json_dataset):
     """test write to json dataset"""
-    sample_dataset = setup_json_dataset
+    project_name = json_dataset['project']
+    dataset_name = json_dataset['id']
+    resource_name = json_dataset["data"]["parameters"]["file"]
+
     parameter = DatasetParameterType(dataset_type="json")
-    dataset_id = f"{PROJECT_NAME}:{DATASET_NAME}"
-    context = TestPluginContext(PROJECT_NAME)
-    assert DATASET_NAME in get_autocomplete_values(parameter, [], context)
+    dataset_id = f"{project_name}:{dataset_name}"
+    context = TestPluginContext(project_name)
+    assert dataset_name in get_autocomplete_values(parameter, [], context)
 
     write_to_dataset(
-        dataset_id, io.StringIO(json.dumps(sample_dataset)), TestPluginContext().user
+        dataset_id, io.StringIO(json.dumps(json_dataset)), TestPluginContext().user
     )
 
-    with get_resource_response(PROJECT_NAME, RESOURCE_NAME) as response:
-        assert sample_dataset == response.json()
+    with get_resource_response(project_name, resource_name) as response:
+        assert json_dataset == response.json()
 
 
 @needs_cmem
@@ -40,7 +39,7 @@ def test_write_to_not_valid_dataset():
         match=r"404 Client Error: Not Found for url.*tasks/INVALID_DATASET.*",
     ):
         write_to_dataset(
-            f"f{PROJECT_NAME}:INVALID_DATASET",
+            "INVALID_PROJECT:INVALID_DATASET",
             io.StringIO("{}"),
             TestPluginContext().user,
         )
