@@ -23,7 +23,9 @@ def get_packages():
      - name - package name
      - version - package version
     """
-    return json.loads(check_output(["pip", "list", "--format", "json"], shell=False))
+    return json.loads(
+        check_output(["pip", "list", "--format", "json"], shell=False)  # nosec
+    )
 
 
 def discover_plugins_in_module(
