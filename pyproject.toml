@@ -20,7 +20,7 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.9"
-cmem-cmempy = ">=22.1"
+cmem-cmempy = ">=23.1"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.0"
