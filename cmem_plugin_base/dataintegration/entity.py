@@ -6,10 +6,13 @@ class EntityPath:
     """A path in a schema.
 
     :param path: The path string using the Silk path language.
+    :param is_uri: If true, values for this path must only contain URIs that point to
+    a sub entity.
     """
 
-    def __init__(self, path: str) -> None:
+    def __init__(self, path: str, is_uri: bool = False) -> None:
         self.path = path
+        self.is_uri = is_uri
 
 
 class EntitySchema:
