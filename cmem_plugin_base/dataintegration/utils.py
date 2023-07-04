@@ -3,8 +3,7 @@ import os
 import re
 from typing import Optional
 
-from cmem.cmempy.workspace.projects.resources.resource import create_resource
-from cmem.cmempy.workspace.tasks import get_task
+from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
 
 from cmem_plugin_base.dataintegration.context import UserContext
 
@@ -92,12 +91,8 @@ def write_to_dataset(
     setup_cmempy_user_access(context=context)
     project_id, task_id = split_task_id(dataset_id)
 
-    task_meta_data = get_task(project=project_id, task=task_id)
-    resource_name = str(task_meta_data["data"]["parameters"]["file"]["value"])
-
-    return create_resource(
-        project_name=project_id,
-        resource_name=resource_name,
+    return post_resource(
+        project_id=project_id,
+        dataset_id=task_id,
         file_resource=file_resource,
-        replace=True,
     )
