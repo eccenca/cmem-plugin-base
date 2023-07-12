@@ -4,11 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [4.1.0] 2023-07-12
 
 ### Changed
 
 - use `post_resource` api in `write_to_dataset` function to update dataset file resource
+- use cmempy 23.2
+
 
 ## [4.0.0] 2023-07-03
 
