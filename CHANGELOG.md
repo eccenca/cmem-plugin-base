@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Changed
+
+- use `post_resource` api in `write_to_dataset` function to update dataset file resource
+
 ## [4.0.0] 2023-07-03
 
 ### Changed

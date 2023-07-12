@@ -20,7 +20,7 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-cmem-cmempy = "==23.1"
+cmem-cmempy = "==23.1.2rc2"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
