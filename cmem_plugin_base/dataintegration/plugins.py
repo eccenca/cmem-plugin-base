@@ -4,6 +4,7 @@ from typing import Sequence, Optional
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext
 from .entity import Entities
+from .ports import InputPorts, Port
 
 
 class PluginLogger:
@@ -50,6 +51,13 @@ class PluginBase:
 
 class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
+
+    inputPorts: InputPorts
+    """Specifies the input ports that this operator allows."""
+
+    outputPort: Optional[Port]
+    """Specifies the output port (if any) of this operator.
+    Should be `None`, if this operator does not return any output."""
 
     def execute(
         self, inputs: Sequence[Entities], context: ExecutionContext
