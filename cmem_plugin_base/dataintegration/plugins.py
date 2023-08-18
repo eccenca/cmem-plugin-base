@@ -52,10 +52,10 @@ class PluginBase:
 class WorkflowPlugin(PluginBase):
     """Base class of all workflow operator plugins."""
 
-    inputPorts: InputPorts
+    input_ports: InputPorts
     """Specifies the input ports that this operator allows."""
 
-    outputPort: Optional[Port]
+    output_port: Optional[Port]
     """Specifies the output port (if any) of this operator.
     Should be `None`, if this operator does not return any output."""
 
