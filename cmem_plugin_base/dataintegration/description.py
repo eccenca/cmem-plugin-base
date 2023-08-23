@@ -63,7 +63,7 @@ class PluginDescription:
 
     # pylint: disable=too-many-instance-attributes
 
-    def __init__(
+    def __init__(  # pylint: disable=too-many-arguments
         self,
         plugin_class,
         label: str,
