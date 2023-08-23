@@ -108,6 +108,7 @@ class PluginDescription:
             self.parameters = parameters
         self.plugin_icon = plugin_icon
 
+
 @dataclass
 class PluginDiscoveryError:
     """Generated if a plugin package could not be loaded."""
