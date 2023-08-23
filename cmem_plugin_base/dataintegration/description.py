@@ -57,6 +57,8 @@ class PluginDescription:
     :param documentation: Documentation for this plugin in Markdown.
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
+    :param plugin_icon: Optional custom plugin icon as data URL string,
+                        e.g. "data:image/svg+xml;base64,<BASE_64_ENCODED_SVG>"
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -70,6 +72,7 @@ class PluginDescription:
         documentation: str = "",
         categories: Optional[List[str]] = None,
         parameters: Optional[List[PluginParameter]] = None,
+        plugin_icon: Optional[str] = None
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -103,7 +106,7 @@ class PluginDescription:
             self.parameters = []
         else:
             self.parameters = parameters
-
+        self.plugin_icon = plugin_icon
 
 @dataclass
 class PluginDiscoveryError:
@@ -175,6 +178,8 @@ class Plugin:
         documentation rendering component will add a heading anyway.
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
+    :param plugin_icon: Optional custom plugin icon as data URL string,
+                        e.g. "data:image/svg+xml;base64,<BASE_64_ENCODED_SVG>"
     """
 
     plugins: list[PluginDescription] = []
@@ -187,11 +192,13 @@ class Plugin:
         documentation: str = "",
         categories: Optional[List[str]] = None,
         parameters: Optional[List[PluginParameter]] = None,
+        plugin_icon: Optional[str] = None
     ):
         self.label = label
         self.description = description
         self.documentation = documentation
         self.plugin_id = plugin_id
+        self.plugin_icon = plugin_icon
         if categories is None:
             self.categories = []
         else:
@@ -210,6 +217,7 @@ class Plugin:
             documentation=self.documentation,
             categories=self.categories,
             parameters=self.retrieve_parameters(func),
+            plugin_icon=self.plugin_icon
         )
         Plugin.plugins.append(plugin_desc)
         return func

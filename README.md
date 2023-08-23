@@ -1,6 +1,6 @@
 # cmem_plugin_base
 
-Base classes for developing eccenca Coporate Memory plugins.
+Base classes for developing eccenca Corporate Memory plugins.
 
 ## Usage
 
