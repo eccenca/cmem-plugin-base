@@ -1,7 +1,10 @@
 """Classes for describing plugins"""
 import inspect
+from base64 import b64encode
 from dataclasses import dataclass, field
 from inspect import _empty
+from mimetypes import guess_type
+from pkgutil import get_data
 from typing import Optional, List, Type, Any
 
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
@@ -259,3 +262,50 @@ class Plugin:
                     param.default_value = sig_param.default
                 params.append(param)
         return params
+
+
+class Icon:
+    """An Icon.
+
+    :param file_name: The name of the icon file, e.g. 'icon.svg', should be in the
+        form of a relative filename, using '/' as the path separator. The parent
+        directory name '..' is not allowed, and nor is a rooted name
+        (starting with a '/').
+    :param package: (Optional) The name of the package, e.g.
+        'cmem-plugin-my.workspace', should be in standard module format. For a local
+        file from the same module, you can use package=__package__
+    """
+
+    def __init__(
+        self,
+        file_name: str,
+        package: str
+    ) -> None:
+        self.file_name = file_name
+
+        self.package = package
+
+        try:
+            self.data = get_data(self.package, file_name)
+        except FileNotFoundError as error:
+            raise FileNotFoundError(
+                f"No icon file '{self.file_name}' in package {self.package} found."
+            ) from error
+        if self.data is None:
+            raise FileNotFoundError(
+                f"No icon file '{self.file_name}' in package {self.package} found."
+            )
+
+        self.mime_type = guess_type(self.file_name)[0]
+        if self.mime_type is None:
+            raise ValueError(
+                f"Could not guess the mime type of the file '{self.file_name}'."
+            )
+        if not self.mime_type.startswith("image/"):
+            raise ValueError(
+                f"Guessed mime type '{self.mime_type}' does not start with 'image/'."
+            )
+
+    def __str__(self):
+        data_base64 = b64encode(self.data).decode()
+        return f"""data:{self.mime_type};base64,{data_base64}"""
