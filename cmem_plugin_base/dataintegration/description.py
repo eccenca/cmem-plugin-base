@@ -16,6 +16,53 @@ from cmem_plugin_base.dataintegration.types import (
 from cmem_plugin_base.dataintegration.utils import generate_id
 
 
+class Icon:
+    """An Icon.
+
+    :param file_name: The name of the icon file, e.g. 'icon.svg', should be in the
+        form of a relative filename, using '/' as the path separator. The parent
+        directory name '..' is not allowed, and nor is a rooted name
+        (starting with a '/').
+    :param package: (Optional) The name of the package, e.g.
+        'cmem-plugin-my.workspace', should be in standard module format. For a local
+        file from the same module, you can use package=__package__.
+    """
+
+    def __init__(
+        self,
+        file_name: str,
+        package: str
+    ) -> None:
+        self.file_name = file_name
+
+        self.package = package
+
+        try:
+            self.data = get_data(self.package, file_name)
+        except FileNotFoundError as error:
+            raise FileNotFoundError(
+                f"No icon file '{self.file_name}' in package {self.package} found."
+            ) from error
+        if self.data is None:
+            raise FileNotFoundError(
+                f"No icon file '{self.file_name}' in package {self.package} found."
+            )
+
+        self.mime_type = guess_type(self.file_name)[0]
+        if self.mime_type is None:
+            raise ValueError(
+                f"Could not guess the mime type of the file '{self.file_name}'."
+            )
+        if not self.mime_type.startswith("image/"):
+            raise ValueError(
+                f"Guessed mime type '{self.mime_type}' does not start with 'image/'."
+            )
+
+    def __str__(self):
+        data_base64 = b64encode(self.data).decode()
+        return f"""data:{self.mime_type};base64,{data_base64}"""
+
+
 class PluginParameter:
     """A plugin parameter.
 
@@ -60,8 +107,7 @@ class PluginDescription:
     :param documentation: Documentation for this plugin in Markdown.
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
-    :param plugin_icon: Optional custom plugin icon as data URL string,
-                        e.g. "data:image/svg+xml;base64,<BASE_64_ENCODED_SVG>"
+    :param icon: An optional custom plugin icon.
     """
 
     # pylint: disable=too-many-instance-attributes
@@ -75,7 +121,7 @@ class PluginDescription:
         documentation: str = "",
         categories: Optional[List[str]] = None,
         parameters: Optional[List[PluginParameter]] = None,
-        plugin_icon: Optional[str] = None
+        icon: Optional[Icon] = None
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -109,7 +155,7 @@ class PluginDescription:
             self.parameters = []
         else:
             self.parameters = parameters
-        self.plugin_icon = plugin_icon
+        self.icon = icon
 
 
 @dataclass
@@ -181,9 +227,8 @@ class Plugin:
         do not need to add a first level heading to the markdown since the
         documentation rendering component will add a heading anyway.
     :param categories: The categories to which this plugin belongs to.
-    :param parameters: Available plugin parameters
-    :param plugin_icon: Optional custom plugin icon as data URL string,
-                        e.g. "data:image/svg+xml;base64,<BASE_64_ENCODED_SVG>"
+    :param parameters: Available plugin parameters.
+    :param icon: Optional custom plugin icon.
     """
 
     plugins: list[PluginDescription] = []
@@ -196,13 +241,13 @@ class Plugin:
         documentation: str = "",
         categories: Optional[List[str]] = None,
         parameters: Optional[List[PluginParameter]] = None,
-        plugin_icon: Optional[str] = None
+        icon: Optional[Icon] = None
     ):
         self.label = label
         self.description = description
         self.documentation = documentation
         self.plugin_id = plugin_id
-        self.plugin_icon = plugin_icon
+        self.icon = icon
         if categories is None:
             self.categories = []
         else:
@@ -221,7 +266,7 @@ class Plugin:
             documentation=self.documentation,
             categories=self.categories,
             parameters=self.retrieve_parameters(func),
-            plugin_icon=self.plugin_icon
+            icon=self.icon
         )
         Plugin.plugins.append(plugin_desc)
         return func
@@ -262,50 +307,3 @@ class Plugin:
                     param.default_value = sig_param.default
                 params.append(param)
         return params
-
-
-class Icon:
-    """An Icon.
-
-    :param file_name: The name of the icon file, e.g. 'icon.svg', should be in the
-        form of a relative filename, using '/' as the path separator. The parent
-        directory name '..' is not allowed, and nor is a rooted name
-        (starting with a '/').
-    :param package: (Optional) The name of the package, e.g.
-        'cmem-plugin-my.workspace', should be in standard module format. For a local
-        file from the same module, you can use package=__package__
-    """
-
-    def __init__(
-        self,
-        file_name: str,
-        package: str
-    ) -> None:
-        self.file_name = file_name
-
-        self.package = package
-
-        try:
-            self.data = get_data(self.package, file_name)
-        except FileNotFoundError as error:
-            raise FileNotFoundError(
-                f"No icon file '{self.file_name}' in package {self.package} found."
-            ) from error
-        if self.data is None:
-            raise FileNotFoundError(
-                f"No icon file '{self.file_name}' in package {self.package} found."
-            )
-
-        self.mime_type = guess_type(self.file_name)[0]
-        if self.mime_type is None:
-            raise ValueError(
-                f"Could not guess the mime type of the file '{self.file_name}'."
-            )
-        if not self.mime_type.startswith("image/"):
-            raise ValueError(
-                f"Guessed mime type '{self.mime_type}' does not start with 'image/'."
-            )
-
-    def __str__(self):
-        data_base64 = b64encode(self.data).decode()
-        return f"""data:{self.mime_type};base64,{data_base64}"""
