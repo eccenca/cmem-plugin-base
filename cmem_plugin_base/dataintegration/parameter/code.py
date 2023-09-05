@@ -59,7 +59,7 @@ class YamlCode(Code):
         self.code = code
 
 
-LANG = TypeVar("LANG", bound=typing.SupportsAbs[Code])
+LANG = TypeVar("LANG", bound=Code)
 
 
 class CodeParameterType(Generic[LANG], ParameterType[LANG]):
@@ -77,7 +77,8 @@ class CodeParameterType(Generic[LANG], ParameterType[LANG]):
 
     def from_string(self, value: str, context: PluginContext) -> LANG:
         """Parses strings into code instances."""
-        return self.get_type()(value)
+        code: LANG = self.get_type()(value)
+        return code
 
     def to_string(self, value: LANG) -> str:
         """Converts code values into their string representation."""
