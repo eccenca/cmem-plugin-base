@@ -6,7 +6,8 @@ from cmem_plugin_base.dataintegration.description import Plugin
 from cmem_plugin_base.dataintegration.parameter.code import (XmlCode,
                                                              CodeParameterType,
                                                              JsonCode,
-                                                             JinjaCode)
+                                                             JinjaCode, YamlCode,
+                                                             SqlCode, SparqlCode)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 
@@ -23,7 +24,11 @@ class CodeParameterTest(unittest.TestCase):
 
             def __init__(self,
                          xml: XmlCode = XmlCode("<xml></xml>"),
-                         json: JsonCode = JsonCode("{}")) -> None:
+                         json: JsonCode = JsonCode("{}"),
+                         jinja: JinjaCode = JinjaCode(""),
+                         sql: SqlCode = SqlCode(""),
+                         yaml: YamlCode = YamlCode(""),
+                         sparql: SparqlCode = SparqlCode("")) -> None:
                 self.xml = xml
                 self.json = json
 
@@ -36,6 +41,10 @@ class CodeParameterTest(unittest.TestCase):
         plugin = Plugin.plugins[0]
         self.assertEqual(plugin.parameters[0].param_type.name, "code-xml")
         self.assertEqual(plugin.parameters[1].param_type.name, "code-json")
+        self.assertEqual(plugin.parameters[2].param_type.name, "code-jinja2")
+        self.assertEqual(plugin.parameters[3].param_type.name, "code-sql")
+        self.assertEqual(plugin.parameters[4].param_type.name, "code-yaml")
+        self.assertEqual(plugin.parameters[5].param_type.name, "code-sparql")
 
     def test_serialization(self):
         """test serialization from/to strings"""
@@ -48,6 +57,9 @@ class CodeParameterTest(unittest.TestCase):
         # Convert jinja code instance to a string
         code_str = jinja_type.to_string(jinja_code)
         self.assertEqual(code_str, "my code")
+
+        # Make sure __str__ will return the code itself
+        self.assertEqual(str(jinja_code), "my code")
 
 
 if __name__ == "__main__":
