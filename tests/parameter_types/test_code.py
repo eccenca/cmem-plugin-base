@@ -1,0 +1,54 @@
+"""Code parameter types tests"""
+import unittest
+from typing import Sequence
+from tests.utils import TestPluginContext
+from cmem_plugin_base.dataintegration.description import Plugin
+from cmem_plugin_base.dataintegration.parameter.code import (XmlCode,
+                                                             CodeParameterType,
+                                                             JsonCode,
+                                                             JinjaCode)
+from cmem_plugin_base.dataintegration.plugins import TransformPlugin
+
+
+class CodeParameterTest(unittest.TestCase):
+    """Code Parameter Test"""
+
+    def test__detection(self):
+        """test detection"""
+        Plugin.plugins = []
+
+        @Plugin(label="My Transform Plugin")
+        class MyTransformPlugin(TransformPlugin):
+            """Test My Transform Plugin"""
+
+            def __init__(self,
+                         xml: XmlCode = XmlCode("<xml></xml>"),
+                         json: JsonCode = JsonCode("{}")) -> None:
+                self.xml = xml
+                self.json = json
+
+            def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
+                """test transform"""
+                return []
+
+        MyTransformPlugin()
+
+        plugin = Plugin.plugins[0]
+        self.assertEqual(plugin.parameters[0].param_type.name, "code-xml")
+        self.assertEqual(plugin.parameters[1].param_type.name, "code-json")
+
+    def test_serialization(self):
+        """test serialization from/to strings"""
+        jinja_type = CodeParameterType[JinjaCode]("jinja2")
+
+        # Create a jinja code instance from a string
+        jinja_code = jinja_type.from_string("my code", TestPluginContext(user=None))
+        self.assertEqual(jinja_code.code, "my code")
+
+        # Convert jinja code instance to a string
+        code_str = jinja_type.to_string(jinja_code)
+        self.assertEqual(code_str, "my code")
+
+
+if __name__ == "__main__":
+    unittest.main()
