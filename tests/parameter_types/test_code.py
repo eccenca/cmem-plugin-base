@@ -31,6 +31,10 @@ class CodeParameterTest(unittest.TestCase):
                          sparql: SparqlCode = SparqlCode("")) -> None:
                 self.xml = xml
                 self.json = json
+                self.jinja = jinja
+                self.sql = sql
+                self.yaml = yaml
+                self.sparql = sparql
 
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
                 """test transform"""
