@@ -7,7 +7,7 @@ vars:
   DIST_DIR: dist
   PWD:
     sh: pwd
-  DOCKER_IMAGE: docker-registry.eccenca.com/eccenca-python:v3.7.0
+  DOCKER_IMAGE: docker-registry.eccenca.com/eccenca-python:v3.11.4
   DOCKER_RUN_PLAIN: run -i -t -e SHELL=/bin/bash --workdir /data --rm -v {{.PWD}}:/data {{.DOCKER_IMAGE}}
   VERSION:
     sh: git describe --always --dirty

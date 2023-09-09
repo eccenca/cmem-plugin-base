@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added
+
+- `ResourceParameterType` - for selecting DI resource
+
+## [4.2.0] 2023-09-04
+
+### Added
+
+- Optional `plugin_icon` parameter in a plugin description to specify a custom plugin icon as data URL.
+
+
 ## [4.1.0] 2023-07-12
 
 ### Changed
