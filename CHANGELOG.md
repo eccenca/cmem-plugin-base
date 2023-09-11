@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Workflow plugins can specify their input and output ports now. 
+- `ResourceParameterType` - for selecting DI resource
+
+## [4.2.0] 2023-09-04
+
+### Added
+
+- Optional `plugin_icon` parameter in a plugin description to specify a custom plugin icon as data URL.
+
 
 ## [4.1.0] 2023-07-12
 

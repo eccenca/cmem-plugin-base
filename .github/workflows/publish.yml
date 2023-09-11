@@ -12,9 +12,7 @@ permissions:
 
 jobs:
   publish:
-
     runs-on: ubuntu-latest
-
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -35,7 +33,7 @@ jobs:
           virtualenvs-in-project: true
           installer-parallel: true
 
-      - name: Install dynamic versioning plugin
+      - name: Install poetry-dynamic-versioning plugin
         run: |
           poetry self add "poetry-dynamic-versioning[plugin]"
 
