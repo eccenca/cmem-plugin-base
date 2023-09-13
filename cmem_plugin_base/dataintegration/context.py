@@ -1,7 +1,7 @@
 """Contains classes to pass context information into plugins.
-The classes in this file are only for documentation purposes.
-The actual classes will be injected by DataIntegration and
- will follow the signatures of the classes below.
+
+The classes in this file are only for documentation purposes. The actual classes will
+be injected by DataIntegration and will follow the signatures of the classes below.
 """
 from dataclasses import dataclass, field
 from typing import Optional, Tuple
@@ -62,15 +62,15 @@ class ExecutionReport:
 
     summary: list[Tuple[str, str]] = field(default_factory=list)
     """Generates a short summary of this report.
-       A sequence of key-value pairs representing the summary table """
+       A sequence of key-value pairs representing the summary table."""
 
     warnings: list[str] = field(default_factory=list)
     """If issues occurred during execution, this contains a list of user-friendly
-    messages. """
+    messages."""
 
     error: Optional[str] = None
     """Error message in case a fatal error occurred. If an error is set, the workflow
-    execution will be stopped after the operator has been executed. """
+    execution will be stopped after the operator has been executed."""
 
 
 class ReportContext:

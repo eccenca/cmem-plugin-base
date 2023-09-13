@@ -3,14 +3,15 @@ import logging
 from typing import Sequence, Optional
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext
-from .entity import Entities
-from .ports import InputPorts, Port
+from cmem_plugin_base.dataintegration.entity import Entities
+from cmem_plugin_base.dataintegration.ports import InputPorts, Port
 
 
 class PluginLogger:
     """Logging API for Plugins.
-    If a plugin is running within DataIntegration, this class
-    will be replaced to log into DI using the path: plugins.python.<plugin_id>."""
+
+    If a plugin is running within DataIntegration, this class will be replaced to
+    log into DI using the path: plugins.python.<plugin_id>."""
 
     def debug(self, message: str) -> None:
         """Log a message with severity 'DEBUG'."""
@@ -31,12 +32,13 @@ class PluginLogger:
 
 class PluginConfig:
     """Configuration API for Plugins.
-    If a plugin is running within DataIntegration,
-    this class will be replaced to retrieve the DI configuration
-    in the path: plugins.python.<plugin_id>."""
+
+    If a plugin is running within DataIntegration, this class will be replaced to
+    retrieve the DI configuration in the path: plugins.python.<plugin_id>."""
 
     def get(self) -> str:
         """Retrieve plugin configuration as a JSON string.
+
         This test implementation will return an empty string."""
         return ""
 
@@ -68,6 +70,9 @@ class WorkflowPlugin(PluginBase):
             input. Currently, DI sends ALWAYS an input. in case no connected
             input is there, the sequence has a length of 0.
 
+        :param context: An ExecutionContext object which combines context objects
+            that are available during plugin execution.
+
         :return: The entities generated from the inputs. At the moment, only one
             entities objects be returned (means only one outgoing connection)
             or none (no outgoing connection).
@@ -82,8 +87,10 @@ class TransformPlugin(PluginBase):
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
         """
         Transforms a collection of values.
+
         :param inputs: A sequence which contains as many elements as there are input
             operators for this transformation.
             For each input operator it contains a sequence of values.
+
         :return: The transformed values.
         """
