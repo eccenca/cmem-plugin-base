@@ -30,7 +30,7 @@ class CodeParameterTest(unittest.TestCase):
                          sql: SqlCode = SqlCode(""),
                          yaml: YamlCode = YamlCode(""),
                          sparql: SparqlCode = SparqlCode(""),
-                         turtle: TurtleCoe = TurtleCode(""),
+                         turtle: TurtleCode = TurtleCode(""),
                          python: PythonCode = PythonCode("")) -> None:
                 self.xml = xml
                 self.json = json
