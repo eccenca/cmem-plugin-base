@@ -7,7 +7,8 @@ from cmem_plugin_base.dataintegration.parameter.code import (XmlCode,
                                                              CodeParameterType,
                                                              JsonCode,
                                                              JinjaCode, YamlCode,
-                                                             SqlCode, SparqlCode)
+                                                             SqlCode, SparqlCode,
+                                                             TurtleCode, PythonCode)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 
 
@@ -28,7 +29,9 @@ class CodeParameterTest(unittest.TestCase):
                          jinja: JinjaCode = JinjaCode(""),
                          sql: SqlCode = SqlCode(""),
                          yaml: YamlCode = YamlCode(""),
-                         sparql: SparqlCode = SparqlCode("")) -> None:
+                         sparql: SparqlCode = SparqlCode(""),
+                         turtle: TurtleCoe = TurtleCode(""),
+                         python: PythonCode = PythonCode("")) -> None:
                 self.xml = xml
                 self.json = json
                 self.jinja = jinja
@@ -49,6 +52,8 @@ class CodeParameterTest(unittest.TestCase):
         self.assertEqual(plugin.parameters[3].param_type.name, "code-sql")
         self.assertEqual(plugin.parameters[4].param_type.name, "code-yaml")
         self.assertEqual(plugin.parameters[5].param_type.name, "code-sparql")
+        self.assertEqual(plugin.parameters[6].param_type.name, "code-turtle")
+        self.assertEqual(plugin.parameters[7].param_type.name, "code-python")
 
     def test_serialization(self):
         """test serialization from/to strings"""

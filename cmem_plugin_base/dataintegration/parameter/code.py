@@ -59,6 +59,20 @@ class YamlCode(Code):
         self.code = code
 
 
+class TurtleCode(Code):
+    """RDF Turtle code"""
+
+    def __init__(self, code: str):
+        self.code = code
+
+
+class PythonCode(Code):
+    """Python code"""
+
+    def __init__(self, code: str):
+        self.code = code
+
+
 LANG = TypeVar("LANG", bound=Code)
 
 
@@ -91,3 +105,5 @@ ParameterTypes.register_type(CodeParameterType[SparqlCode]("sparql"))
 ParameterTypes.register_type(CodeParameterType[SqlCode]("sql"))
 ParameterTypes.register_type(CodeParameterType[XmlCode]("xml"))
 ParameterTypes.register_type(CodeParameterType[YamlCode]("yaml"))
+ParameterTypes.register_type(CodeParameterType[TurtleCode]("turtle"))
+ParameterTypes.register_type(CodeParameterType[PythonCode]("python"))
