@@ -23,7 +23,8 @@ class CodeParameterTest(unittest.TestCase):
         class MyTransformPlugin(TransformPlugin):
             """Test My Transform Plugin"""
 
-            def __init__(self,
+            def __init__(  # pylint: disable=too-many-arguments
+                         self,
                          xml: XmlCode = XmlCode("<xml></xml>"),
                          json: JsonCode = JsonCode("{}"),
                          jinja: JinjaCode = JinjaCode(""),
@@ -38,6 +39,8 @@ class CodeParameterTest(unittest.TestCase):
                 self.sql = sql
                 self.yaml = yaml
                 self.sparql = sparql
+                self.turtle = turtle
+                self.python = python
 
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
                 """test transform"""
