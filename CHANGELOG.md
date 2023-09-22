@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - `ResourceParameterType` - for selecting DI resource
+- `CodeParameterType` - which supports various different code languages
+
 
 ## [4.2.0] 2023-09-04
 
