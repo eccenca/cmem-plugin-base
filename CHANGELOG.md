@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Workflow plugins can specify their input and output ports now. 
 - `ResourceParameterType` - for selecting DI resource
+- `CodeParameterType` - which supports various different code languages
+
 
 ## [4.2.0] 2023-09-04
 
