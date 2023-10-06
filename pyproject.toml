@@ -20,7 +20,7 @@ keywords = [
 
 [tool.poetry.dependencies]
 python = "^3.11"
-cmem-cmempy = "==23.2"
+cmem-cmempy = ">=23.3.0"
 
 [tool.poetry.group.dev.dependencies]
 bandit = "^1.7.5"
@@ -30,7 +30,10 @@ defusedxml = "^0.7.1"
 flake8-formatter-junit-xml = "^0.0.6"
 genbadge = "^1.1.0"
 mypy = "^1.4.1"
+# https://github.com/smarie/python-genbadge/issues/31
 pillow = "9.5.0"
+# https://github.com/rasjani/pylint-junit/issues/1
+pylint = "^2"
 pylint-junit = "^0.3.2"
 pytest = "^7.4.0"
 pytest-cov = "^4.1.0"
