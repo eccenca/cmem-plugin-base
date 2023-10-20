@@ -4,13 +4,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [4.3.0] 2023-10-20
 
 ### Added
 
 - Workflow plugins can specify their input and output ports now. 
-- `ResourceParameterType` - for selecting DI resource
+- `ResourceParameterType` - for selecting DI dataset resources
 - `CodeParameterType` - which supports various different code languages
+
+### Changed
+
+- dependency to cmempy >= 23.3.0
 
 
 ## [4.2.0] 2023-09-04
