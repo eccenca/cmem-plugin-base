@@ -15,9 +15,6 @@ on:
 jobs:
   check:
     runs-on: ubuntu-latest
-    env:
-      CMEM_BASE_URI: ${{ secrets.CMEM_BASE_URI }}
-      OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
     steps:
       - name: Check out repository
         uses: actions/checkout@v3
@@ -29,7 +26,7 @@ jobs:
         id: setup-python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.9
+          python-version: 3.11
 
       - name: Install and configure poetry
         uses: snok/install-poetry@v1
@@ -37,6 +34,10 @@ jobs:
           virtualenvs-create: true
           virtualenvs-in-project: true
           installer-parallel: true
+
+      - name: Install poetry-dynamic-versioning plugin
+        run: |
+          poetry self add "poetry-dynamic-versioning[plugin]"
 
       - name: Load cached venv if cache exists
         id: cached-poetry-dependencies

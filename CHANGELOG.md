@@ -4,6 +4,42 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [4.3.0] 2023-10-20
+
+### Added
+
+- Workflow plugins can specify their input and output ports now. 
+- `ResourceParameterType` - for selecting DI dataset resources
+- `CodeParameterType` - which supports various different code languages
+
+### Changed
+
+- dependency to cmempy >= 23.3.0
+
+
+## [4.2.0] 2023-09-04
+
+### Added
+
+- Optional `plugin_icon` parameter in a plugin description to specify a custom plugin icon as data URL.
+
+
+## [4.1.0] 2023-07-12
+
+### Changed
+
+- use `post_resource` api in `write_to_dataset` function to update dataset file resource
+- use cmempy 23.2
+
+
+## [4.0.0] 2023-07-03
+
+### Changed
+
+- upgrade dependencies
+- enforce Python 3.11
+
+
 ## [3.0.0] 2023-02-20
 
 ### Added
