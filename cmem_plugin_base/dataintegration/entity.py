@@ -7,12 +7,18 @@ class EntityPath:
 
     :param path: The path string using the Silk path language.
     :param is_uri: If true, values for this path must only contain URIs that point to
-    a sub entity.
+                   a sub entity.
+    :param is_attribute If true, a single value is expected and supporting datasets will
+                        not use arrays etc. For instance, in XML, attributes will be
+                        used instead of nested elements.
     """
 
-    def __init__(self, path: str, is_uri: bool = False) -> None:
+    def __init__(self, path: str,
+                 is_uri: bool = False,
+                 is_attribute: bool = False) -> None:
         self.path = path
         self.is_uri = is_uri
+        self.is_attribute = is_attribute
 
 
 class EntitySchema:
@@ -23,6 +29,7 @@ class EntitySchema:
     :param sub_path: Path in relation to the parent schema or from the root if
                      there is no parent
     :param sub_schemata: Nested entity schemata.
+    :param sub_schemata:
     """
 
     def __init__(self,
