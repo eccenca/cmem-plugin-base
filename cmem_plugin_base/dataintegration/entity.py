@@ -27,15 +27,18 @@ class EntitySchema:
     :param type_uri: The entity type
     :param paths: Ordered list of paths
     :param sub_path: Path starting from the root for enumerating the entities.
+    :param sub_schemata:
     """
 
     def __init__(self,
                  type_uri: str,
                  paths: Sequence[EntityPath],
-                 sub_path: EntityPath = EntityPath("")) -> None:
+                 sub_path: EntityPath = EntityPath(""),
+                 sub_schemata: Optional[Sequence['EntitySchema']] = None) -> None:
         self.type_uri = type_uri
         self.paths = paths
         self.sub_path = sub_path
+        self.sub_schemata = sub_schemata
 
 
 class Entity:
