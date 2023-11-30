@@ -26,9 +26,8 @@ class EntitySchema:
 
     :param type_uri: The entity type
     :param paths: Ordered list of paths
-    :param sub_path: Path in relation to the parent schema or from the root if
-                     there is no parent
-    :param sub_schemata: Nested entity schemata.
+    :param sub_path: Path in relation to root
+    :param sub_schemata: Nested entity schemata
     """
 
     def __init__(self,
