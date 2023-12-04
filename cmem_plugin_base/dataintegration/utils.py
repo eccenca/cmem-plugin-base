@@ -1,11 +1,14 @@
 """Utils for dataintegration plugins."""
 import os
 import re
-from typing import Optional
+from typing import Optional, Union, List, Iterator
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
 
 from cmem_plugin_base.dataintegration.context import UserContext
+from cmem_plugin_base.dataintegration.entity import (
+    Entities, Entity, EntitySchema, EntityPath
+)
 
 
 def generate_id(name: str) -> str:
@@ -96,3 +99,67 @@ def write_to_dataset(
         dataset_id=task_id,
         file_resource=file_resource,
     )
+
+
+def _get_paths(values: dict) -> List[str]:
+    """Get paths from a dictionary of values."""
+    return list(values.keys())
+
+
+def _get_schema(data: Union[dict, list]) -> Optional[EntitySchema]:
+    """Get the schema of an entity."""
+    if not data:
+        return None
+    schema_paths = []
+    _ = data
+    if isinstance(data, list):
+        _ = data[0]
+    for path in _get_paths(_):
+        path_uri = f"{path}"
+        is_uri = False
+        if isinstance(_[path_uri], (list, dict)):
+            is_uri = True
+        schema_paths.append(EntityPath(path=path_uri, is_uri=is_uri))
+    schema = EntitySchema(
+        type_uri="",
+        paths=schema_paths,
+    )
+    return schema
+
+
+def _get_entity(schema: EntitySchema, data: dict) -> Entity:
+    """Get an entity based on the schema and data."""
+    entity_uri = ""
+    values = [
+        [f"{data.get(_.path)}"] for _ in schema.paths
+    ]
+    entity = Entity(uri=entity_uri, values=values)
+    return entity
+
+
+def _get_entities(
+        schema: EntitySchema,
+        data: Union[dict, list],
+) -> Iterator[Entity]:
+    """
+    Get entities based on the schema, data, and sub-entities.
+    """
+
+    if isinstance(data, list):
+        for _ in data:
+            yield _get_entity(schema=schema, data=_)
+    else:
+        yield _get_entity(schema=schema, data=data)
+
+
+def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
+    """
+    Get entities from a data object.
+    """
+    schema = _get_schema(data)
+    if not schema:
+        return None
+    entities = _get_entities(
+        schema=schema, data=data,
+    )
+    return Entities(entities=entities, schema=schema)
