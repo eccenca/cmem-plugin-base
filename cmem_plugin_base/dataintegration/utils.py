@@ -112,12 +112,8 @@ def _get_schema(data: Union[dict, list], path_from_root: str = '', ):
     """Get the schema of an entity."""
     if not data:
         return None
-    result = {
-
-    }
+    path_to_schema_map = {}
     schema_paths = []
-    sub_schemata = []
-    path_to_sub_schema_map = {}
     _ = data
     if isinstance(data, list):
         _ = data[0]
@@ -130,15 +126,14 @@ def _get_schema(data: Union[dict, list], path_from_root: str = '', ):
                 _[path_uri],
                 f"{path_from_root}/{path_uri}"
             )
-            result.update(sub_schema)
+            path_to_schema_map.update(sub_schema)
         schema_paths.append(EntityPath(path=path_uri, is_uri=is_uri))
     schema = EntitySchema(
         type_uri="",
         paths=schema_paths,
-        sub_schemata=sub_schemata
     )
-    result[path_from_root] = schema
-    return result
+    path_to_schema_map[path_from_root] = schema
+    return path_to_schema_map
 
 
 def _get_entity(
@@ -168,7 +163,7 @@ def _get_entity(
             sub_entities.append(
                 Entities(
                     schema=path_to_schema_map[sub_entity_path],
-                    entities=[sub_entity]
+                    entities=iter([sub_entity])
                 )
             )
     entity = Entity(uri=entity_uri, values=values)
@@ -202,7 +197,7 @@ def _get_entities(
             )
         )
 
-    return entities
+    return iter(entities)
 
 
 def print_schema(prefix, schema):
@@ -221,7 +216,7 @@ def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
     path_to_schema_map = _get_schema(data, 'root')
     if not path_to_schema_map:
         return None
-    sub_entities = []
+    sub_entities: list[Entities] = []
     entities = _get_entities(
         path_to_schema_map=path_to_schema_map, data=data,
         sub_entities=sub_entities
