@@ -1,5 +1,6 @@
 """Utils for dataintegration plugins."""
 import os
+import random
 import re
 from typing import Optional, Union, List, Iterator
 
@@ -7,8 +8,9 @@ from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
 
 from cmem_plugin_base.dataintegration.context import UserContext
 from cmem_plugin_base.dataintegration.entity import (
-    Entities, Entity, EntitySchema, EntityPath
+    Entities, Entity, EntityPath
 )
+from cmem_plugin_base.dataintegration.entity import EntitySchema
 
 
 def generate_id(name: str) -> str:
@@ -106,11 +108,16 @@ def _get_paths(values: dict) -> List[str]:
     return list(values.keys())
 
 
-def _get_schema(data: Union[dict, list]) -> Optional[EntitySchema]:
+def _get_schema(data: Union[dict, list], path_from_root: str = '', ):
     """Get the schema of an entity."""
     if not data:
         return None
+    result = {
+
+    }
     schema_paths = []
+    sub_schemata = []
+    path_to_sub_schema_map = {}
     _ = data
     if isinstance(data, list):
         _ = data[0]
@@ -119,47 +126,108 @@ def _get_schema(data: Union[dict, list]) -> Optional[EntitySchema]:
         is_uri = False
         if isinstance(_[path_uri], (list, dict)):
             is_uri = True
+            sub_schema = _get_schema(
+                _[path_uri],
+                f"{path_from_root}/{path_uri}"
+            )
+            result.update(sub_schema)
         schema_paths.append(EntityPath(path=path_uri, is_uri=is_uri))
     schema = EntitySchema(
         type_uri="",
         paths=schema_paths,
+        sub_schemata=sub_schemata
     )
-    return schema
+    result[path_from_root] = schema
+    return result
 
 
-def _get_entity(schema: EntitySchema, data: dict) -> Entity:
+def _get_entity(
+        path_from_root,
+        path_to_schema_map,
+        data,
+        sub_entities
+) -> Entity:
     """Get an entity based on the schema and data."""
-    entity_uri = ""
-    values = [
-        [f"{data.get(_.path)}"] for _ in schema.paths
-    ]
+    entity_uri = f"{random.randint(0, 100)}"
+    values = []
+    schema = path_to_schema_map[path_from_root]
+    for _ in schema.paths:
+        if not data.get(_.path):
+            continue
+        if isinstance(data.get(_.path), str):
+            values.append([data.get(_.path)])
+        else:
+            sub_entity_path = f"{path_from_root}/{_.path}"
+            sub_entity = _get_entity(
+                path_from_root=sub_entity_path,
+                path_to_schema_map=path_to_schema_map,
+                data=data.get(_.path),
+                sub_entities=sub_entities
+            )
+            values.append([sub_entity.uri])
+            sub_entities.append(
+                Entities(
+                    schema=path_to_schema_map[sub_entity_path],
+                    entities=[sub_entity]
+                )
+            )
     entity = Entity(uri=entity_uri, values=values)
     return entity
 
 
 def _get_entities(
-        schema: EntitySchema,
+        path_to_schema_map,
         data: Union[dict, list],
+        sub_entities,
 ) -> Iterator[Entity]:
     """
     Get entities based on the schema, data, and sub-entities.
     """
-
+    entities = []
     if isinstance(data, list):
         for _ in data:
-            yield _get_entity(schema=schema, data=_)
+            entities.append(
+                _get_entity(
+                    path_from_root="root",
+                    path_to_schema_map=path_to_schema_map,
+                    data=_, sub_entities=sub_entities
+                )
+            )
     else:
-        yield _get_entity(schema=schema, data=data)
+        entities.append(
+            _get_entity(
+                path_from_root="root",
+                path_to_schema_map=path_to_schema_map,
+                data=data, sub_entities=sub_entities
+            )
+        )
+
+    return entities
+
+
+def print_schema(prefix, schema):
+    s = ""
+
+    s += f"{prefix}::{[_.path for _ in schema.paths]}\n"
+    for _ in schema.sub_schemata:
+        s += print_schema(prefix+"::child", _)
+    return s
 
 
 def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
     """
     Get entities from a data object.
     """
-    schema = _get_schema(data)
-    if not schema:
+    path_to_schema_map = _get_schema(data, 'root')
+    if not path_to_schema_map:
         return None
+    sub_entities = []
     entities = _get_entities(
-        schema=schema, data=data,
+        path_to_schema_map=path_to_schema_map, data=data,
+        sub_entities=sub_entities
     )
-    return Entities(entities=entities, schema=schema)
+    return Entities(
+        entities=entities,
+        schema=path_to_schema_map['root'],
+        sub_entities=sub_entities
+    )
