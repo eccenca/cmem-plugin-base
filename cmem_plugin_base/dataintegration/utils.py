@@ -1,6 +1,5 @@
 """Utils for dataintegration plugins."""
 import os
-import random
 import re
 from typing import Optional, Union, List, Iterator
 
@@ -11,6 +10,7 @@ from cmem_plugin_base.dataintegration.entity import (
     Entities, Entity, EntityPath
 )
 from cmem_plugin_base.dataintegration.entity import EntitySchema
+from ulid import ULID
 
 
 def generate_id(name: str) -> str:
@@ -143,14 +143,14 @@ def _get_entity(
         sub_entities
 ) -> Entity:
     """Get an entity based on the schema and data."""
-    entity_uri = f"{random.randint(0, 100)}"
+    entity_uri = f"urn:x-ulid:{ULID()}"
     values = []
     schema = path_to_schema_map[path_from_root]
     for _ in schema.paths:
-        if not data.get(_.path):
-            continue
-        if isinstance(data.get(_.path), str):
-            values.append([data.get(_.path)])
+        if data.get(_.path) is None:
+            values.append([''])
+        elif not _.is_uri:
+            values.append([f"{data.get(_.path)}"])
         else:
             sub_entity_path = f"{path_from_root}/{_.path}"
             sub_entity = _get_entity(
@@ -198,15 +198,6 @@ def _get_entities(
         )
 
     return iter(entities)
-
-
-def print_schema(prefix, schema):
-    s = ""
-
-    s += f"{prefix}::{[_.path for _ in schema.paths]}\n"
-    for _ in schema.sub_schemata:
-        s += print_schema(prefix+"::child", _)
-    return s
 
 
 def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
