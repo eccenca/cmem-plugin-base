@@ -108,31 +108,55 @@ def _get_paths(values: dict) -> List[str]:
     return list(values.keys())
 
 
-def _get_schema(data: Union[dict, list], path_from_root: str = '', ):
+def merge_path_values(paths_map1, paths_map2):
+    for key, value in paths_map2.items():
+        current_path_map = {}
+        if paths_map1.get(key) is not None:
+            current_path_map = paths_map1[key]
+        current_path_map = current_path_map | value
+        paths_map1[key] = current_path_map
+    return paths_map1
+
+
+def generate_paths_from_data(data, path='root'):
+    paths_map = {}
+    if isinstance(data, list):
+        for _ in data:
+            paths_map = merge_path_values(paths_map,
+                                          generate_paths_from_data(_, path=path))
+    if isinstance(data, dict):
+        key_to_type_map = {}
+        for key, value in data.items():
+            key_to_type_map[key] = type(value).__name__
+            if key_to_type_map[key] == 'dict':
+                sub_path = f"{path}/{key}"
+                paths_map = merge_path_values(paths_map,
+                                              generate_paths_from_data(data=value,
+                                                                       path=sub_path))
+        paths_map[path] = key_to_type_map
+    return paths_map
+
+
+def _get_schema(data: Union[dict, list]):
     """Get the schema of an entity."""
     if not data:
         return None
+    paths_map = generate_paths_from_data(data=data)
     path_to_schema_map = {}
-    schema_paths = []
-    _ = data
-    if isinstance(data, list):
-        _ = data[0]
-    for path in _get_paths(_):
-        path_uri = f"{path}"
-        is_uri = False
-        if isinstance(_[path_uri], (list, dict)):
-            is_uri = True
-            sub_schema = _get_schema(
-                _[path_uri],
-                f"{path_from_root}/{path_uri}"
+    for path, key_to_type_map in paths_map.items():
+        schema_paths = []
+        for _key, _type in key_to_type_map.items():
+            schema_paths.append(
+                EntityPath(
+                    path=_key,
+                    is_uri=_type == 'dict'
+                )
             )
-            path_to_schema_map.update(sub_schema)
-        schema_paths.append(EntityPath(path=path_uri, is_uri=is_uri))
-    schema = EntitySchema(
-        type_uri="",
-        paths=schema_paths,
-    )
-    path_to_schema_map[path_from_root] = schema
+        schema = EntitySchema(
+            type_uri="",
+            paths=schema_paths,
+        )
+        path_to_schema_map[path] = schema
     return path_to_schema_map
 
 
@@ -204,7 +228,7 @@ def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
     """
     Get entities from a data object.
     """
-    path_to_schema_map = _get_schema(data, 'root')
+    path_to_schema_map = _get_schema(data)
     if not path_to_schema_map:
         return None
     sub_entities: list[Entities] = []
