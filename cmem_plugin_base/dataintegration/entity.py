@@ -13,12 +13,16 @@ class EntityPath:
                         used instead of nested elements.
     """
 
-    def __init__(self, path: str,
-                 is_uri: bool = False,
-                 is_attribute: bool = False) -> None:
+    def __init__(
+        self, path: str, is_uri: bool = False, is_attribute: bool = False
+    ) -> None:
         self.path = path
         self.is_uri = is_uri
         self.is_attribute = is_attribute
+
+    def __str__(self):
+        obj = {'path': self.path, 'is_uri': self.is_uri, 'is_attribute': self.is_attribute}
+        return f"{obj}"
 
 
 class EntitySchema:
@@ -30,15 +34,21 @@ class EntitySchema:
     :param sub_schemata: Nested entity schemata
     """
 
-    def __init__(self,
-                 type_uri: str,
-                 paths: Sequence[EntityPath],
-                 sub_path: EntityPath = EntityPath(""),
-                 sub_schemata: Optional[Sequence['EntitySchema']] = None) -> None:
+    def __init__(
+        self,
+        type_uri: str,
+        paths: Sequence[EntityPath],
+        sub_path: EntityPath = EntityPath(""),
+        sub_schemata: Optional[Sequence["EntitySchema"]] = None,
+    ) -> None:
         self.type_uri = type_uri
         self.paths = paths
         self.sub_path = sub_path
         self.sub_schemata = sub_schemata
+
+    def __str__(self):
+        obj = {"type_uri": self.type_uri, "paths": [f"{_}" for _ in self.paths]}
+        return f"{obj}"
 
 
 class Entity:
@@ -65,10 +75,12 @@ class Entities:
     :param sub_entities Additional entity collections.
     """
 
-    def __init__(self,
-                 entities: Iterator[Entity],
-                 schema: EntitySchema,
-                 sub_entities: Optional[Sequence['Entities']] = None) -> None:
+    def __init__(
+        self,
+        entities: Iterator[Entity],
+        schema: EntitySchema,
+        sub_entities: Optional[Sequence["Entities"]] = None,
+    ) -> None:
         self.entities = entities
         self.schema = schema
         self.sub_entities = sub_entities
