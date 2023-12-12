@@ -163,6 +163,15 @@ def generate_paths_from_data(data, path='root'):
                 paths_map = merge_path_values(paths_map,
                                               generate_paths_from_data(data=value,
                                                                        path=sub_path))
+            if key_to_type_map[key] == 'list':
+                for _ in value:
+                    if isinstance(_, dict):
+                        key_to_type_map[key] = 'list_dict'
+                        sub_path = f"{path}/{key}"
+                        paths_map = merge_path_values(paths_map,
+                                                      generate_paths_from_data(
+                                                          data=_,
+                                                          path=sub_path))
         paths_map[path] = key_to_type_map
     return paths_map
 
@@ -179,7 +188,8 @@ def _get_schema(data: Union[dict, list]):
             schema_paths.append(
                 EntityPath(
                     path=_key,
-                    is_uri=_type == 'dict'
+                    is_uri=_type in ('dict', 'list_dict'),
+                    is_attribute=_type not in ('list', 'list_dict')
                 )
             )
         schema = EntitySchema(
@@ -227,19 +237,27 @@ def _get_entity(
         if data.get(_.path) is None:
             values.append([''])
         elif not _.is_uri:
-            values.append([f"{data.get(_.path)}"])
-        else:
-            sub_entity_path = f"{path_from_root}/{_.path}"
-            sub_path_to_entities = _get_entity(
-                path_from_root=sub_entity_path,
-                path_to_schema_map=path_to_schema_map,
-                data=data.get(_.path),
+            values.append(
+                [f"{data.get(_.path)}"]
+                if _.is_attribute
+                else
+                [f"{_v}" for _v in data.get(_.path)]
             )
-            sub_entity = sub_path_to_entities[sub_entity_path].pop()
-            sub_path_to_entities[sub_entity_path].append(sub_entity)
-            values.append([sub_entity.uri])
-            extend_path_list(path_to_entities, sub_path_to_entities)
-
+        else:
+            _data = [data.get(_.path)] if _.is_attribute else data.get(_.path)
+            sub_entities_uri = []
+            for _v in _data:
+                sub_entity_path = f"{path_from_root}/{_.path}"
+                sub_path_to_entities = _get_entity(
+                    path_from_root=sub_entity_path,
+                    path_to_schema_map=path_to_schema_map,
+                    data=_v,
+                )
+                sub_entity = sub_path_to_entities[sub_entity_path].pop()
+                sub_entities_uri.append(sub_entity.uri)
+                sub_path_to_entities[sub_entity_path].append(sub_entity)
+                extend_path_list(path_to_entities, sub_path_to_entities)
+            values.append(sub_entities_uri)
     entity = Entity(uri=entity_uri, values=values)
     entities = path_to_entities.get(path_from_root, [])
     entities.append(entity)
