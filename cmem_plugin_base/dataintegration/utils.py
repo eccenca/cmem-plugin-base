@@ -1,16 +1,17 @@
 """Utils for dataintegration plugins."""
 import os
 import re
-from typing import Optional, Union, List, Iterator
+from typing import Optional, Union, List
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
+
+from ulid import ULID
 
 from cmem_plugin_base.dataintegration.context import UserContext
 from cmem_plugin_base.dataintegration.entity import (
     Entities, Entity, EntityPath
 )
 from cmem_plugin_base.dataintegration.entity import EntitySchema
-from ulid import ULID
 
 
 def generate_id(name: str) -> str:
@@ -76,7 +77,7 @@ def split_task_id(task_id: str) -> tuple:
 
 
 def write_to_dataset(
-    dataset_id: str, file_resource=None, context: Optional[UserContext] = None
+        dataset_id: str, file_resource=None, context: Optional[UserContext] = None
 ):
     """Write to a dataset.
 
@@ -109,6 +110,20 @@ def _get_paths(values: dict) -> List[str]:
 
 
 def merge_path_values(paths_map1, paths_map2):
+    """
+    Merge two dictionaries representing paths and values.
+
+    This function takes two dictionaries, `paths_map1` and `paths_map2`,
+    each representing paths and corresponding values. It merges these dictionaries
+    by combining values for common paths and returns the merged dictionary.
+
+    Args:
+        paths_map1 (dict): The first dictionary containing paths and values.
+        paths_map2 (dict): The second dictionary containing paths and values.
+
+    Returns:
+        dict: A merged dictionary containing combined values for common paths.
+    """
     for key, value in paths_map2.items():
         current_path_map = {}
         if paths_map1.get(key) is not None:
@@ -119,6 +134,21 @@ def merge_path_values(paths_map1, paths_map2):
 
 
 def generate_paths_from_data(data, path='root'):
+    """
+    Generate a dictionary representing paths and data types from a nested JSON
+    structure.
+
+    This function recursively traverses a nested JSON structure ('data') and builds
+    a dictionary ('paths_map') where keys are paths and values are dictionaries
+    containing keys and their corresponding data types.
+
+    Args:
+        data (dict or list): The nested JSON structure to traverse.
+        path (str, optional): The current path (used for recursion). Default is 'root'.
+
+    Returns:
+        dict: A dictionary representing paths and data types.
+    """
     paths_map = {}
     if isinstance(data, list):
         for _ in data:
@@ -160,13 +190,36 @@ def _get_schema(data: Union[dict, list]):
     return path_to_schema_map
 
 
+def extend_path_list(path_to_entities, sub_path_to_entities):
+    """
+    Extend a dictionary of paths to entities by merging with another.
+
+    This function takes two dictionaries, `path_to_entities` and `sub_path_to_entities`,
+    representing paths and lists of entities. It extends the lists of entities for each
+    path in `path_to_entities` by combining them with corresponding lists in
+    `sub_path_to_entities`.
+
+    Args:
+        path_to_entities (dict): The main dictionary of paths to entities.
+        sub_path_to_entities (dict): The dictionary of additional paths to entities.
+
+    Returns:
+        None: The result is modified in-place. `path_to_entities` is extended with
+        entities from `sub_path_to_entities`.
+    """
+    for key, sub_entities in sub_path_to_entities.items():
+        entities = path_to_entities.get(key, [])
+        entities.extend(sub_entities)
+        path_to_entities[key] = entities
+
+
 def _get_entity(
         path_from_root,
         path_to_schema_map,
         data,
-        sub_entities
-) -> Entity:
+):
     """Get an entity based on the schema and data."""
+    path_to_entities = {}
     entity_uri = f"urn:x-ulid:{ULID()}"
     values = []
     schema = path_to_schema_map[path_from_root]
@@ -177,51 +230,46 @@ def _get_entity(
             values.append([f"{data.get(_.path)}"])
         else:
             sub_entity_path = f"{path_from_root}/{_.path}"
-            sub_entity = _get_entity(
+            sub_path_to_entities = _get_entity(
                 path_from_root=sub_entity_path,
                 path_to_schema_map=path_to_schema_map,
                 data=data.get(_.path),
-                sub_entities=sub_entities
             )
+            sub_entity = sub_path_to_entities[sub_entity_path].pop()
+            sub_path_to_entities[sub_entity_path].append(sub_entity)
             values.append([sub_entity.uri])
-            sub_entities.append(
-                Entities(
-                    schema=path_to_schema_map[sub_entity_path],
-                    entities=iter([sub_entity])
-                )
-            )
+            extend_path_list(path_to_entities, sub_path_to_entities)
+
     entity = Entity(uri=entity_uri, values=values)
-    return entity
+    entities = path_to_entities.get(path_from_root, [])
+    entities.append(entity)
+    path_to_entities[path_from_root] = entities
+    return path_to_entities
 
 
 def _get_entities(
-        path_to_schema_map,
         data: Union[dict, list],
-        sub_entities,
-) -> Iterator[Entity]:
+        path_to_schema_map: dict[str, EntitySchema],
+) -> dict[str, list[Entity]]:
     """
     Get entities based on the schema, data, and sub-entities.
     """
-    entities = []
+    path_to_entities: dict[str, list[Entity]] = {}
     if isinstance(data, list):
         for _ in data:
-            entities.append(
-                _get_entity(
-                    path_from_root="root",
-                    path_to_schema_map=path_to_schema_map,
-                    data=_, sub_entities=sub_entities
-                )
-            )
-    else:
-        entities.append(
-            _get_entity(
+            sub_path_to_entities = _get_entity(
                 path_from_root="root",
                 path_to_schema_map=path_to_schema_map,
-                data=data, sub_entities=sub_entities
+                data=_
             )
+            extend_path_list(path_to_entities, sub_path_to_entities)
+    else:
+        path_to_entities = _get_entity(
+            path_from_root="root",
+            path_to_schema_map=path_to_schema_map,
+            data=data,
         )
-
-    return iter(entities)
+    return path_to_entities
 
 
 def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
@@ -231,13 +279,17 @@ def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
     path_to_schema_map = _get_schema(data)
     if not path_to_schema_map:
         return None
-    sub_entities: list[Entities] = []
-    entities = _get_entities(
-        path_to_schema_map=path_to_schema_map, data=data,
-        sub_entities=sub_entities
+    path_to_entities = _get_entities(
+        data=data,
+        path_to_schema_map=path_to_schema_map,
     )
     return Entities(
-        entities=entities,
+        entities=path_to_entities.get('root'),  # type: ignore
         schema=path_to_schema_map['root'],
-        sub_entities=sub_entities
+        sub_entities=[
+            Entities(
+                entities=iter(value),
+                schema=path_to_schema_map[key]
+            ) for key, value in path_to_entities.items() if key != 'root'
+        ]
     )
