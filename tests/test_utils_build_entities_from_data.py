@@ -1,7 +1,8 @@
+"""Tests for `utils.build_entities_from_data`"""
 import json
 
-from dataintegration.entity import EntitySchema, EntityPath
-from dataintegration.utils import build_entities_from_data
+from cmem_plugin_base.dataintegration.entity import EntitySchema, EntityPath
+from cmem_plugin_base.dataintegration.utils import build_entities_from_data
 
 
 def test_single_object():
