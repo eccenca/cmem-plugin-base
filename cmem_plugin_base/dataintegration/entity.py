@@ -21,7 +21,9 @@ class EntityPath:
         self.is_attribute = is_attribute
 
     def __str__(self):
-        obj = {'path': self.path, 'is_uri': self.is_uri, 'is_attribute': self.is_attribute}
+        obj = {
+            'path': self.path, 'is_uri': self.is_uri, 'is_attribute': self.is_attribute
+        }
         return f"{obj}"
 
 
