@@ -67,3 +67,48 @@ def test_single_object_one_level():
                 EntityPath("country", False, is_attribute=True)
             ]
         )
+
+def test_single_object_one_level_array():
+    """test write to single object"""
+    test_data = """
+{
+  "name": "sai",
+  "email": "saipraneeth@example.com",
+  "city": [{
+    "name": "San Francisco",
+    "country": "United States"
+  },
+  {
+    "name": "New York",
+    "country": "United States"
+  }]
+}"""
+    data = json.loads(test_data)
+    entities = build_entities_from_data(data)
+    assert len(entities.entities) == 1
+    for _ in entities.entities:
+        assert len(_.values) == 3
+        assert _.values[0:2] == [["sai"], ["saipraneeth@example.com"]]
+        assert _.values[2][0].startswith("urn:x-ulid:")
+    assert len(entities.schema.paths) == 3
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_attribute=True),
+            EntityPath("email", False, is_attribute=True),
+            EntityPath("city", True, is_attribute=False),
+        ]
+    )
+    # Validate sub entities
+    for _ in entities.sub_entities:
+        assert len(list(_.entities)) == 2
+        for _entity in _.entities:
+            assert len(_entity.values) == 2
+        assert _.schema == EntitySchema(
+            type_uri="",
+            paths=[
+                EntityPath("name", False, is_attribute=True),
+                EntityPath("country", False, is_attribute=True)
+            ]
+        )
+
