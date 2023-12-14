@@ -32,6 +32,7 @@ class EntityPath:
                 and self.is_uri == other.is_uri
                 and self.is_attribute == other.is_attribute)
 
+
 class EntitySchema:
     """An entity schema.
 

@@ -14,7 +14,7 @@ def test_single_object():
 }"""
     data = json.loads(test_data)
     entities = build_entities_from_data(data)
-    assert len(entities.entities) == 1
+    assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 2
         assert _.values == [["sai"], ["saipraneeth@example.com"]]
@@ -29,7 +29,7 @@ def test_single_object():
 
 
 def test_single_object_one_level():
-    """test write to single object"""
+    """test write to single object with one level"""
     test_data = """
 {
   "name": "sai",
@@ -41,7 +41,7 @@ def test_single_object_one_level():
 }"""
     data = json.loads(test_data)
     entities = build_entities_from_data(data)
-    assert len(entities.entities) == 1
+    assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 3
         assert _.values[0:2] == [["sai"], ["saipraneeth@example.com"]]
@@ -68,8 +68,9 @@ def test_single_object_one_level():
             ]
         )
 
+
 def test_single_object_one_level_array():
-    """test write to single object"""
+    """test write to single object with array in first level"""
     test_data = """
 {
   "name": "sai",
@@ -85,7 +86,7 @@ def test_single_object_one_level_array():
 }"""
     data = json.loads(test_data)
     entities = build_entities_from_data(data)
-    assert len(entities.entities) == 1
+    assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 3
         assert _.values[0:2] == [["sai"], ["saipraneeth@example.com"]]
@@ -111,4 +112,3 @@ def test_single_object_one_level_array():
                 EntityPath("country", False, is_attribute=True)
             ]
         )
-
