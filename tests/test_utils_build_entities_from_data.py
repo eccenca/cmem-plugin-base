@@ -6,7 +6,7 @@ from cmem_plugin_base.dataintegration.utils import build_entities_from_data
 
 
 def test_single_object():
-    """test write to single object"""
+    """test generation of entities and schema for a simple JSON object."""
     test_data = """
 {
   "name": "sai",
@@ -29,7 +29,8 @@ def test_single_object():
 
 
 def test_single_object_one_level():
-    """test write to single object with one level"""
+    """test generation of entities and schema for a JSON object with one level of
+    hierarchy"""
     test_data = """
 {
   "name": "sai",
@@ -70,7 +71,8 @@ def test_single_object_one_level():
 
 
 def test_single_object_one_level_array():
-    """test write to single object with array in first level"""
+    """test generation of entities and schema for a JSON object with array object in
+     first level of hierarchy"""
     test_data = """
 {
   "name": "sai",
@@ -110,5 +112,71 @@ def test_single_object_one_level_array():
             paths=[
                 EntityPath("name", False, is_attribute=True),
                 EntityPath("country", False, is_attribute=True)
+            ]
+        )
+
+
+def test_single_object_two_level_array():
+    """test generation of entities and schema for a JSON object with two levels of
+    hierarchy"""
+    test_data = """
+{
+  "name": "sai",
+  "email": "saipraneeth@example.com",
+  "city": [
+    {
+      "name": "San Francisco",
+      "country": "United States",
+      "geo_location": {
+        "lat": "37.773972",
+        "long": "-122.431297"
+      }
+    },
+    {
+      "name": "New York",
+      "country": "United States",
+      "geo_location": {
+        "lat": "40.730610",
+        "long": "-73.935242"
+      }
+    }
+  ]
+}"""
+    data = json.loads(test_data)
+    entities = build_entities_from_data(data)
+    assert len(list(entities.entities)) == 1
+    for _ in entities.entities:
+        assert len(_.values) == 3
+        assert _.values[0:2] == [["sai"], ["saipraneeth@example.com"]]
+        assert _.values[2][0].startswith("urn:x-ulid:")
+    assert len(entities.schema.paths) == 3
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_attribute=True),
+            EntityPath("email", False, is_attribute=True),
+            EntityPath("city", True, is_attribute=False),
+        ]
+    )
+    # Validate sub entities
+    location_entities = entities.sub_entities[0]
+    city_entities = entities.sub_entities[1]
+    assert len(list(city_entities.entities)) == 2
+    assert len(list(location_entities.entities)) == 2
+
+    assert city_entities.schema == EntitySchema(
+            type_uri="",
+            paths=[
+                EntityPath("name", False, is_attribute=True),
+                EntityPath("country", False, is_attribute=True),
+                EntityPath("geo_location", True, is_attribute=True),
+            ]
+        )
+
+    assert location_entities.schema == EntitySchema(
+            type_uri="",
+            paths=[
+                EntityPath("lat", False, is_attribute=True),
+                EntityPath("long", False, is_attribute=True),
             ]
         )
