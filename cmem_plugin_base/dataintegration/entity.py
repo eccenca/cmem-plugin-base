@@ -20,12 +20,17 @@ class EntityPath:
         self.is_uri = is_uri
         self.is_attribute = is_attribute
 
-    def __str__(self):
+    def __repr__(self):
         obj = {
             'path': self.path, 'is_uri': self.is_uri, 'is_attribute': self.is_attribute
         }
-        return f"{obj}"
+        return f"EntityPath({obj})"
 
+    def __eq__(self, other):
+        return (isinstance(other, EntityPath)
+                and self.path == other.path
+                and self.is_uri == other.is_uri
+                and self.is_attribute == other.is_attribute)
 
 class EntitySchema:
     """An entity schema.
@@ -48,9 +53,16 @@ class EntitySchema:
         self.sub_path = sub_path
         self.sub_schemata = sub_schemata
 
-    def __str__(self):
-        obj = {"type_uri": self.type_uri, "paths": [f"{_}" for _ in self.paths]}
-        return f"{obj}"
+    def __repr__(self):
+        obj = {"type_uri": self.type_uri, "paths": self.paths}
+        return f"EntitySchema({obj})"
+
+    def __eq__(self, other):
+        return (isinstance(other, EntitySchema)
+                and self.type_uri == other.type_uri
+                and self.paths == other.paths
+                and self.sub_path == other.sub_path
+                and self.sub_schemata == other.sub_schemata)
 
 
 class Entity:
