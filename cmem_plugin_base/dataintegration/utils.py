@@ -188,8 +188,8 @@ def _get_schema(data: Union[dict, list]):
             schema_paths.append(
                 EntityPath(
                     path=_key,
-                    is_uri=_type in ('dict', 'list_dict'),
-                    is_attribute=_type not in ('list', 'list_dict')
+                    is_relation=_type in ('dict', 'list_dict'),
+                    is_single_value=_type not in ('list', 'list_dict')
                 )
             )
         schema = EntitySchema(
@@ -236,15 +236,15 @@ def _get_entity(
     for _ in schema.paths:
         if data.get(_.path) is None:
             values.append([''])
-        elif not _.is_uri:
+        elif not _.is_relation:
             values.append(
                 [f"{data.get(_.path)}"]
-                if _.is_attribute
+                if _.is_single_value
                 else
                 [f"{_v}" for _v in data.get(_.path)]
             )
         else:
-            _data = [data.get(_.path)] if _.is_attribute else data.get(_.path)
+            _data = [data.get(_.path)] if _.is_single_value else data.get(_.path)
             sub_entities_uri = []
             for _v in _data:
                 sub_entity_path = f"{path_from_root}/{_.path}"
