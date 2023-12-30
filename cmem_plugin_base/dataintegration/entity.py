@@ -5,32 +5,19 @@ from typing import Sequence, Iterator, Optional
 class EntityPath:
     """A path in a schema.
 
-    :param path: The path string using the Silk path language.
-    :param is_uri: If true, values for this path must only contain URIs that point to
-                   a sub entity.
-    :param is_attribute If true, a single value is expected and supporting datasets will
-                        not use arrays etc. For instance, in XML, attributes will be
-                        used instead of nested elements.
+    :param is_relation: If true, values for this path must only contain URIs that
+    point to a sub entity.
+    :param is_single_value If true, a single value is expected and supporting datasets
+    will not use arrays etc. For instance, in XML, attributes will be used instead of
+    nested elements.
     """
 
-    def __init__(
-        self, path: str, is_uri: bool = False, is_attribute: bool = False
-    ) -> None:
+    def __init__(self, path: str,
+                 is_relation: bool = False,
+                 is_single_value: bool = False) -> None:
         self.path = path
-        self.is_uri = is_uri
-        self.is_attribute = is_attribute
-
-    def __repr__(self):
-        obj = {
-            'path': self.path, 'is_uri': self.is_uri, 'is_attribute': self.is_attribute
-        }
-        return f"EntityPath({obj})"
-
-    def __eq__(self, other):
-        return (isinstance(other, EntityPath)
-                and self.path == other.path
-                and self.is_uri == other.is_uri
-                and self.is_attribute == other.is_attribute)
+        self.is_relation = is_relation
+        self.is_single_value = is_single_value
 
 
 class EntitySchema:
@@ -38,32 +25,20 @@ class EntitySchema:
 
     :param type_uri: The entity type
     :param paths: Ordered list of paths
-    :param sub_path: Path in relation to root
+    :param path_to_root: Specifies a path which defines where this schema is located
+    in the schema tree
     :param sub_schemata: Nested entity schemata
     """
 
-    def __init__(
-        self,
-        type_uri: str,
-        paths: Sequence[EntityPath],
-        sub_path: EntityPath = EntityPath(""),
-        sub_schemata: Optional[Sequence["EntitySchema"]] = None,
-    ) -> None:
+    def __init__(self,
+                 type_uri: str,
+                 paths: Sequence[EntityPath],
+                 path_to_root: EntityPath = EntityPath(""),
+                 sub_schemata: Optional[Sequence['EntitySchema']] = None) -> None:
         self.type_uri = type_uri
         self.paths = paths
-        self.sub_path = sub_path
+        self.path_to_root = path_to_root
         self.sub_schemata = sub_schemata
-
-    def __repr__(self):
-        obj = {"type_uri": self.type_uri, "paths": self.paths}
-        return f"EntitySchema({obj})"
-
-    def __eq__(self, other):
-        return (isinstance(other, EntitySchema)
-                and self.type_uri == other.type_uri
-                and self.paths == other.paths
-                and self.sub_path == other.sub_path
-                and self.sub_schemata == other.sub_schemata)
 
 
 class Entity:
@@ -90,12 +65,10 @@ class Entities:
     :param sub_entities Additional entity collections.
     """
 
-    def __init__(
-        self,
-        entities: Iterator[Entity],
-        schema: EntitySchema,
-        sub_entities: Optional[Sequence["Entities"]] = None,
-    ) -> None:
+    def __init__(self,
+                 entities: Iterator[Entity],
+                 schema: EntitySchema,
+                 sub_entities: Optional[Sequence['Entities']] = None) -> None:
         self.entities = entities
         self.schema = schema
         self.sub_entities = sub_entities
