@@ -180,3 +180,38 @@ def test_single_object_two_level_array():
                 EntityPath("long", False, is_single_value=True),
             ]
         )
+
+
+def test_array_object():
+    """test generation of entities and schema for a simple array JSON object."""
+    test_data = """
+[{
+  "name": "seebi"
+},
+{
+  "name": "sai",
+  "email": "saipraneeth@example.com"
+}]"""
+    data = json.loads(test_data)
+    entities = build_entities_from_data(data)
+    _ = next(entities.entities)
+    assert len(_.values) == 2
+    assert _.values == [["seebi"], [""]]
+    _ = next(entities.entities)
+    assert len(_.values) == 2
+    assert _.values == [["sai"], ["saipraneeth@example.com"]]
+    assert len(entities.schema.paths) == 2
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_single_value=True),
+            EntityPath("email", False, is_single_value=True),
+        ]
+    )
+
+
+def test_empty_object():
+    """test empty json object input"""
+    test_data = """[]"""
+    data = json.loads(test_data)
+    assert build_entities_from_data(data) is None

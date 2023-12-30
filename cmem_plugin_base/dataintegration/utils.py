@@ -1,10 +1,9 @@
 """Utils for dataintegration plugins."""
 import os
 import re
-from typing import Optional, Union, List
+from typing import Optional, Union
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
-
 from ulid import ULID
 
 from cmem_plugin_base.dataintegration.context import UserContext
@@ -102,11 +101,6 @@ def write_to_dataset(
         dataset_id=task_id,
         file_resource=file_resource,
     )
-
-
-def _get_paths(values: dict) -> List[str]:
-    """Get paths from a dictionary of values."""
-    return list(values.keys())
 
 
 def merge_path_values(paths_map1, paths_map2):
@@ -302,7 +296,7 @@ def build_entities_from_data(data: Union[dict, list]) -> Optional[Entities]:
         path_to_schema_map=path_to_schema_map,
     )
     return Entities(
-        entities=path_to_entities.get('root'),  # type: ignore
+        entities=iter(path_to_entities.get('root')),  # type: ignore[arg-type]
         schema=path_to_schema_map['root'],
         sub_entities=[
             Entities(
