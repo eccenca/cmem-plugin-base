@@ -2,7 +2,9 @@
 import json
 
 from cmem_plugin_base.dataintegration.entity import EntitySchema, EntityPath
-from cmem_plugin_base.dataintegration.utils.entity_builder import build_entities_from_data
+from cmem_plugin_base.dataintegration.utils.entity_builder import (
+    build_entities_from_data
+)
 
 
 def test_single_object():
