@@ -8,8 +8,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- add util method to generate entities from python dict | list object
+- util method to generate entities from python dict | list object
+- parameter sub_schemata in EntitySchema to capture nested entity schemata
 
+### Changed
+
+- renamed EntityPath parameter is_uri to is_relation
+- renamed EntitySchema parameter sub_path to path_to_root
 
 ## [4.4.0] 2023-11-24
 
