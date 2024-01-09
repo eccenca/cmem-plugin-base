@@ -19,6 +19,19 @@ class EntityPath:
         self.is_relation = is_relation
         self.is_single_value = is_single_value
 
+    def __repr__(self):
+        obj = {
+            'path': self.path, 'is_relation': self.is_relation,
+            'is_single_value': self.is_single_value
+        }
+        return f"EntityPath({obj})"
+
+    def __eq__(self, other):
+        return (isinstance(other, EntityPath)
+                and self.path == other.path
+                and self.is_relation == other.is_relation
+                and self.is_single_value == other.is_single_value)
+
 
 class EntitySchema:
     """An entity schema.
@@ -39,6 +52,20 @@ class EntitySchema:
         self.paths = paths
         self.path_to_root = path_to_root
         self.sub_schemata = sub_schemata
+
+    def __repr__(self):
+        obj = {
+            "type_uri": self.type_uri, "paths": self.paths,
+            "path_to_root": self.path_to_root
+        }
+        return f"EntitySchema({obj})"
+
+    def __eq__(self, other):
+        return (isinstance(other, EntitySchema)
+                and self.type_uri == other.type_uri
+                and self.paths == other.paths
+                and self.path_to_root == other.path_to_root
+                and self.sub_schemata == other.sub_schemata)
 
 
 class Entity:

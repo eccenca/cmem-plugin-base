@@ -71,7 +71,7 @@ def split_task_id(task_id: str) -> tuple:
 
 
 def write_to_dataset(
-    dataset_id: str, file_resource=None, context: Optional[UserContext] = None
+        dataset_id: str, file_resource=None, context: Optional[UserContext] = None
 ):
     """Write to a dataset.
 
