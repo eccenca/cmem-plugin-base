@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [4.5.0] 2024-01-10
 
 ### Added
 
@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - renamed EntityPath parameter is_uri to is_relation
 - renamed EntitySchema parameter sub_path to path_to_root
+
 
 ## [4.4.0] 2023-11-24
 
