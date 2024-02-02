@@ -14,6 +14,7 @@ from cmem_plugin_base.dataintegration.types import (
     PluginContextParameterType,
 )
 from cmem_plugin_base.dataintegration.utils import generate_id
+from cmem_plugin_base.dataintegration.matching.matcher import SchemaMatcherPlugin
 
 
 class Icon:
@@ -129,6 +130,8 @@ class PluginDescription:
             self.plugin_type = "WorkflowPlugin"
         elif issubclass(plugin_class, TransformPlugin):
             self.plugin_type = "TransformPlugin"
+        elif issubclass(plugin_class, SchemaMatcherPlugin):
+            self.plugin_type = "SchemaMatcherPlugin"
         else:
             raise ValueError(
                 f"Class {plugin_class.__name__} does not implement a supported "
