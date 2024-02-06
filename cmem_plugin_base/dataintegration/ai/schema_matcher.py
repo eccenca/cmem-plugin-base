@@ -1,18 +1,19 @@
-"""All classes related to schema matcher plugins"""
+"""All classes related to schema matcher plugins.
+   WARNING: All classes in this file are preliminary and might be changed."""
 
 from cmem_plugin_base.dataintegration.plugins import PluginBase
 
 
 class MatchingSchema:
+    """The schema that is used by schema matchers."""
 
     def write_rdf_file(self, path: str, lang: str) -> None:
-        """
-        Writes this schema to an RDF file.
+        """Write this schema to an RDF file.
 
         :param path: The target file path.
         :param lang: The RDF format. Usually, either "N-TRIPLE" or "TURTLE".
         """
-        pass  # Implementation provided by DataIntegration
+        # Implementation provided by DataIntegration
 
 
 class Correspondence:
@@ -22,6 +23,10 @@ class Correspondence:
         self.source = source
         self.target = target
         self.confidence = confidence
+
+    def __str__(self):
+        """Convert to a string representation"""
+        return f"{self.source} - {self.target} ({self.confidence})"
 
 
 class Alignment:

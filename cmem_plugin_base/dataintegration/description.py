@@ -14,7 +14,7 @@ from cmem_plugin_base.dataintegration.types import (
     PluginContextParameterType,
 )
 from cmem_plugin_base.dataintegration.utils import generate_id
-from cmem_plugin_base.dataintegration.matching.matcher import SchemaMatcherPlugin
+from cmem_plugin_base.dataintegration.ai.schema_matcher import SchemaMatcherPlugin
 
 
 class Icon:
