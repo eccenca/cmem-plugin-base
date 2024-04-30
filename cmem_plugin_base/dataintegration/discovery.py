@@ -28,30 +28,41 @@ def get_packages():
     )
 
 
-def discover_plugins_in_module(
-    package_name: str = "cmem",
-) -> list[PluginDescription]:
-    """Finds all plugins within a base package.
+def delete_modules(module_name: str = "cmem") -> None:
+    """Finds and deletes all plugins within a base package.
+
+    :param module_name: The base package. Will recurse into all submodules
+        of this package.
+    """
+    if module_name in sys.modules:
+        module = sys.modules[module_name]
+        if hasattr(module, '__path__'):
+            for _loader, name, _ in pkgutil.walk_packages(module.__path__):
+                delete_modules(module.__name__ + "." + name)
+        del sys.modules[module.__name__]
+
+
+def import_modules(package_name: str = "cmem",) -> list[PluginDescription]:
+    """Finds and imports all plugins within a base package.
 
     :param package_name: The base package. Will recurse into all submodules
         of this package.
     """
-
-    def load_module(module_name: str) -> ModuleType:
-        module_is_imported = module_name in sys.modules
-        module = importlib.import_module(module_name)
-        if module_is_imported:
-            importlib.reload(module)  # need to reload in order to discover plugins
-        return module
-
-    def import_submodules(module: ModuleType):
+    def import_submodules(module: ModuleType) -> list[ModuleType]:
+        modules = []
         for _loader, name, is_pkg in pkgutil.walk_packages(module.__path__):
-            sub_module = load_module(module.__name__ + "." + name)
+            sub_module = importlib.import_module(module.__name__ + "." + name)
+            modules.append(sub_module)
             if is_pkg:
-                import_submodules(sub_module)
+                modules.extend(import_submodules(sub_module))
+        return modules
 
     Plugin.plugins = []
-    import_submodules(load_module(package_name))
+
+    root_module = importlib.import_module(package_name)
+    modules = [root_module]
+    modules.extend(import_submodules(root_module))
+
     return Plugin.plugins
 
 
@@ -73,9 +84,13 @@ def discover_plugins(package_name: str = "cmem_plugin") -> PluginDiscoveryResult
         name = module.name
         if name.startswith(package_name) and name != "cmem_plugin_base":
             target_packages.append(name)
+    # delete all modules in the packages to make sure they will be re-imported freshly
+    for name in target_packages:
+        delete_modules(module_name=name)
+    # import all packages
     for name in target_packages:
         try:
-            for plugin in discover_plugins_in_module(package_name=name):
+            for plugin in import_modules(package_name=name):
                 plugin_descriptions.plugins.append(plugin)
         except BaseException as ex:
             error = PluginDiscoveryError(
