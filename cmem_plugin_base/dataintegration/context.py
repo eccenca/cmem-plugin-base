@@ -127,8 +127,9 @@ class ExecutionContext:
     task: TaskContext
     """Task metadata about the executed plugin."""
 
-    workflow: WorkflowContext
-    """Workflow metadata about the executed plugin."""
+    workflow: Optional[WorkflowContext]
+    """Workflow metadata about the executed plugin.
+       None, if this plugin is not executed within a workflow."""
 
     report: ReportContext
     """Allows to update the execution report."""
