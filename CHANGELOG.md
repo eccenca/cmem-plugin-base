@@ -7,8 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
 
+- discover_plugins function to make sure all package modules are re-imported freshly
 
 ## [4.5.0] 2024-01-10
 
