@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - discover_plugins function to make sure all package modules are re-imported freshly
 
+
 ## [4.5.0] 2024-01-10
 
 ### Added
@@ -97,7 +98,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
     # The decrypted password can be accessed using:
     self.password.decrypt()
     ```
-  
+
 - Custom parameter types can be registered. See implementation of PasswordParameterType for an example.
 
 ### Migration Notes
@@ -113,17 +114,20 @@ The same applies to the label function that has been updated to the following si
 
 `def label(self, value: str, depend_on_parameter_values: list[Any], context: PluginContext) -> Optional[str]`
 
+
 ## [2.1.0] 2022-07-19
 
 ### Changed
 
 - DatasetParameterType: to use user context
 
+
 ## [2.0.1] 2022-07-12
 
 ### Fixed
 
 - ChoiceParameterType: to_string and from_string need to be the inverse of each other.
+
 
 ## [2.0.0] 2022-07-12
 
@@ -151,6 +155,7 @@ The following changes need to be made to implementation of these classes:
 - The `fromString` function has a new parameter `context`:
   - `def from_string(self, value: str, context: PluginContext) -> T`
 
+
 ## [1.2.0] 2022-06-15
 
 ### Added
@@ -158,12 +163,14 @@ The following changes need to be made to implementation of these classes:
 - `write_to_dataset` function to utils module to write to a dataset
 - Added MultilineStringParameterType
 
+
 ## [1.1.1] 2022-05-16
 
 ### Fixed
 
 - DatasetParameterType provides labels now
 - DatasetParameterType returns combined dataset ID now
+
 
 ## [1.1.0] 2022-05-04
 
@@ -177,11 +184,13 @@ The following changes need to be made to implementation of these classes:
 - Plugin discovery had an issue that plugins that are in the root module of a package have not been re-discovered on the second call. 
 - Boolean values are formatted lower case in order to conform to xsd:bool.
 
+
 ## [1.0.0] 2022-04-01
 
 ### Changed
 
 - release 1.0.0
+
 
 ## [0.0.13] 2022-03-21
 
@@ -190,6 +199,7 @@ The following changes need to be made to implementation of these classes:
 - python >= 3.7 dependency
 - examples dev-dependency
 - update dependencies
+
 
 ## [0.0.12] 2022-03-21
 
@@ -201,11 +211,13 @@ The following changes need to be made to implementation of these classes:
 
 - downgrade needed python version to 3.7+
 
+
 ## [0.0.11] 2022-03-16
 
 ### Fixed
 
 - Fixed `discover_plugins_in_module`: Need to reload modules that have been imported already.
+
 
 ## [0.0.10] 2022-03-16
 
@@ -214,11 +226,13 @@ The following changes need to be made to implementation of these classes:
 - Support for custom plugin parameter types
 - Enumeration parameter type
 
+
 ## [0.0.9] 2022-03-09
 
 ### Fixed
 
 - Only return parameters for user-defined init methods
+
 
 ## [0.0.8] 2022-03-04
 
@@ -227,11 +241,13 @@ The following changes need to be made to implementation of these classes:
 - Added constants for common categories.
 - Added plugin APIs for logging and retrieving configuration.
 
+
 ## [0.0.7] 2022-03-02
 
 ### Added
 
 - parameter type validation and matching to internal types
+
 
 ## [0.0.6] 2022-02-28
 
@@ -243,12 +259,14 @@ The following changes need to be made to implementation of these classes:
 
 - plugin discovery no for multiple base moduls of a prefix
 
+
 ## [0.0.2] 2022-02-25
 
 ### Added
 
 - parameter and description annotation of plugins
 - discovery methods of plugins
+
 
 ## [0.0.1] 2022-02-23
 
