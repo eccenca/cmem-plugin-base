@@ -1,5 +1,6 @@
 """Classes for describing plugins"""
 import inspect
+import sys
 from base64 import b64encode
 from dataclasses import dataclass, field
 from inspect import _empty
@@ -137,6 +138,7 @@ class PluginDescription:
 
         self.plugin_class = plugin_class
         self.module_name = plugin_class.__module__
+        self.package_name = sys.modules[self.module_name].__package__
         self.class_name = plugin_class.__name__
         if plugin_id is None:
             self.plugin_id = generate_id(
