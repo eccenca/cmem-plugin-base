@@ -112,10 +112,6 @@ class WorkflowContext:
             - Canceling: Plugin has been requested to stop.
             - Finished: Plugin has finished execution."""
 
-    def is_canceled(self) -> bool:
-        """Check if the workflow is in the 'Canceling' state."""
-        return self.status() == 'Canceling'
-
 
 class ExecutionContext:
     """Combines context objects that are available during plugin execution."""
