@@ -4,13 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## Unreleased
+## [4.7.0] 2024-06-13
 
 ### Added
 
 - Added workflow status to execution context. This can be used to check if the workflow task has been cancelled by the user: `context.workflow.status() != "Canceling"`
 - Added workflow identifier to execution context: `context.workflow.workflow_id()`
 - Added package_name to PluginDescription. This is read by DataIntegration and part of the plugin JSON.
+
 
 ## [4.6.0] 2024-06-07
 
