@@ -4,7 +4,7 @@ The classes in this file are only for documentation purposes. The actual classes
 be injected by DataIntegration and will follow the signatures of the classes below.
 """
 from dataclasses import dataclass, field
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Literal
 
 
 class SystemContext:
@@ -97,6 +97,22 @@ class PluginContext:
     """The project that contains / will contain this plugin."""
 
 
+class WorkflowContext:
+    """Context information if a plugin is executed within a workflow."""
+
+    def workflow_id(self) -> str:
+        """Retrieve the identifier of the current workflow"""
+
+    def status(self) -> Literal['Idle', 'Waiting', 'Running', 'Canceling', 'Finished']:
+        """Retrieve the execution status of this plugin within the current workflow.
+        One of the following:
+            - Idle: Plugin has not been started yet.
+            - Waiting: Plugin has been started and is waiting to be executed.
+            - Running: Plugin is currently being executed.
+            - Canceling: Plugin has been requested to stop.
+            - Finished: Plugin has finished execution."""
+
+
 class ExecutionContext:
     """Combines context objects that are available during plugin execution."""
 
@@ -110,6 +126,10 @@ class ExecutionContext:
 
     task: TaskContext
     """Task metadata about the executed plugin."""
+
+    workflow: Optional[WorkflowContext]
+    """Workflow metadata about the executed plugin.
+       None, if this plugin is not executed within a workflow."""
 
     report: ReportContext
     """Allows to update the execution report."""
