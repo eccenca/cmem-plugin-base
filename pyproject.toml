@@ -2,7 +2,7 @@
 name = "cmem-plugin-base"
 version = "0.0.0"
 license = "Apache-2.0"
-description = "Base classes for developing eccenca Coporate Memory plugins."
+description = "Base classes for developing eccenca Corporate Memory plugins."
 authors = ["eccenca <cmempy-developer@eccenca.com>"]
 maintainers = [
     "Sebastian Tramp <sebastian.tramp@eccenca.com>",
