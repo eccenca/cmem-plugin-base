@@ -77,6 +77,7 @@ class ExecutionReport:
     sample_entities: Optional[Entities] = None
     """Sample of entities that were output by this task."""
 
+
 class ReportContext:
     """Passed into workflow plugins that may generate a report during execution."""
 
