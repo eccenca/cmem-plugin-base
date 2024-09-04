@@ -6,7 +6,7 @@ be injected by DataIntegration and will follow the signatures of the classes bel
 from dataclasses import dataclass, field
 from typing import Optional, Tuple, Literal
 
-from dataintegration.entity import Entities
+from cmem_plugin_base.dataintegration.entity import Entities
 
 
 class SystemContext:
