@@ -6,6 +6,8 @@ be injected by DataIntegration and will follow the signatures of the classes bel
 from dataclasses import dataclass, field
 from typing import Optional, Tuple, Literal
 
+from dataintegration.entity import Entities
+
 
 class SystemContext:
     """Passed into methods to request general system information."""
@@ -72,6 +74,8 @@ class ExecutionReport:
     """Error message in case a fatal error occurred. If an error is set, the workflow
     execution will be stopped after the operator has been executed."""
 
+    sample_entities: Optional[Entities] = None
+    """Sample of entities that were output by this task."""
 
 class ReportContext:
     """Passed into workflow plugins that may generate a report during execution."""
