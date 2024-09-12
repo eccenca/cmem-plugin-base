@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## Unreleased
+## [4.8.0] 2024-09-12
 
 ### Added
 
@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
   - For plugins that don't update the execution report by themselves, DataIntegration will automatically add sample entities.
   - Plugins that update the execution report can add sample entities to `ExecutionReport.sample_entities`.
 
-## [4.7.0] 2024-06-13
+
+## [4.7.0] 2024-06-13 - shipped with DI v24.2.0
 
 ### Added
 
@@ -28,7 +29,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - discover_plugins function to make sure all package modules are re-imported freshly
 
 
-## [4.5.0] 2024-01-10
+## [4.5.0] 2024-01-10 - shipped with DI v24.1.0
 
 ### Added
 
@@ -48,7 +49,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - capabilities for hierarchical entities as input and output of workflow tasks
 
 
-## [4.3.0] 2023-10-20
+## [4.3.0] 2023-10-20 - shipped with DI v23.3.0
 
 ### Added
 
@@ -68,7 +69,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Optional `plugin_icon` parameter in a plugin description to specify a custom plugin icon as data URL.
 
 
-## [4.1.0] 2023-07-12
+## [4.1.0] 2023-07-12 - shipped with DI v23.2.0
 
 ### Changed
 
@@ -84,7 +85,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - enforce Python 3.11
 
 
-## [3.0.0] 2023-02-20
+## [3.0.0] 2023-02-20 - shipped with DI v23.1
 
 ### Added
 
@@ -131,7 +132,7 @@ The same applies to the label function that has been updated to the following si
 `def label(self, value: str, depend_on_parameter_values: list[Any], context: PluginContext) -> Optional[str]`
 
 
-## [2.1.0] 2022-07-19
+## [2.1.0] 2022-07-19 - shipped with DI v22.2
 
 ### Changed
 
@@ -180,7 +181,7 @@ The following changes need to be made to implementation of these classes:
 - Added MultilineStringParameterType
 
 
-## [1.1.1] 2022-05-16
+## [1.1.1] 2022-05-16 - shipped with DI v22.1
 
 ### Fixed
 
