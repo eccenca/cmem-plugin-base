@@ -1,5 +1,6 @@
 """Instance of any given concept."""
-from typing import Sequence, Iterator, Optional
+
+from collections.abc import Iterator, Sequence
 
 
 class EntityPath:
@@ -12,25 +13,26 @@ class EntityPath:
     nested elements.
     """
 
-    def __init__(self, path: str,
-                 is_relation: bool = False,
-                 is_single_value: bool = False) -> None:
+    def __init__(self, path: str, is_relation: bool = False, is_single_value: bool = False) -> None:
         self.path = path
         self.is_relation = is_relation
         self.is_single_value = is_single_value
 
     def __repr__(self):
         obj = {
-            'path': self.path, 'is_relation': self.is_relation,
-            'is_single_value': self.is_single_value
+            "path": self.path,
+            "is_relation": self.is_relation,
+            "is_single_value": self.is_single_value,
         }
         return f"EntityPath({obj})"
 
     def __eq__(self, other):
-        return (isinstance(other, EntityPath)
-                and self.path == other.path
-                and self.is_relation == other.is_relation
-                and self.is_single_value == other.is_single_value)
+        return (
+            isinstance(other, EntityPath)
+            and self.path == other.path
+            and self.is_relation == other.is_relation
+            and self.is_single_value == other.is_single_value
+        )
 
 
 class EntitySchema:
@@ -43,29 +45,30 @@ class EntitySchema:
     :param sub_schemata: Nested entity schemata
     """
 
-    def __init__(self,
-                 type_uri: str,
-                 paths: Sequence[EntityPath],
-                 path_to_root: EntityPath = EntityPath(""),
-                 sub_schemata: Optional[Sequence['EntitySchema']] = None) -> None:
+    def __init__(
+        self,
+        type_uri: str,
+        paths: Sequence[EntityPath],
+        path_to_root: EntityPath = EntityPath(""),
+        sub_schemata: Sequence["EntitySchema"] | None = None,
+    ) -> None:
         self.type_uri = type_uri
         self.paths = paths
         self.path_to_root = path_to_root
         self.sub_schemata = sub_schemata
 
     def __repr__(self):
-        obj = {
-            "type_uri": self.type_uri, "paths": self.paths,
-            "path_to_root": self.path_to_root
-        }
+        obj = {"type_uri": self.type_uri, "paths": self.paths, "path_to_root": self.path_to_root}
         return f"EntitySchema({obj})"
 
     def __eq__(self, other):
-        return (isinstance(other, EntitySchema)
-                and self.type_uri == other.type_uri
-                and self.paths == other.paths
-                and self.path_to_root == other.path_to_root
-                and self.sub_schemata == other.sub_schemata)
+        return (
+            isinstance(other, EntitySchema)
+            and self.type_uri == other.type_uri
+            and self.paths == other.paths
+            and self.path_to_root == other.path_to_root
+            and self.sub_schemata == other.sub_schemata
+        )
 
 
 class Entity:
@@ -92,10 +95,12 @@ class Entities:
     :param sub_entities Additional entity collections.
     """
 
-    def __init__(self,
-                 entities: Iterator[Entity],
-                 schema: EntitySchema,
-                 sub_entities: Optional[Sequence['Entities']] = None) -> None:
+    def __init__(
+        self,
+        entities: Iterator[Entity],
+        schema: EntitySchema,
+        sub_entities: Sequence["Entities"] | None = None,
+    ) -> None:
         self.entities = entities
         self.schema = schema
         self.sub_entities = sub_entities

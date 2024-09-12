@@ -1,12 +1,13 @@
 """tests for icon class."""
-from typing import Sequence
+
+from collections.abc import Sequence
 
 import pytest
 
-from cmem_plugin_base.dataintegration.description import Icon, Plugin
-from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 from cmem_plugin_base.dataintegration.context import ExecutionContext
+from cmem_plugin_base.dataintegration.description import Icon, Plugin
 from cmem_plugin_base.dataintegration.entity import Entities
+from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 
 
 @Plugin(
@@ -16,9 +17,7 @@ from cmem_plugin_base.dataintegration.entity import Entities
 class MyWorkflowPlugin(WorkflowPlugin):
     """My Workflow Plugin Class"""
 
-    def execute(
-            self, inputs: Sequence[Entities], context: ExecutionContext
-    ) -> None:
+    def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> None:
         return None
 
 

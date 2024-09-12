@@ -1,4 +1,5 @@
 """Utils for dataintegration plugins."""
+
 import os
 import re
 from typing import Optional
@@ -15,7 +16,7 @@ def generate_id(name: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_-]", "", name)
 
 
-def setup_cmempy_user_access(context: Optional[UserContext]):
+def setup_cmempy_user_access(context: UserContext | None):
     """Setup environment for accessing CMEM with cmempy."""
     if context is None:
         raise ValueError("No UserContext given.")
@@ -39,9 +40,7 @@ def setup_cmempy_super_user_access():
         if "CMEM_BASE_URI" not in os.environ:
             os.environ["CMEM_BASE_URI"] = os.environ["DEPLOY_BASE_URL"]
         if "OAUTH_CLIENT_ID" not in os.environ:
-            os.environ["OAUTH_CLIENT_ID"] = os.environ[
-                "DATAINTEGRATION_CMEM_SERVICE_CLIENT"
-            ]
+            os.environ["OAUTH_CLIENT_ID"] = os.environ["DATAINTEGRATION_CMEM_SERVICE_CLIENT"]
         if "OAUTH_CLIENT_SECRET" not in os.environ:
             os.environ["OAUTH_CLIENT_SECRET"] = os.environ[
                 "DATAINTEGRATION_CMEM_SERVICE_CLIENT_SECRET"
@@ -61,6 +60,7 @@ def split_task_id(task_id: str) -> tuple:
 
     Raises:
         ValueError: in case the task ID is not splittable
+
     """
     try:
         project_part = task_id.split(":")[0]
@@ -70,9 +70,7 @@ def split_task_id(task_id: str) -> tuple:
     return project_part, task_part
 
 
-def write_to_dataset(
-        dataset_id: str, file_resource=None, context: Optional[UserContext] = None
-):
+def write_to_dataset(dataset_id: str, file_resource=None, context: UserContext | None = None):
     """Write to a dataset.
 
     Args:
@@ -87,6 +85,7 @@ def write_to_dataset(
     Raises:
         ValueError: in case the task ID is not splittable
         ValueError: missing parameter
+
     """
     setup_cmempy_user_access(context=context)
     project_id, task_id = split_task_id(dataset_id)

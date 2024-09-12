@@ -1,4 +1,5 @@
 """Package and plugin discovery module."""
+
 import importlib
 import importlib.util
 import json
@@ -9,10 +10,10 @@ from subprocess import check_output  # nosec
 from types import ModuleType
 
 from cmem_plugin_base.dataintegration.description import (
-    PluginDescription,
     Plugin,
-    PluginDiscoveryResult,
+    PluginDescription,
     PluginDiscoveryError,
+    PluginDiscoveryResult,
 )
 
 
@@ -36,18 +37,21 @@ def delete_modules(module_name: str = "cmem") -> None:
     """
     if module_name in sys.modules:
         module = sys.modules[module_name]
-        if hasattr(module, '__path__'):
+        if hasattr(module, "__path__"):
             for _loader, name, _ in pkgutil.walk_packages(module.__path__):
                 delete_modules(module.__name__ + "." + name)
         del sys.modules[module.__name__]
 
 
-def import_modules(package_name: str = "cmem",) -> list[PluginDescription]:
+def import_modules(
+    package_name: str = "cmem",
+) -> list[PluginDescription]:
     """Finds and imports all plugins within a base package.
 
     :param package_name: The base package. Will recurse into all submodules
         of this package.
     """
+
     def import_submodules(module: ModuleType) -> list[ModuleType]:
         modules = []
         for _loader, name, is_pkg in pkgutil.walk_packages(module.__path__):

@@ -1,2 +1,1 @@
 """cmem-plugin-base"""
-

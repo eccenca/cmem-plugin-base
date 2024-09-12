@@ -1,10 +1,11 @@
 """Knowledge Graph Parameter Type."""
-from typing import Optional, Set, List, Any
+
+from typing import Any
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
 from cmem_plugin_base.dataintegration.context import PluginContext
-from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
+from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
 from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 
 
@@ -15,18 +16,17 @@ class GraphParameterType(StringParameterType):
 
     autocomplete_value_with_labels: bool = True
 
-    classes: Optional[Set[str]] = None
+    classes: set[str] | None = None
 
     def __init__(
         self,
         show_di_graphs: bool = False,
         show_system_graphs: bool = False,
         show_graphs_without_class: bool = False,
-        classes: Optional[List[str]] = None,
+        classes: list[str] | None = None,
         allow_only_autocompleted_values: bool = True,
     ):
-        """
-        Knowledge Graph parameter type.
+        """Knowledge Graph parameter type.
 
         :param show_di_graphs: show DI project graphs
         :param show_system_graphs: show system graphs such as shape and query catalogs

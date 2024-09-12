@@ -1,14 +1,14 @@
 """graph parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
-from tests.utils import needs_cmem, TestPluginContext, get_autocomplete_values
+from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
 def test_dataset_parameter_type_completion(json_dataset):
-    """test dataset parameter type completion"""
-    project_name = json_dataset['project']
-    dataset_name = json_dataset['id']
+    """Test dataset parameter type completion"""
+    project_name = json_dataset["project"]
+    dataset_name = json_dataset["id"]
     parameter = DatasetParameterType(dataset_type="json")
     context = TestPluginContext(project_name)
     assert dataset_name in get_autocomplete_values(parameter, [], context)

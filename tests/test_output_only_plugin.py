@@ -1,12 +1,13 @@
 """test file."""
-from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
+
+from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
 from cmem_plugin_base.dataintegration.entity import (
     Entities,
     Entity,
-    EntitySchema,
     EntityPath,
+    EntitySchema,
 )
-from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
+from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 
 
 @Plugin(

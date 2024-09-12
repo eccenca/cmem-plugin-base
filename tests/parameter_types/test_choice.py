@@ -1,4 +1,5 @@
 """Choice parameter type tests"""
+
 import collections
 
 from cmem_plugin_base.dataintegration.parameter.choice import ChoiceParameterType
@@ -8,7 +9,7 @@ CHOICE_LIST = collections.OrderedDict({"ONE": "First Option", "TWO": "Second Opt
 
 
 def test_dataset_parameter_type_completion():
-    """test dataset parameter type completion"""
+    """Test dataset parameter type completion"""
     parameter = ChoiceParameterType(choice_list=CHOICE_LIST)
     context = TestPluginContext()
     assert "ONE" in {
@@ -24,9 +25,7 @@ def test_dataset_parameter_type_completion():
         )
     }
     assert len(
-        parameter.autocomplete(
-            query_terms=[], depend_on_parameter_values=[], context=context
-        )
+        parameter.autocomplete(query_terms=[], depend_on_parameter_values=[], context=context)
     ) == len(CHOICE_LIST)
     assert (
         len(

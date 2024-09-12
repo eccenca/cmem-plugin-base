@@ -1,14 +1,13 @@
 """Tests for `utils.build_entities_from_data`"""
+
 import json
 
-from cmem_plugin_base.dataintegration.entity import EntitySchema, EntityPath
-from cmem_plugin_base.dataintegration.utils.entity_builder import (
-    build_entities_from_data
-)
+from cmem_plugin_base.dataintegration.entity import EntityPath, EntitySchema
+from cmem_plugin_base.dataintegration.utils.entity_builder import build_entities_from_data
 
 
 def test_single_object():
-    """test generation of entities and schema for a simple JSON object."""
+    """Test generation of entities and schema for a simple JSON object."""
     test_data = """
 {
   "name": "sai",
@@ -26,13 +25,14 @@ def test_single_object():
         paths=[
             EntityPath("name", False, is_single_value=True),
             EntityPath("email", False, is_single_value=True),
-        ]
+        ],
     )
 
 
 def test_single_object_one_level():
-    """test generation of entities and schema for a JSON object with one level of
-    hierarchy"""
+    """Test generation of entities and schema for a JSON object with one level of
+    hierarchy
+    """
     test_data = """
 {
   "name": "sai",
@@ -56,7 +56,7 @@ def test_single_object_one_level():
             EntityPath("name", False, is_single_value=True),
             EntityPath("email", False, is_single_value=True),
             EntityPath("city", True, is_single_value=True),
-        ]
+        ],
     )
     # Validate sub entities
     for _ in entities.sub_entities:
@@ -67,14 +67,15 @@ def test_single_object_one_level():
             type_uri="",
             paths=[
                 EntityPath("name", False, is_single_value=True),
-                EntityPath("country", False, is_single_value=True)
-            ]
+                EntityPath("country", False, is_single_value=True),
+            ],
         )
 
 
 def test_single_object_one_level_array():
-    """test generation of entities and schema for a JSON object with array object in
-     first level of hierarchy"""
+    """Test generation of entities and schema for a JSON object with array object in
+    first level of hierarchy
+    """
     test_data = """
 {
   "name": "sai",
@@ -102,7 +103,7 @@ def test_single_object_one_level_array():
             EntityPath("name", False, is_single_value=True),
             EntityPath("email", False, is_single_value=True),
             EntityPath("city", True, is_single_value=False),
-        ]
+        ],
     )
     # Validate sub entities
     for _ in entities.sub_entities:
@@ -113,14 +114,15 @@ def test_single_object_one_level_array():
             type_uri="",
             paths=[
                 EntityPath("name", False, is_single_value=True),
-                EntityPath("country", False, is_single_value=True)
-            ]
+                EntityPath("country", False, is_single_value=True),
+            ],
         )
 
 
 def test_single_object_two_level_array():
-    """test generation of entities and schema for a JSON object with two levels of
-    hierarchy"""
+    """Test generation of entities and schema for a JSON object with two levels of
+    hierarchy
+    """
     test_data = """
 {
   "name": "sai",
@@ -158,7 +160,7 @@ def test_single_object_two_level_array():
             EntityPath("name", False, is_single_value=True),
             EntityPath("email", False, is_single_value=True),
             EntityPath("city", True, is_single_value=False),
-        ]
+        ],
     )
     # Validate sub entities
     location_entities = entities.sub_entities[0]
@@ -167,25 +169,25 @@ def test_single_object_two_level_array():
     assert len(list(location_entities.entities)) == 2
 
     assert city_entities.schema == EntitySchema(
-            type_uri="",
-            paths=[
-                EntityPath("name", False, is_single_value=True),
-                EntityPath("country", False, is_single_value=True),
-                EntityPath("geo_location", True, is_single_value=True),
-            ]
-        )
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_single_value=True),
+            EntityPath("country", False, is_single_value=True),
+            EntityPath("geo_location", True, is_single_value=True),
+        ],
+    )
 
     assert location_entities.schema == EntitySchema(
-            type_uri="",
-            paths=[
-                EntityPath("lat", False, is_single_value=True),
-                EntityPath("long", False, is_single_value=True),
-            ]
-        )
+        type_uri="",
+        paths=[
+            EntityPath("lat", False, is_single_value=True),
+            EntityPath("long", False, is_single_value=True),
+        ],
+    )
 
 
 def test_array_object():
-    """test generation of entities and schema for a simple array JSON object."""
+    """Test generation of entities and schema for a simple array JSON object."""
     test_data = """
 [{
   "name": "seebi"
@@ -208,12 +210,12 @@ def test_array_object():
         paths=[
             EntityPath("name", False, is_single_value=True),
             EntityPath("email", False, is_single_value=True),
-        ]
+        ],
     )
 
 
 def test_empty_object():
-    """test empty json object input"""
+    """Test empty json object input"""
     test_data = """[]"""
     data = json.loads(test_data)
     assert build_entities_from_data(data) is None

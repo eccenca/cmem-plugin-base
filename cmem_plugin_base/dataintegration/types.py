@@ -1,4 +1,5 @@
 """Parameter types."""
+
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
@@ -227,17 +228,11 @@ class ParameterTypes:
         if issubclass(param_type, Enum):
             return EnumParameterType(param_type)
         found_type = next(
-            (
-                t
-                for t in ParameterTypes.registered_types
-                if issubclass(param_type, t.get_type())
-            ),
+            (t for t in ParameterTypes.registered_types if issubclass(param_type, t.get_type())),
             None,
         )
         if found_type is None:
-            mapped = map(
-                lambda t: str(t.get_type().__name__), ParameterTypes.registered_types
-            )
+            mapped = map(lambda t: str(t.get_type().__name__), ParameterTypes.registered_types)
             raise ValueError(
                 f"Parameter has an unsupported type {param_type.__name__}. "
                 "Supported types are: Enum, "

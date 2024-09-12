@@ -1,22 +1,29 @@
 """Code parameter types tests"""
+
 import unittest
-from typing import Sequence
-from tests.utils import TestPluginContext
+from collections.abc import Sequence
+
 from cmem_plugin_base.dataintegration.description import Plugin
-from cmem_plugin_base.dataintegration.parameter.code import (XmlCode,
-                                                             CodeParameterType,
-                                                             JsonCode,
-                                                             JinjaCode, YamlCode,
-                                                             SqlCode, SparqlCode,
-                                                             TurtleCode, PythonCode)
+from cmem_plugin_base.dataintegration.parameter.code import (
+    CodeParameterType,
+    JinjaCode,
+    JsonCode,
+    PythonCode,
+    SparqlCode,
+    SqlCode,
+    TurtleCode,
+    XmlCode,
+    YamlCode,
+)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
+from tests.utils import TestPluginContext
 
 
 class CodeParameterTest(unittest.TestCase):
     """Code Parameter Test"""
 
     def test__detection(self):
-        """test detection"""
+        """Test detection"""
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
@@ -24,15 +31,16 @@ class CodeParameterTest(unittest.TestCase):
             """Test My Transform Plugin"""
 
             def __init__(  # pylint: disable=too-many-arguments
-                         self,
-                         xml: XmlCode = XmlCode("<xml></xml>"),
-                         json: JsonCode = JsonCode("{}"),
-                         jinja: JinjaCode = JinjaCode(""),
-                         sql: SqlCode = SqlCode(""),
-                         yaml: YamlCode = YamlCode(""),
-                         sparql: SparqlCode = SparqlCode(""),
-                         turtle: TurtleCode = TurtleCode(""),
-                         python: PythonCode = PythonCode("")) -> None:
+                self,
+                xml: XmlCode = XmlCode("<xml></xml>"),
+                json: JsonCode = JsonCode("{}"),
+                jinja: JinjaCode = JinjaCode(""),
+                sql: SqlCode = SqlCode(""),
+                yaml: YamlCode = YamlCode(""),
+                sparql: SparqlCode = SparqlCode(""),
+                turtle: TurtleCode = TurtleCode(""),
+                python: PythonCode = PythonCode(""),
+            ) -> None:
                 self.xml = xml
                 self.json = json
                 self.jinja = jinja
@@ -43,7 +51,7 @@ class CodeParameterTest(unittest.TestCase):
                 self.python = python
 
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
-                """test transform"""
+                """Test transform"""
                 return []
 
         MyTransformPlugin()
@@ -59,7 +67,7 @@ class CodeParameterTest(unittest.TestCase):
         self.assertEqual(plugin.parameters[7].param_type.name, "code-python")
 
     def test_serialization(self):
-        """test serialization from/to strings"""
+        """Test serialization from/to strings"""
         jinja_type = CodeParameterType[JinjaCode]("jinja2")
 
         # Create a jinja code instance from a string

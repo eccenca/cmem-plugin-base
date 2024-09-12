@@ -1,6 +1,6 @@
 """Testing utilities."""
+
 import os
-from typing import Optional
 
 import pytest
 
@@ -33,14 +33,14 @@ class TestPluginContext(PluginContext):
     def __init__(
         self,
         project_id: str = "dummyProject",
-        user: Optional[UserContext] = TestUserContext(),
+        user: UserContext | None = TestUserContext(),
     ):
         self.project_id = project_id
         self.user = user
 
 
 def get_autocomplete_values(parameter, query_terms, context):
-    """get autocomplete values"""
+    """Get autocomplete values"""
     return [
         x.value
         for x in parameter.autocomplete(

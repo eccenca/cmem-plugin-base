@@ -1,4 +1,5 @@
 """Classes for describing plugins"""
+
 import inspect
 import sys
 from base64 import b64encode
@@ -6,9 +7,9 @@ from dataclasses import dataclass, field
 from inspect import _empty
 from mimetypes import guess_type
 from pkgutil import get_data
-from typing import Optional, List, Type, Any
+from typing import Any
 
-from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin, TransformPlugin
+from cmem_plugin_base.dataintegration.plugins import TransformPlugin, WorkflowPlugin
 from cmem_plugin_base.dataintegration.types import (
     ParameterType,
     ParameterTypes,
@@ -29,11 +30,7 @@ class Icon:
         file from the same module, you can use package=__package__.
     """
 
-    def __init__(
-        self,
-        file_name: str,
-        package: str
-    ) -> None:
+    def __init__(self, file_name: str, package: str) -> None:
         self.file_name = file_name
 
         self.package = package
@@ -51,13 +48,9 @@ class Icon:
 
         self.mime_type = guess_type(self.file_name)[0]
         if self.mime_type is None:
-            raise ValueError(
-                f"Could not guess the mime type of the file '{self.file_name}'."
-            )
+            raise ValueError(f"Could not guess the mime type of the file '{self.file_name}'.")
         if not self.mime_type.startswith("image/"):
-            raise ValueError(
-                f"Guessed mime type '{self.mime_type}' does not start with 'image/'."
-            )
+            raise ValueError(f"Guessed mime type '{self.mime_type}' does not start with 'image/'.")
 
     def __str__(self):
         data_base64 = b64encode(self.data).decode()
@@ -85,8 +78,8 @@ class PluginParameter:
         name: str,
         label: str = "",
         description: str = "",
-        param_type: Optional[ParameterType] = None,
-        default_value: Optional[Any] = None,
+        param_type: ParameterType | None = None,
+        default_value: Any | None = None,
         advanced: bool = False,
         visible: bool = True,
     ) -> None:
@@ -117,12 +110,12 @@ class PluginDescription:
         self,
         plugin_class,
         label: str,
-        plugin_id: Optional[str] = None,
+        plugin_id: str | None = None,
         description: str = "",
         documentation: str = "",
-        categories: Optional[List[str]] = None,
-        parameters: Optional[List[PluginParameter]] = None,
-        icon: Optional[Icon] = None
+        categories: list[str] | None = None,
+        parameters: list[PluginParameter] | None = None,
+        icon: Icon | None = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -190,7 +183,8 @@ class PluginDiscoveryResult:
 
 class Categories:
     """A list of common plugin categories. At the moment, in the UI,
-    categories are only utilized for rule operators, such as transform plugins."""
+    categories are only utilized for rule operators, such as transform plugins.
+    """
 
     # Plugins in the 'Recommended' category will be shown preferably
     RECOMMENDED: str = "Recommended"
@@ -238,12 +232,12 @@ class Plugin:
     def __init__(
         self,
         label: str,
-        plugin_id: Optional[str] = None,
+        plugin_id: str | None = None,
         description: str = "",
         documentation: str = "",
-        categories: Optional[List[str]] = None,
-        parameters: Optional[List[PluginParameter]] = None,
-        icon: Optional[Icon] = None
+        categories: list[str] | None = None,
+        parameters: list[PluginParameter] | None = None,
+        icon: Icon | None = None,
     ):
         self.label = label
         self.description = description
@@ -268,15 +262,15 @@ class Plugin:
             documentation=self.documentation,
             categories=self.categories,
             parameters=self.retrieve_parameters(func),
-            icon=self.icon
+            icon=self.icon,
         )
         Plugin.plugins.append(plugin_desc)
         return func
 
-    def retrieve_parameters(self, plugin_class: Type) -> List[PluginParameter]:
+    def retrieve_parameters(self, plugin_class: type) -> list[PluginParameter]:
         """Retrieves parameters from a plugin class and matches them with the user
-        parameter definitions."""
-
+        parameter definitions.
+        """
         # Only return parameters for user-defined init methods.
         if not hasattr(plugin_class.__init__, "__code__"):
             return []

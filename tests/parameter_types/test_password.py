@@ -1,6 +1,7 @@
 """Password parameter type tests"""
+
 import unittest
-from typing import Sequence
+from collections.abc import Sequence
 
 from cmem_plugin_base.dataintegration.description import Plugin
 from cmem_plugin_base.dataintegration.parameter.password import (
@@ -14,7 +15,7 @@ class PasswordParameterTest(unittest.TestCase):
     """Password Parameter Test"""
 
     def test__detection(self):
-        """test detection"""
+        """Test detection"""
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
@@ -25,7 +26,7 @@ class PasswordParameterTest(unittest.TestCase):
                 self.password = password
 
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
-                """test transform"""
+                """Test transform"""
                 return []
 
         Plugin.plugins.append(MyTransformPlugin)

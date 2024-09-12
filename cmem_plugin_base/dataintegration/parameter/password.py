@@ -27,7 +27,8 @@ class PasswordParameterType(ParameterType[Password]):
 
     def from_string(self, value: str, context: PluginContext) -> Password:
         """Parses strings into parameter values.
-        Decrypts the password if the encryption preamble is present"""
+        Decrypts the password if the encryption preamble is present
+        """
         if value is None or value == "":
             encrypted_value = ""
         elif value.startswith(self.preamble):
@@ -38,7 +39,8 @@ class PasswordParameterType(ParameterType[Password]):
 
     def to_string(self, value: Password) -> str:
         """Converts parameter values into their string representation.
-        Encrypts the password so that it won't be stored verbatim."""
+        Encrypts the password so that it won't be stored verbatim.
+        """
         if value.encrypted_value == "":
             return ""
         return self.preamble + value.encrypted_value
