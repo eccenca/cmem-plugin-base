@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## Unreleased
+
+### Added
+
+- The execution report also contains sample entities now (CMEM-3664):
+  - For plugins that don't update the execution report by themselves, DataIntegration will automatically add sample entities.
+  - Plugins that update the execution report can add sample entities to `ExecutionReport.sample_entities`.
+
 ## [4.7.0] 2024-06-13
 
 ### Added
