@@ -44,6 +44,7 @@ types-requests = "^2.31.0.1"
 wheel = "^0.38.4"
 # added in order to have something to discover (>=0.0.0 <1.0.0)
 # cmem-plugin-examples = "*"
+pytest-dotenv = "^0.5.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
