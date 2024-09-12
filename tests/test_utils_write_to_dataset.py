@@ -13,7 +13,7 @@ from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
-def test_write_to_json_dataset(json_dataset):
+def test_write_to_json_dataset(json_dataset) -> None:
     """Test write to json dataset"""
     project_name = json_dataset["project"]
     dataset_name = json_dataset["id"]
@@ -31,7 +31,7 @@ def test_write_to_json_dataset(json_dataset):
 
 
 @needs_cmem
-def test_write_to_not_valid_dataset():
+def test_write_to_not_valid_dataset() -> None:
     """Test write to not valid dataset"""
     with pytest.raises(
         requests.exceptions.HTTPError,
@@ -45,7 +45,7 @@ def test_write_to_not_valid_dataset():
 
 
 @needs_cmem
-def test_write_to_invalid_format_dataset_id():
+def test_write_to_invalid_format_dataset_id() -> None:
     """Test write to invalid format dataset id"""
     with pytest.raises(ValueError, match=r"INVALID_DATASET_ID_FORMAT is not a valid task ID."):
         write_to_dataset("INVALID_DATASET_ID_FORMAT", io.StringIO("{}"), TestPluginContext().user)

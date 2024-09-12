@@ -5,7 +5,7 @@ from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
-def test_resource_parameter_type_completion(json_resource):
+def test_resource_parameter_type_completion(json_resource) -> None:
     """Test resource parameter type completion"""
     project_name = json_resource.project_name
     resource_name = json_resource.resource_name

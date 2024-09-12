@@ -6,7 +6,7 @@ from cmem_plugin_base.dataintegration.entity import EntityPath, EntitySchema
 from cmem_plugin_base.dataintegration.utils.entity_builder import build_entities_from_data
 
 
-def test_single_object():
+def test_single_object() -> None:
     """Test generation of entities and schema for a simple JSON object."""
     test_data = """
 {
@@ -29,7 +29,7 @@ def test_single_object():
     )
 
 
-def test_single_object_one_level():
+def test_single_object_one_level() -> None:
     """Test generation of entities and schema for a JSON object with one level of
     hierarchy
     """
@@ -72,7 +72,7 @@ def test_single_object_one_level():
         )
 
 
-def test_single_object_one_level_array():
+def test_single_object_one_level_array() -> None:
     """Test generation of entities and schema for a JSON object with array object in
     first level of hierarchy
     """
@@ -119,7 +119,7 @@ def test_single_object_one_level_array():
         )
 
 
-def test_single_object_two_level_array():
+def test_single_object_two_level_array() -> None:
     """Test generation of entities and schema for a JSON object with two levels of
     hierarchy
     """
@@ -186,7 +186,7 @@ def test_single_object_two_level_array():
     )
 
 
-def test_array_object():
+def test_array_object() -> None:
     """Test generation of entities and schema for a simple array JSON object."""
     test_data = """
 [{
@@ -214,7 +214,7 @@ def test_array_object():
     )
 
 
-def test_empty_object():
+def test_empty_object() -> None:
     """Test empty json object input"""
     test_data = """[]"""
     data = json.loads(test_data)

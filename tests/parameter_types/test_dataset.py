@@ -5,7 +5,7 @@ from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
-def test_dataset_parameter_type_completion(json_dataset):
+def test_dataset_parameter_type_completion(json_dataset) -> None:
     """Test dataset parameter type completion"""
     project_name = json_dataset["project"]
     dataset_name = json_dataset["id"]

@@ -8,7 +8,7 @@ from tests.utils import TestPluginContext
 CHOICE_LIST = collections.OrderedDict({"ONE": "First Option", "TWO": "Second Option"})
 
 
-def test_dataset_parameter_type_completion():
+def test_dataset_parameter_type_completion() -> None:
     """Test dataset parameter type completion"""
     parameter = ChoiceParameterType(choice_list=CHOICE_LIST)
     context = TestPluginContext()

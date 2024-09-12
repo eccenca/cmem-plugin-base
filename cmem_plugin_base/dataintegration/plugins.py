@@ -82,8 +82,7 @@ class WorkflowPlugin(PluginBase):
 
 
 class TransformPlugin(PluginBase):
-    """Base class of all transform operator plugins.
-    """
+    """Base class of all transform operator plugins."""
 
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
         """Transforms a collection of values.

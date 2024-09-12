@@ -1,6 +1,5 @@
 """utils module for building entities from python objects dict|list."""
 
-
 from ulid import ULID
 
 from cmem_plugin_base.dataintegration.entity import Entities, Entity, EntityPath, EntitySchema
@@ -95,7 +94,7 @@ def _get_schema(data: dict | list):
     return path_to_schema_map
 
 
-def extend_path_list(path_to_entities, sub_path_to_entities):
+def extend_path_list(path_to_entities, sub_path_to_entities) -> None:
     """Extend a dictionary of paths to entities by merging with another.
 
     This function takes two dictionaries, `path_to_entities` and `sub_path_to_entities`,
@@ -163,8 +162,7 @@ def _get_entities(
     data: dict | list,
     path_to_schema_map: dict[str, EntitySchema],
 ) -> dict[str, list[Entity]]:
-    """Get entities based on the schema, data, and sub-entities.
-    """
+    """Get entities based on the schema, data, and sub-entities."""
     path_to_entities: dict[str, list[Entity]] = {}
     if isinstance(data, list):
         for _ in data:
@@ -182,8 +180,7 @@ def _get_entities(
 
 
 def build_entities_from_data(data: dict | list) -> Entities | None:
-    """Get entities from a data object.
-    """
+    """Get entities from a data object."""
     path_to_schema_map = _get_schema(data)
     if not path_to_schema_map:
         return None

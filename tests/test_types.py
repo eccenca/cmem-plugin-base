@@ -20,7 +20,7 @@ class TypesTest(unittest.TestCase):
     class MissingType:
         """Test Missing Type"""
 
-    def test_missing_type(self):
+    def test_missing_type(self) -> None:
         """Test missing type"""
         self.assertRaisesRegex(
             ValueError,
@@ -32,22 +32,22 @@ class TypesTest(unittest.TestCase):
 class BasicTypesTest(unittest.TestCase):
     """Test Basic Types"""
 
-    def test_detection(self):
+    def test_detection(self) -> None:
         """Test detection"""
-        self.assertEqual(ParameterTypes.get_type(str).name, "string")
-        self.assertEqual(ParameterTypes.get_type(int).name, "Long")
-        self.assertEqual(ParameterTypes.get_type(float).name, "double")
-        self.assertEqual(ParameterTypes.get_type(bool).name, "boolean")
+        assert ParameterTypes.get_type(str).name == "string"
+        assert ParameterTypes.get_type(int).name == "Long"
+        assert ParameterTypes.get_type(float).name == "double"
+        assert ParameterTypes.get_type(bool).name == "boolean"
 
-    def test_conversion(self):
+    def test_conversion(self) -> None:
         """Test conversion"""
         int_type = ParameterTypes.get_type(int)
         float_type = ParameterTypes.get_type(float)
         bool_type = ParameterTypes.get_type(bool)
-        self.assertEqual(int_type.from_string(int_type.to_string(3), context), 3)
-        self.assertEqual(float_type.from_string(int_type.to_string(1.2), context), 1.2)
-        self.assertEqual(bool_type.from_string(int_type.to_string(True), context), True)
-        self.assertEqual(bool_type.from_string(int_type.to_string(False), context), False)
+        assert int_type.from_string(int_type.to_string(3), context) == 3
+        assert float_type.from_string(int_type.to_string(1.2), context) == 1.2
+        assert bool_type.from_string(int_type.to_string(True), context) is True
+        assert bool_type.from_string(int_type.to_string(False), context) is False
 
 
 class EnumTest(unittest.TestCase):
@@ -60,17 +60,17 @@ class EnumTest(unittest.TestCase):
         GREEN = 2
         BLUE = 3
 
-    def test_detection(self):
+    def test_detection(self) -> None:
         """Test detection"""
-        self.assertEqual(ParameterTypes.get_type(EnumTest.Color).name, "enumeration")
+        assert ParameterTypes.get_type(EnumTest.Color).name == "enumeration"
 
-    def test_conversion(self):
+    def test_conversion(self) -> None:
         """Test conversion"""
         enum = EnumParameterType(EnumTest.Color)
-        self.assertEqual(enum.to_string(enum.from_string("RED", context)), "RED")
-        self.assertEqual(enum.to_string(enum.from_string("GREEN", context)), "GREEN")
+        assert enum.to_string(enum.from_string("RED", context)) == "RED"
+        assert enum.to_string(enum.from_string("GREEN", context)) == "GREEN"
 
-    def test_invalid_values(self):
+    def test_invalid_values(self) -> None:
         """Test invalid values"""
         enum = EnumParameterType(EnumTest.Color)
         self.assertRaisesRegex(
@@ -82,7 +82,7 @@ class EnumTest(unittest.TestCase):
             ValueError, "not a valid value", lambda: enum.from_string("CYAN", context)
         )
 
-    def test_autocomplete(self):
+    def test_autocomplete(self) -> None:
         """Test autocomplete"""
         enum = EnumParameterType(EnumTest.Color)
         self.assertListEqual(

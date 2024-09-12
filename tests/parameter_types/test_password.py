@@ -14,7 +14,7 @@ from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 class PasswordParameterTest(unittest.TestCase):
     """Password Parameter Test"""
 
-    def test__detection(self):
+    def test__detection(self) -> None:
         """Test detection"""
         Plugin.plugins = []
 
@@ -33,7 +33,7 @@ class PasswordParameterTest(unittest.TestCase):
 
         plugin = Plugin.plugins[0]
         password_param = plugin.parameters[0]
-        self.assertEqual(password_param.param_type.name, PasswordParameterType.name)
+        assert password_param.param_type.name == PasswordParameterType.name
 
 
 if __name__ == "__main__":

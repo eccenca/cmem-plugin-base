@@ -16,7 +16,7 @@ def generate_id(name: str) -> str:
     return re.sub(r"[^a-zA-Z0-9_-]", "", name)
 
 
-def setup_cmempy_user_access(context: UserContext | None):
+def setup_cmempy_user_access(context: UserContext | None) -> None:
     """Setup environment for accessing CMEM with cmempy."""
     if context is None:
         raise ValueError("No UserContext given.")
@@ -28,7 +28,7 @@ def setup_cmempy_user_access(context: UserContext | None):
         os.environ["CMEM_BASE_URI"] = os.environ["DEPLOY_BASE_URL"]
 
 
-def setup_cmempy_super_user_access():
+def setup_cmempy_super_user_access() -> None:
     """Setup environment for accessing CMEM with cmempy.
 
     The helper function is used to setup the environment for accessing CMEM with cmempy.

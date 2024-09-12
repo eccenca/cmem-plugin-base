@@ -1,12 +1,11 @@
 """graph parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.graph import GraphParameterType
-
-from ..utils import TestPluginContext, needs_cmem
+from tests.utils import TestPluginContext, needs_cmem
 
 
 @needs_cmem
-def test_graph_parameter_type_completion():
+def test_graph_parameter_type_completion() -> None:
     """Test graph parameter type completion"""
     parameter = GraphParameterType(show_system_graphs=True)
     context = TestPluginContext()

@@ -22,7 +22,7 @@ from tests.utils import TestPluginContext
 class CodeParameterTest(unittest.TestCase):
     """Code Parameter Test"""
 
-    def test__detection(self):
+    def test__detection(self) -> None:
         """Test detection"""
         Plugin.plugins = []
 
@@ -57,29 +57,29 @@ class CodeParameterTest(unittest.TestCase):
         MyTransformPlugin()
 
         plugin = Plugin.plugins[0]
-        self.assertEqual(plugin.parameters[0].param_type.name, "code-xml")
-        self.assertEqual(plugin.parameters[1].param_type.name, "code-json")
-        self.assertEqual(plugin.parameters[2].param_type.name, "code-jinja2")
-        self.assertEqual(plugin.parameters[3].param_type.name, "code-sql")
-        self.assertEqual(plugin.parameters[4].param_type.name, "code-yaml")
-        self.assertEqual(plugin.parameters[5].param_type.name, "code-sparql")
-        self.assertEqual(plugin.parameters[6].param_type.name, "code-turtle")
-        self.assertEqual(plugin.parameters[7].param_type.name, "code-python")
+        assert plugin.parameters[0].param_type.name == "code-xml"
+        assert plugin.parameters[1].param_type.name == "code-json"
+        assert plugin.parameters[2].param_type.name == "code-jinja2"
+        assert plugin.parameters[3].param_type.name == "code-sql"
+        assert plugin.parameters[4].param_type.name == "code-yaml"
+        assert plugin.parameters[5].param_type.name == "code-sparql"
+        assert plugin.parameters[6].param_type.name == "code-turtle"
+        assert plugin.parameters[7].param_type.name == "code-python"
 
-    def test_serialization(self):
+    def test_serialization(self) -> None:
         """Test serialization from/to strings"""
         jinja_type = CodeParameterType[JinjaCode]("jinja2")
 
         # Create a jinja code instance from a string
         jinja_code = jinja_type.from_string("my code", TestPluginContext(user=None))
-        self.assertEqual(jinja_code.code, "my code")
+        assert jinja_code.code == "my code"
 
         # Convert jinja code instance to a string
         code_str = jinja_type.to_string(jinja_code)
-        self.assertEqual(code_str, "my code")
+        assert code_str == "my code"
 
         # Make sure __str__ will return the code itself
-        self.assertEqual(str(jinja_code), "my code")
+        assert str(jinja_code) == "my code"
 
 
 if __name__ == "__main__":
