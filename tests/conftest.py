@@ -1,6 +1,7 @@
 """pytest conftest module"""
 
 import io
+from collections.abc import Generator
 from dataclasses import dataclass
 
 import pytest
@@ -17,8 +18,8 @@ RESOURCE_NAME = "sample_test.json"
 
 
 @pytest.fixture(name="json_dataset", scope="module")
-def _json_dataset():
-    """Setup"""
+def _json_dataset() -> Generator[dict, None, None]:
+    """Provide a dataset"""
     make_new_project(PROJECT_NAME)
     make_new_dataset(
         project_name=PROJECT_NAME,
@@ -27,7 +28,8 @@ def _json_dataset():
         parameters={"file": RESOURCE_NAME},
         autoconfigure=False,
     )
-    yield get_dataset(PROJECT_NAME, DATASET_NAME)
+    dataset = get_dataset(PROJECT_NAME, DATASET_NAME)
+    yield dataset
     delete_project(PROJECT_NAME)
 
 
