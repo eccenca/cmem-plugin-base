@@ -1,9 +1,10 @@
 """Parameter types."""
 
+from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
-from typing import Optional, TypeVar, Generic, Type, Iterable, Any
+from typing import Any, Generic, Optional, Type, TypeVar
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 
@@ -15,7 +16,7 @@ class Autocompletion:
     value: str
     """The value to which the parameter value should be set."""
 
-    label: Optional[str]
+    label: str | None
     """An optional label that a human user would see instead."""
 
 
@@ -23,8 +24,10 @@ T = TypeVar("T")
 
 
 class ParameterType(Generic[T]):
-    """Represents a plugin parameter type.
-    Provides string-based serialization and autocompletion."""
+    """Represent a plugin parameter type.
+
+    Provides string-based serialization and autocompletion.
+    """
 
     name: str
     """The name by which this type can be identified. If available,
@@ -45,8 +48,6 @@ class ParameterType(Generic[T]):
     The values of all parameters specified here will be provided
     to the autocomplete function."""
 
-    # flake8: noqa
-    # pylint: disable=no-member
     def get_type(self):
         """Retrieves the type that is supported by a given instance."""
         return self.__orig_bases__[0].__args__[0]
@@ -58,15 +59,13 @@ class ParameterType(Generic[T]):
         """Converts parameter values into their string representation."""
         return str(value)
 
-    # pylint: disable=unused-argument
     def autocomplete(
         self,
         query_terms: list[str],
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
-        """Autocompletion request.
-        Returns all results that match ALL provided query terms.
+        """Autocompletion request - Returns all results that match ALL provided query terms.
 
         :param query_terms: A list of lower case conjunctive search terms.
         :param depend_on_parameter_values The values of the parameters specified by
@@ -126,7 +125,8 @@ class BoolParameterType(ParameterType[bool]):
 
     name = "boolean"
 
-    def from_string(self, value: str, context: PluginContext) -> bool:
+    def from_string(self, value: str, context: PluginContext) -> bool:  # noqa: ARG002
+        """Get boolean value from string"""
         lower = value.lower()
         if lower in ("true", "1"):
             return True
@@ -135,6 +135,7 @@ class BoolParameterType(ParameterType[bool]):
         raise ValueError("Value must be either 'true' or 'false'")
 
     def to_string(self, value: bool) -> str:
+        """Get string value from boolean"""
         if value:
             return "true"
         return "false"

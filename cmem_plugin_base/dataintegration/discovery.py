@@ -30,7 +30,7 @@ def get_packages():
 
 
 def delete_modules(module_name: str = "cmem") -> None:
-    """Finds and deletes all plugins within a base package.
+    """Find and delete all plugins within a base package.
 
     :param module_name: The base package. Will recurse into all submodules
         of this package.
@@ -46,7 +46,7 @@ def delete_modules(module_name: str = "cmem") -> None:
 def import_modules(
     package_name: str = "cmem",
 ) -> list[PluginDescription]:
-    """Finds and imports all plugins within a base package.
+    """Find and import all plugins within a base package.
 
     :param package_name: The base package. Will recurse into all submodules
         of this package.
@@ -96,7 +96,7 @@ def discover_plugins(package_name: str = "cmem_plugin") -> PluginDiscoveryResult
         try:
             for plugin in import_modules(package_name=name):
                 plugin_descriptions.plugins.append(plugin)
-        except BaseException as ex:
+        except BaseException as ex:  # noqa: BLE001
             error = PluginDiscoveryError(
                 package_name=name,
                 error_message=str(ex),

@@ -20,17 +20,15 @@ class ChoiceParameterType(StringParameterType):
         self.choice_list = choice_list
 
     def label(
-        self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
+        self, value: str, depend_on_parameter_values: list[Any], context: PluginContext  # noqa: ARG002
     ) -> str | None:
-        """Returns the label for the given choice value."""
+        """Return the label for the given choice value."""
         return self.choice_list[value]
 
     def autocomplete(
-        self,
-        query_terms: list[str],
-        depend_on_parameter_values: list[Any],
-        context: PluginContext,
+        self, query_terms: list[str], depend_on_parameter_values: list[Any], context: PluginContext,  # noqa: ARG002
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match ALL provided query terms."""
         result = []
         for identifier in self.choice_list:
             label = self.choice_list[identifier]

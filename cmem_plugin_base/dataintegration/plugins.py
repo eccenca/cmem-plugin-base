@@ -66,7 +66,7 @@ class WorkflowPlugin(PluginBase):
     Should be `None`, if this operator does not return any output."""
 
     def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
-        """Executes the workflow plugin on a given collection of entities.
+        """Execute the workflow plugin on a given collection of entities.
 
         :param inputs: Contains a separate collection of entities for each
             input. Currently, DI sends ALWAYS an input. in case no connected
@@ -85,7 +85,7 @@ class TransformPlugin(PluginBase):
     """Base class of all transform operator plugins."""
 
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
-        """Transforms a collection of values.
+        """Transform a collection of values.
 
         :param inputs: A sequence which contains as many elements as there are input
             operators for this transformation.

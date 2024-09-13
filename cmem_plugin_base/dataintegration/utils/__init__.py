@@ -10,14 +10,15 @@ from cmem_plugin_base.dataintegration.context import UserContext
 
 
 def generate_id(name: str) -> str:
-    """Generates a valid DataIntegration identifier from a string.
+    """Generate a valid DataIntegration identifier from a string.
+
     Characters that are not allowed in an identifier are removed.
     """
     return re.sub(r"[^a-zA-Z0-9_-]", "", name)
 
 
 def setup_cmempy_user_access(context: UserContext | None) -> None:
-    """Setup environment for accessing CMEM with cmempy."""
+    """Set up environment for accessing CMEM with cmempy."""
     if context is None:
         raise ValueError("No UserContext given.")
     if context.token() is None:
@@ -29,7 +30,7 @@ def setup_cmempy_user_access(context: UserContext | None) -> None:
 
 
 def setup_cmempy_super_user_access() -> None:
-    """Setup environment for accessing CMEM with cmempy.
+    """Set up environment for accessing CMEM with cmempy.
 
     The helper function is used to setup the environment for accessing CMEM with cmempy.
     It does nothing if there is already a working environment.

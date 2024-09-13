@@ -18,7 +18,8 @@ class EntityPath:
         self.is_relation = is_relation
         self.is_single_value = is_single_value
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Get a string representation"""
         obj = {
             "path": self.path,
             "is_relation": self.is_relation,
@@ -26,7 +27,8 @@ class EntityPath:
         }
         return f"EntityPath({obj})"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """Compare"""
         return (
             isinstance(other, EntityPath)
             and self.path == other.path
@@ -57,11 +59,13 @@ class EntitySchema:
         self.path_to_root = path_to_root
         self.sub_schemata = sub_schemata
 
-    def __repr__(self):
+    def __repr__(self) -> str:
+        """Get a string representation"""
         obj = {"type_uri": self.type_uri, "paths": self.paths, "path_to_root": self.path_to_root}
         return f"EntitySchema({obj})"
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
+        """Compare"""
         return (
             isinstance(other, EntitySchema)
             and self.type_uri == other.type_uri

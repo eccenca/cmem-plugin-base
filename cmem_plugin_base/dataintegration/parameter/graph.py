@@ -52,6 +52,7 @@ class GraphParameterType(StringParameterType):
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match ALL provided query terms"""
         setup_cmempy_user_access(context=context.user)
         graphs = get_graphs_list()
         result = []

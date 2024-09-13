@@ -17,8 +17,8 @@ class FixedSchemaPort(Port):
 
 
 class FlexibleSchemaPort(Port):
-    """Port that does not have a fixed schema, but will adapt its schema to the
-    connected port.
+    """Port that does not have a fixed schema, but will adapt its schema to the connected port.
+
     Flexible input ports will adapt the schema to the connected output.
     Flexible output ports will adapt the schema to the connected input.
     It is not allowed to connect two flexible ports.
@@ -27,6 +27,7 @@ class FlexibleSchemaPort(Port):
 
 class UnknownSchemaPort(Port):
     """Port for which the schema is not known in advance.
+
     This includes output ports with a schema that depends on external factors
     (e.g., REST requests).
     """
@@ -45,5 +46,6 @@ class FixedNumberOfInputs(InputPorts):
 
 class FlexibleNumberOfInputs(InputPorts):
     """Operator accepts a flexible number of inputs.
+
     At the moment, each input is a flexible schema port.
     """

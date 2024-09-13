@@ -33,7 +33,7 @@ def _json_dataset():
 
 @pytest.fixture(name="json_resource", scope="module")
 def _json_resource():
-    """Setup json resource"""
+    """Set up json resource"""
     _project_name = "resource_test_project"
     _resource_name = "sample_test.json"
     make_new_project(_project_name)

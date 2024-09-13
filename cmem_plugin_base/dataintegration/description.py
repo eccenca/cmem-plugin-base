@@ -53,6 +53,10 @@ class Icon:
             raise ValueError(f"Guessed mime type '{self.mime_type}' does not start with 'image/'.")
 
     def __str__(self):
+        """Get data URI for the icon
+
+        https://en.wikipedia.org/wiki/Data_URI_scheme
+        """
         data_base64 = b64encode(self.data).decode()
         return f"""data:{self.mime_type};base64,{data_base64}"""
 
@@ -73,7 +77,7 @@ class PluginParameter:
     :param visible: If true, the parameter will be displayed to the user in the UI.
     """
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         name: str,
         label: str = "",
@@ -104,9 +108,7 @@ class PluginDescription:
     :param icon: An optional custom plugin icon.
     """
 
-    # pylint: disable=too-many-instance-attributes
-
-    def __init__(  # pylint: disable=too-many-arguments
+    def __init__(  # noqa: PLR0913
         self,
         plugin_class,
         label: str,
@@ -182,8 +184,10 @@ class PluginDiscoveryResult:
 
 
 class Categories:
-    """A list of common plugin categories. At the moment, in the UI,
-    categories are only utilized for rule operators, such as transform plugins.
+    """A list of common plugin categories.
+
+    At the moment, in the UI, categories are only utilized for rule operators,
+    such as transform plugins.
     """
 
     # Plugins in the 'Recommended' category will be shown preferably
@@ -229,7 +233,7 @@ class Plugin:
 
     plugins: list[PluginDescription] = []
 
-    def __init__(
+    def __init__(  # noqa: PLR0913
         self,
         label: str,
         plugin_id: str | None = None,
@@ -254,6 +258,7 @@ class Plugin:
             self.parameters = parameters
 
     def __call__(self, func):
+        """Allow to call the instance"""
         plugin_desc = PluginDescription(
             plugin_class=func,
             label=self.label,
@@ -268,9 +273,7 @@ class Plugin:
         return func
 
     def retrieve_parameters(self, plugin_class: type) -> list[PluginParameter]:
-        """Retrieves parameters from a plugin class and matches them with the user
-        parameter definitions.
-        """
+        """Retrieve parameters from a plugin class and matches them with the user parameter defs"""
         # Only return parameters for user-defined init methods.
         if not hasattr(plugin_class.__init__, "__code__"):
             return []
