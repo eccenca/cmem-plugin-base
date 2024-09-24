@@ -2,7 +2,6 @@
 
 import os
 import re
-from typing import Optional
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
 

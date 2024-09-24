@@ -27,7 +27,7 @@ class EntityPath:
         }
         return f"EntityPath({obj})"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Compare"""
         return (
             isinstance(other, EntityPath)
@@ -43,7 +43,7 @@ class EntitySchema:
     :param type_uri: The entity type
     :param paths: Ordered list of paths
     :param path_to_root: Specifies a path which defines where this schema is located
-    in the schema tree
+    in the schema tree. Empty by default.
     :param sub_schemata: Nested entity schemata
     """
 
@@ -51,12 +51,15 @@ class EntitySchema:
         self,
         type_uri: str,
         paths: Sequence[EntityPath],
-        path_to_root: EntityPath = EntityPath(""),
+        path_to_root: EntityPath | None = None,
         sub_schemata: Sequence["EntitySchema"] | None = None,
     ) -> None:
         self.type_uri = type_uri
         self.paths = paths
-        self.path_to_root = path_to_root
+        if path_to_root is None:
+            self.path_to_root = EntityPath("")
+        else:
+            self.path_to_root = path_to_root
         self.sub_schemata = sub_schemata
 
     def __repr__(self) -> str:
@@ -64,7 +67,7 @@ class EntitySchema:
         obj = {"type_uri": self.type_uri, "paths": self.paths, "path_to_root": self.path_to_root}
         return f"EntitySchema({obj})"
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: object) -> bool:
         """Compare"""
         return (
             isinstance(other, EntitySchema)

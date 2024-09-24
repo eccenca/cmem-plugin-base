@@ -88,5 +88,5 @@ class GraphParameterType(StringParameterType):
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=iri, label=label))
                     continue
-        result.sort(key=lambda x: x.label)  # type: ignore
+        result.sort(key=lambda x: x.label)
         return list(set(result))

@@ -17,7 +17,7 @@ from cmem_plugin_base.dataintegration.description import (
 )
 
 
-def get_packages():
+def get_packages() -> object:
     """Get installed python packages.
 
     Returns a list of dict with the following keys:
@@ -25,7 +25,7 @@ def get_packages():
      - version - package version
     """
     return json.loads(
-        check_output(["pip", "list", "--format", "json"], shell=False)  # nosec
+        check_output(["pip", "list", "--format", "json"], shell=False)  # noqa: S603, S607
     )
 
 

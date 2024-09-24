@@ -1,5 +1,7 @@
 """test file."""
+from collections.abc import Sequence
 
+from cmem_plugin_base.dataintegration.context import ExecutionContext
 from cmem_plugin_base.dataintegration.description import Plugin, PluginParameter
 from cmem_plugin_base.dataintegration.entity import (
     Entities,
@@ -32,7 +34,8 @@ class OutputOnlyPlugin(WorkflowPlugin):
     def __init__(self, param1: str) -> None:
         self.param1 = param1
 
-    def execute(self, inputs=(), context=()) -> Entities:
+    def execute(self, inputs: Sequence[Entities] = (), context: ExecutionContext = ()) -> Entities:
+        """Execute the workflow plugin on a given collection of entities."""
         entity1 = Entity(uri="urn:my:1", values=(["value1"], ["value2"]))
         entity2 = Entity(uri="urn:my:2", values=(["value3"], ["value4"]))
         schema = EntitySchema(

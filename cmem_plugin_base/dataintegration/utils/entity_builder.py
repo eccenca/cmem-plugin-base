@@ -5,7 +5,7 @@ from ulid import ULID
 from cmem_plugin_base.dataintegration.entity import Entities, Entity, EntityPath, EntitySchema
 
 
-def merge_path_values(paths_map1, paths_map2):
+def merge_path_values(paths_map1: dict, paths_map2: dict) -> dict:
     """Merge two dictionaries representing paths and values.
 
     This function takes two dictionaries, `paths_map1` and `paths_map2`,
@@ -29,9 +29,8 @@ def merge_path_values(paths_map1, paths_map2):
     return paths_map1
 
 
-def generate_paths_from_data(data, path="root"):
-    """Generate a dictionary representing paths and data types from a nested JSON
-    structure.
+def generate_paths_from_data(data: dict | list, path: str | None = "root") -> dict:
+    """Generate a dictionary representing paths and data types from a nested JSON structure.
 
     This function recursively traverses a nested JSON structure ('data') and builds
     a dictionary ('paths_map') where keys are paths and values are dictionaries
@@ -70,7 +69,7 @@ def generate_paths_from_data(data, path="root"):
     return paths_map
 
 
-def _get_schema(data: dict | list):
+def _get_schema(data: dict | list) -> dict | None:
     """Get the schema of an entity."""
     if not data:
         return None
@@ -94,7 +93,7 @@ def _get_schema(data: dict | list):
     return path_to_schema_map
 
 
-def extend_path_list(path_to_entities, sub_path_to_entities) -> None:
+def extend_path_list(path_to_entities: dict, sub_path_to_entities: dict) -> None:
     """Extend a dictionary of paths to entities by merging with another.
 
     This function takes two dictionaries, `path_to_entities` and `sub_path_to_entities`,
@@ -118,10 +117,10 @@ def extend_path_list(path_to_entities, sub_path_to_entities) -> None:
 
 
 def _get_entity(
-    path_from_root,
-    path_to_schema_map,
-    data,
-):
+    path_from_root: str,
+    path_to_schema_map: dict,
+    data: dict,
+) -> dict:
     """Get an entity based on the schema and data."""
     path_to_entities = {}
     entity_uri = f"urn:x-ulid:{ULID()}"

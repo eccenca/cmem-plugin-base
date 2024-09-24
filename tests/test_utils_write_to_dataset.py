@@ -13,7 +13,7 @@ from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
-def test_write_to_json_dataset(json_dataset) -> None:
+def test_write_to_json_dataset(json_dataset: dict) -> None:
     """Test write to json dataset"""
     project_name = json_dataset["project"]
     dataset_name = json_dataset["id"]

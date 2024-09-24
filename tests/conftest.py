@@ -34,7 +34,7 @@ def _json_dataset() -> Generator[dict, None, None]:
 
 
 @pytest.fixture(name="json_resource", scope="module")
-def _json_resource():
+def _json_resource() -> object:
     """Set up json resource"""
     _project_name = "resource_test_project"
     _resource_name = "sample_test.json"

@@ -8,6 +8,7 @@ import pytest
 from cmem.cmempy.api import get_token
 
 from cmem_plugin_base.dataintegration.context import PluginContext, UserContext
+from cmem_plugin_base.dataintegration.types import ParameterType
 
 needs_cmem = pytest.mark.skipif(
     "CMEM_BASE_URI" not in os.environ, reason="Needs CMEM configuration"
@@ -33,13 +34,17 @@ class TestPluginContext(PluginContext):
     def __init__(
         self,
         project_id: str = "dummyProject",
-        user: UserContext | None = TestUserContext(),
+        user: UserContext | None = None,
     ):
         self.project_id = project_id
-        self.user = user
+        if user is None:
+            self.user = TestUserContext()
+        else:
+            self.user = user
 
 
-def get_autocomplete_values(parameter, query_terms, context):
+def get_autocomplete_values(parameter: ParameterType, query_terms: list[str],
+                            context: PluginContext) -> list[str]:
     """Get autocomplete values"""
     return [
         x.value

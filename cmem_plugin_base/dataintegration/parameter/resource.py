@@ -22,6 +22,7 @@ class ResourceParameterType(StringParameterType):
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match ALL provided query terms."""
         setup_cmempy_user_access(context.user)
         resources = get_resources(context.project_id)
         result = [

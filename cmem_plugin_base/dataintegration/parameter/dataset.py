@@ -26,7 +26,7 @@ class DatasetParameterType(StringParameterType):
     def label(
         self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
     ) -> str | None:
-        """Returns the label for the given dataset."""
+        """Return the label for the given dataset."""
         setup_cmempy_user_access(context.user)
         task_label = str(get_task(project=context.project_id, task=value)["metadata"]["label"])
         return f"{task_label}"
@@ -37,6 +37,7 @@ class DatasetParameterType(StringParameterType):
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match all provided query terms."""
         setup_cmempy_user_access(context.user)
         datasets = list_items(item_type="dataset", project=context.project_id)["results"]
 
@@ -50,9 +51,9 @@ class DatasetParameterType(StringParameterType):
                 continue
             for term in query_terms:
                 if term.lower() in label.lower():
-                    result.append(Autocompletion(value=identifier, label=label))
+                    result.append(Autocompletion(value=identifier, label=label))  # noqa: PERF401
             if len(query_terms) == 0:
                 # add any dataset to list if no search terms are given
                 result.append(Autocompletion(value=identifier, label=label))
-        result.sort(key=lambda x: x.label)  # type: ignore
+        result.sort(key=lambda x: x.label)
         return list(set(result))

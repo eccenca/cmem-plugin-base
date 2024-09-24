@@ -25,7 +25,7 @@ class PasswordParameterTest(unittest.TestCase):
             def __init__(self, password: Password) -> None:
                 self.password = password
 
-            def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:  # noqa: ARG002
+            def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
                 """Test transform"""
                 return []
 

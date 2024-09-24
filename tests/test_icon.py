@@ -17,7 +17,7 @@ from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 class MyWorkflowPlugin(WorkflowPlugin):
     """My Workflow Plugin Class"""
 
-    def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> None:  # noqa: ARG002
+    def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> None:
         """Execute the workflow plugin on a given collection of entities."""
         return
 

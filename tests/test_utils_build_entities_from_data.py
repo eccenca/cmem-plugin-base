@@ -2,11 +2,12 @@
 
 import json
 
-from cmem_plugin_base.dataintegration.entity import EntityPath, EntitySchema, Entities
+from cmem_plugin_base.dataintegration.entity import Entities, EntityPath, EntitySchema
 from cmem_plugin_base.dataintegration.utils.entity_builder import build_entities_from_data
 
 
 def build_entities_from_json(json_data: str) -> Entities:
+    """Build entities from a test JSON string."""
     data = json.loads(json_data)
     entities = build_entities_from_data(data)
     assert entities is not None
@@ -36,9 +37,7 @@ def test_single_object() -> None:
 
 
 def test_single_object_one_level() -> None:
-    """Test generation of entities and schema for a JSON object with one level of
-    hierarchy
-    """
+    """Test generation of entities and schema for a JSON object with one level of hierarchy."""
     test_data = """
 {
   "name": "sai",
@@ -79,8 +78,9 @@ def test_single_object_one_level() -> None:
 
 
 def test_single_object_one_level_array() -> None:
-    """Test generation of entities and schema for a JSON object with array object in
-    first level of hierarchy
+    """Test generation of entities and schema for a JSON object.
+
+    Test with array object in first level of hierarchy.
     """
     test_data = """
 {
@@ -126,8 +126,9 @@ def test_single_object_one_level_array() -> None:
 
 
 def test_single_object_two_level_array() -> None:
-    """Test generation of entities and schema for a JSON object with two levels of
-    hierarchy
+    """Test generation of entities and schema.
+
+    Tests a JSON object with two levels of hierarchy.
     """
     test_data = """
 {

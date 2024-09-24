@@ -7,7 +7,7 @@ from dataclasses import dataclass, field
 from inspect import _empty
 from mimetypes import guess_type
 from pkgutil import get_data
-from typing import Any
+from typing import Any, ClassVar
 
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin, WorkflowPlugin
 from cmem_plugin_base.dataintegration.types import (
@@ -83,7 +83,7 @@ class PluginParameter:
         label: str = "",
         description: str = "",
         param_type: ParameterType | None = None,
-        default_value: Any | None = None,
+        default_value: Any | None = None,  # noqa: ANN401
         advanced: bool = False,
         visible: bool = True,
     ) -> None:
@@ -110,7 +110,7 @@ class PluginDescription:
 
     def __init__(  # noqa: PLR0913
         self,
-        plugin_class,
+        plugin_class: type,
         label: str,
         plugin_id: str | None = None,
         description: str = "",
@@ -126,7 +126,7 @@ class PluginDescription:
         elif issubclass(plugin_class, TransformPlugin):
             self.plugin_type = "TransformPlugin"
         else:
-            raise ValueError(
+            raise TypeError(
                 f"Class {plugin_class.__name__} does not implement a supported "
                 f"plugin base class (e.g., WorkflowPlugin)."
             )
@@ -231,7 +231,7 @@ class Plugin:
     :param icon: Optional custom plugin icon.
     """
 
-    plugins: list[PluginDescription] = []
+    plugins: ClassVar[list[PluginDescription]] = []
 
     def __init__(  # noqa: PLR0913
         self,
@@ -257,7 +257,7 @@ class Plugin:
         else:
             self.parameters = parameters
 
-    def __call__(self, func):
+    def __call__(self, func: type):
         """Allow to call the instance"""
         plugin_desc = PluginDescription(
             plugin_class=func,
