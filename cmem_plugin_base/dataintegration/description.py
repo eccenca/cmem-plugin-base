@@ -275,11 +275,11 @@ class Plugin:
     def retrieve_parameters(self, plugin_class: type) -> list[PluginParameter]:
         """Retrieve parameters from a plugin class and matches them with the user parameter defs"""
         # Only return parameters for user-defined init methods.
-        if not hasattr(plugin_class.__init__, "__code__"):
+        if not hasattr(plugin_class.__init__, "__code__"): # type: ignore[misc]
             return []
         # Collect parameters from init method
         params = []
-        sig = inspect.signature(plugin_class.__init__)
+        sig = inspect.signature(plugin_class.__init__) # type: ignore[misc]
         for name in sig.parameters:
             if name != "self":
                 param = next((p for p in self.parameters if p.name == name), None)

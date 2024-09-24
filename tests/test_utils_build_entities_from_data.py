@@ -2,8 +2,15 @@
 
 import json
 
-from cmem_plugin_base.dataintegration.entity import EntityPath, EntitySchema
+from cmem_plugin_base.dataintegration.entity import EntityPath, EntitySchema, Entities
 from cmem_plugin_base.dataintegration.utils.entity_builder import build_entities_from_data
+
+
+def build_entities_from_json(json_data: str) -> Entities:
+    data = json.loads(json_data)
+    entities = build_entities_from_data(data)
+    assert entities is not None
+    return entities
 
 
 def test_single_object() -> None:
@@ -13,8 +20,7 @@ def test_single_object() -> None:
   "name": "sai",
   "email": "saipraneeth@example.com"
 }"""
-    data = json.loads(test_data)
-    entities = build_entities_from_data(data)
+    entities = build_entities_from_json(test_data)
     assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 2
@@ -42,8 +48,7 @@ def test_single_object_one_level() -> None:
     "country": "United States"
   }
 }"""
-    data = json.loads(test_data)
-    entities = build_entities_from_data(data)
+    entities = build_entities_from_json(test_data)
     assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 3
@@ -59,6 +64,7 @@ def test_single_object_one_level() -> None:
         ],
     )
     # Validate sub entities
+    assert entities.sub_entities is not None
     for _ in entities.sub_entities:
         for _entity in _.entities:
             assert len(_entity.values) == 2
@@ -89,8 +95,7 @@ def test_single_object_one_level_array() -> None:
     "country": "United States"
   }]
 }"""
-    data = json.loads(test_data)
-    entities = build_entities_from_data(data)
+    entities = build_entities_from_json(test_data)
     assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 3
@@ -106,6 +111,7 @@ def test_single_object_one_level_array() -> None:
         ],
     )
     # Validate sub entities
+    assert entities.sub_entities is not None
     for _ in entities.sub_entities:
         assert len(list(_.entities)) == 2
         for _entity in _.entities:
@@ -146,8 +152,7 @@ def test_single_object_two_level_array() -> None:
     }
   ]
 }"""
-    data = json.loads(test_data)
-    entities = build_entities_from_data(data)
+    entities = build_entities_from_json(test_data)
     assert len(list(entities.entities)) == 1
     for _ in entities.entities:
         assert len(_.values) == 3
@@ -163,6 +168,7 @@ def test_single_object_two_level_array() -> None:
         ],
     )
     # Validate sub entities
+    assert entities.sub_entities is not None
     location_entities = entities.sub_entities[0]
     city_entities = entities.sub_entities[1]
     assert len(list(city_entities.entities)) == 2
@@ -196,8 +202,7 @@ def test_array_object() -> None:
   "name": "sai",
   "email": "saipraneeth@example.com"
 }]"""
-    data = json.loads(test_data)
-    entities = build_entities_from_data(data)
+    entities = build_entities_from_json(test_data)
     _ = next(entities.entities)
     assert len(_.values) == 2
     assert _.values == [["seebi"], [""]]

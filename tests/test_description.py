@@ -42,18 +42,22 @@ class PluginTest(unittest.TestCase):
         plugin = Plugin.plugins[0]
 
         no_default_par = plugin.parameters[0]
+        assert no_default_par.param_type is not None
         assert no_default_par.param_type.name == StringParameterType.name
         assert no_default_par.default_value is None
 
         string_par = plugin.parameters[1]
+        assert string_par.param_type is not None
         assert string_par.param_type.name == StringParameterType.name
         assert string_par.default_value == "value"
 
         float_par = plugin.parameters[2]
+        assert float_par.param_type is not None
         assert float_par.param_type.name == FloatParameterType.name
         assert float_par.default_value == 1.5
 
         bool_par = plugin.parameters[3]
+        assert bool_par.param_type is not None
         assert bool_par.param_type.name == BoolParameterType.name
         assert bool_par.default_value is True
 

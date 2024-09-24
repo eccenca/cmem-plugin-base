@@ -29,10 +29,9 @@ class PasswordParameterTest(unittest.TestCase):
                 """Test transform"""
                 return []
 
-        Plugin.plugins.append(MyTransformPlugin)
-
         plugin = Plugin.plugins[0]
         password_param = plugin.parameters[0]
+        assert password_param.param_type is not None
         assert password_param.param_type.name == PasswordParameterType.name
 
 

@@ -57,6 +57,15 @@ class CodeParameterTest(unittest.TestCase):
         MyTransformPlugin()
 
         plugin = Plugin.plugins[0]
+        assert plugin.parameters[0].param_type is not None
+        assert plugin.parameters[1].param_type is not None
+        assert plugin.parameters[2].param_type is not None
+        assert plugin.parameters[3].param_type is not None
+        assert plugin.parameters[4].param_type is not None
+        assert plugin.parameters[5].param_type is not None
+        assert plugin.parameters[6].param_type is not None
+        assert plugin.parameters[7].param_type is not None
+
         assert plugin.parameters[0].param_type.name == "code-xml"
         assert plugin.parameters[1].param_type.name == "code-json"
         assert plugin.parameters[2].param_type.name == "code-jinja2"
