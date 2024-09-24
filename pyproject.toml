@@ -102,5 +102,13 @@ ignore = [
     "PD",      # opinionated linting for pandas code
     "S101",    # use of assert detected
     "TRY003",  # Avoid specifying long messages outside the exception class
+    "ARG002"   # Checks for the presence of unused arguments in instance method definitions.
+]
+
+[tool.ruff.lint.per-file-ignores]
+"**/{tests}/*" = [
+    "PLR2004", # Checks for the use of unnamed numerical constants ("magic") values in comparisons.
+    "PT009", # Use a regular `assert` instead of unittest-style `assertListEqual`
+    "PT027" # Use pytest.raises instead of unittest-style {assertion}
 ]
 
