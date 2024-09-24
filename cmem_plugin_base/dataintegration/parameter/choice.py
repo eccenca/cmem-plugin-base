@@ -38,5 +38,5 @@ class ChoiceParameterType(StringParameterType):
             for term in query_terms:
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=identifier, label=label))  # noqa: PERF401
-        result.sort(key=lambda x: x.label)
+        result.sort(key=lambda x: x.label) # type: ignore[return-value, arg-type]
         return list(set(result))

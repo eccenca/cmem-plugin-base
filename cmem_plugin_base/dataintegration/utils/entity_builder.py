@@ -44,7 +44,7 @@ def generate_paths_from_data(data: dict | list, path: str | None = "root") -> di
         dict: A dictionary representing paths and data types.
 
     """
-    paths_map = {}
+    paths_map: dict = {}
     if isinstance(data, list):
         for _ in data:
             paths_map = merge_path_values(paths_map, generate_paths_from_data(_, path=path))
@@ -69,7 +69,7 @@ def generate_paths_from_data(data: dict | list, path: str | None = "root") -> di
     return paths_map
 
 
-def _get_schema(data: dict | list) -> dict | None:
+def _get_schema(data: dict | list) -> dict[str, EntitySchema] | None:
     """Get the schema of an entity."""
     if not data:
         return None
@@ -122,7 +122,7 @@ def _get_entity(
     data: dict,
 ) -> dict:
     """Get an entity based on the schema and data."""
-    path_to_entities = {}
+    path_to_entities: dict = {}
     entity_uri = f"urn:x-ulid:{ULID()}"
     values = []
     schema = path_to_schema_map[path_from_root]

@@ -55,5 +55,5 @@ class DatasetParameterType(StringParameterType):
             if len(query_terms) == 0:
                 # add any dataset to list if no search terms are given
                 result.append(Autocompletion(value=identifier, label=label))
-        result.sort(key=lambda x: x.label)
+        result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
         return list(set(result))

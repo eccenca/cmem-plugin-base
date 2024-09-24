@@ -50,7 +50,7 @@ class ParameterType(Generic[T]):
 
     def get_type(self) -> type:
         """Retrieve the type that is supported by a given instance."""
-        return self.__orig_bases__[0].__args__[0]
+        return self.__orig_bases__[0].__args__[0]  # type: ignore[attr-defined, no-any-return]
 
     def from_string(self, value: str, context: PluginContext) -> T:
         """Parse strings into parameter values."""

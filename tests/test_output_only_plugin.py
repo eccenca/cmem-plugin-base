@@ -34,7 +34,7 @@ class OutputOnlyPlugin(WorkflowPlugin):
     def __init__(self, param1: str) -> None:
         self.param1 = param1
 
-    def execute(self, inputs: Sequence[Entities] = (), context: ExecutionContext = ()) -> Entities:
+    def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities:
         """Execute the workflow plugin on a given collection of entities."""
         entity1 = Entity(uri="urn:my:1", values=(["value1"], ["value2"]))
         entity2 = Entity(uri="urn:my:2", values=(["value3"], ["value4"]))
@@ -48,6 +48,6 @@ class OutputOnlyPlugin(WorkflowPlugin):
 def test_output_only_plugin() -> None:
     """Test example Workflow Plugin."""
     output_only = OutputOnlyPlugin(param1="test")
-    result = output_only.execute()
+    result = output_only.execute((), ExecutionContext())
     for item in result.entities:
         assert len(item.values) == len(result.schema.paths)
