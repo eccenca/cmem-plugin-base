@@ -32,14 +32,14 @@ class CodeParameterTest(unittest.TestCase):
 
             def __init__(  # pylint: disable=too-many-arguments  # noqa: PLR0913
                 self,
-                xml: XmlCode = XmlCode("<xml></xml>"), # noqa: B008
-                json: JsonCode = JsonCode("{}"), # noqa: B008
-                jinja: JinjaCode = JinjaCode(""), # noqa: B008
-                sql: SqlCode = SqlCode(""), # noqa: B008
-                yaml: YamlCode = YamlCode(""), # noqa: B008
-                sparql: SparqlCode = SparqlCode(""), # noqa: B008
-                turtle: TurtleCode = TurtleCode(""), # noqa: B008
-                python: PythonCode = PythonCode(""), # noqa: B008
+                xml: XmlCode = XmlCode("<xml></xml>"),  # noqa: B008
+                json: JsonCode = JsonCode("{}"),  # noqa: B008
+                jinja: JinjaCode = JinjaCode(""),  # noqa: B008
+                sql: SqlCode = SqlCode(""),  # noqa: B008
+                yaml: YamlCode = YamlCode(""),  # noqa: B008
+                sparql: SparqlCode = SparqlCode(""),  # noqa: B008
+                turtle: TurtleCode = TurtleCode(""),  # noqa: B008
+                python: PythonCode = PythonCode(""),  # noqa: B008
             ) -> None:
                 self.xml = xml
                 self.json = json

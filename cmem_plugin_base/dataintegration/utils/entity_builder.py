@@ -133,10 +133,10 @@ def _get_entity(
             values.append(
                 [f"{data.get(_.path)}"]
                 if _.is_single_value
-                else [f"{_v}" for _v in data.get(_.path)]
+                else [f"{_v}" for _v in data.get(_.path)]  # type: ignore[union-attr]
             )
         else:
-            _data = [data.get(_.path)] if _.is_single_value else data.get(_.path)
+            _data: list[dict] = [data.get(_.path)] if _.is_single_value else data.get(_.path)  # type: ignore[assignment,list-item]
             sub_entities_uri = []
             for _v in _data:
                 sub_entity_path = f"{path_from_root}/{_.path}"

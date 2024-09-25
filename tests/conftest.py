@@ -33,8 +33,16 @@ def _json_dataset() -> Generator[dict, None, None]:
     delete_project(PROJECT_NAME)
 
 
+@dataclass
+class JSONResourceFixtureDate:
+    """fixture dataclass"""
+
+    project_name: str
+    resource_name: str
+
+
 @pytest.fixture(name="json_resource", scope="module")
-def _json_resource() -> object:
+def _json_resource() -> Generator[JSONResourceFixtureDate, None, None]:
     """Set up json resource"""
     _project_name = "resource_test_project"
     _resource_name = "sample_test.json"
@@ -46,13 +54,6 @@ def _json_resource() -> object:
         replace=True,
     )
 
-    @dataclass
-    class FixtureDate:
-        """fixture dataclass"""
-
-        project_name = _project_name
-        resource_name = _resource_name
-
-    _ = FixtureDate()
+    _ = JSONResourceFixtureDate(project_name=_project_name, resource_name=_resource_name)
     yield _
     delete_project(_project_name)

@@ -43,8 +43,9 @@ class TestPluginContext(PluginContext):
             self.user = user
 
 
-def get_autocomplete_values(parameter: ParameterType, query_terms: list[str],
-                            context: PluginContext) -> list[str]:
+def get_autocomplete_values(
+    parameter: ParameterType, query_terms: list[str], context: PluginContext
+) -> list[str]:
     """Get autocomplete values"""
     return [
         x.value

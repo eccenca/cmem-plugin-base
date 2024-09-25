@@ -1,4 +1,5 @@
 """test file."""
+
 from collections.abc import Sequence
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext

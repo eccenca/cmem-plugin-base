@@ -1,11 +1,12 @@
 """resource parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.resource import ResourceParameterType
+from tests.conftest import JSONResourceFixtureDate
 from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
 
 
 @needs_cmem
-def test_resource_parameter_type_completion(json_resource) -> None:
+def test_resource_parameter_type_completion(json_resource: JSONResourceFixtureDate) -> None:
     """Test resource parameter type completion"""
     project_name = json_resource.project_name
     resource_name = json_resource.resource_name

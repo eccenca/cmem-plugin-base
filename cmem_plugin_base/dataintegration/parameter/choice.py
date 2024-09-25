@@ -26,7 +26,10 @@ class ChoiceParameterType(StringParameterType):
         return self.choice_list[value]
 
     def autocomplete(
-        self, query_terms: list[str], depend_on_parameter_values: list[Any], context: PluginContext,
+        self,
+        query_terms: list[str],
+        depend_on_parameter_values: list[Any],
+        context: PluginContext,
     ) -> list[Autocompletion]:
         """Autocompletion request - Returns all results that match ALL provided query terms."""
         result = []
@@ -38,5 +41,5 @@ class ChoiceParameterType(StringParameterType):
             for term in query_terms:
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=identifier, label=label))  # noqa: PERF401
-        result.sort(key=lambda x: x.label) # type: ignore[return-value, arg-type]
+        result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
         return list(set(result))

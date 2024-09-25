@@ -2,6 +2,7 @@
 
 import os
 import re
+from typing import IO
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
 
@@ -70,7 +71,9 @@ def split_task_id(task_id: str) -> tuple:
     return project_part, task_part
 
 
-def write_to_dataset(dataset_id: str, file_resource=None, context: UserContext | None = None):
+def write_to_dataset(  # noqa: ANN201
+    dataset_id: str, file_resource: IO | None = None, context: UserContext | None = None
+):
     """Write to a dataset.
 
     Args:
