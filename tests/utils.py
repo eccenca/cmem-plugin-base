@@ -6,6 +6,7 @@ import pytest
 
 # check for cmem environment and skip if not present
 from cmem.cmempy.api import get_token
+from cmem.cmempy.config import get_oauth_grant_type
 
 from cmem_plugin_base.dataintegration.context import PluginContext, UserContext
 from cmem_plugin_base.dataintegration.types import ParameterType
@@ -22,7 +23,10 @@ class TestUserContext(UserContext):
 
     def __init__(self):
         # get access token from default service account
-        access_token: str = get_token()["access_token"]
+        if get_oauth_grant_type() == "prefetched_token":
+            access_token = os.environ.get("OAUTH_ACCESS_TOKEN")
+        else:
+            access_token: str = get_token()["access_token"]
         self.token = lambda: access_token
 
 
