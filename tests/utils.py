@@ -21,13 +21,17 @@ class TestUserContext(UserContext):
 
     __test__ = False
 
-    def __init__(self):
+    def __init__(self) -> None:
         # get access token from default service account
         if get_oauth_grant_type() == "prefetched_token":
             access_token = os.environ.get("OAUTH_ACCESS_TOKEN")
         else:
-            access_token: str = get_token()["access_token"]
-        self.token = lambda: access_token
+            access_token = get_token()["access_token"]  # type : ignore[annotation-unchecked]
+        self.access_token = str(access_token)
+
+    def token(self) -> str:
+        """Get access token."""
+        return self.access_token
 
 
 class TestPluginContext(PluginContext):
