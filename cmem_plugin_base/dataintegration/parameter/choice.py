@@ -1,9 +1,10 @@
 """DI Choice String Parameter Type."""
+
 import collections
-from typing import Optional, Any
+from typing import Any
 
 from cmem_plugin_base.dataintegration.context import PluginContext
-from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
+from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
 
 
 class ChoiceParameterType(StringParameterType):
@@ -20,8 +21,8 @@ class ChoiceParameterType(StringParameterType):
 
     def label(
         self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
-    ) -> Optional[str]:
-        """Returns the label for the given choice value."""
+    ) -> str | None:
+        """Return the label for the given choice value."""
         return self.choice_list[value]
 
     def autocomplete(
@@ -30,6 +31,7 @@ class ChoiceParameterType(StringParameterType):
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match ALL provided query terms."""
         result = []
         for identifier in self.choice_list:
             label = self.choice_list[identifier]
@@ -38,6 +40,6 @@ class ChoiceParameterType(StringParameterType):
                 result.append(Autocompletion(value=identifier, label=label))
             for term in query_terms:
                 if term.lower() in label.lower():
-                    result.append(Autocompletion(value=identifier, label=label))
-        result.sort(key=lambda x: x.label)  # type: ignore
+                    result.append(Autocompletion(value=identifier, label=label))  # noqa: PERF401
+        result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
         return list(set(result))

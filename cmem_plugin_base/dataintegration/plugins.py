@@ -1,6 +1,7 @@
 """All Plugins base classes."""
+
 import logging
-from typing import Sequence, Optional
+from collections.abc import Sequence
 
 from cmem_plugin_base.dataintegration.context import ExecutionContext
 from cmem_plugin_base.dataintegration.entity import Entities
@@ -11,7 +12,8 @@ class PluginLogger:
     """Logging API for Plugins.
 
     If a plugin is running within DataIntegration, this class will be replaced to
-    log into DI using the path: plugins.python.<plugin_id>."""
+    log into DI using the path: plugins.python.<plugin_id>.
+    """
 
     def debug(self, message: str) -> None:
         """Log a message with severity 'DEBUG'."""
@@ -34,12 +36,14 @@ class PluginConfig:
     """Configuration API for Plugins.
 
     If a plugin is running within DataIntegration, this class will be replaced to
-    retrieve the DI configuration in the path: plugins.python.<plugin_id>."""
+    retrieve the DI configuration in the path: plugins.python.<plugin_id>.
+    """
 
     def get(self) -> str:
         """Retrieve plugin configuration as a JSON string.
 
-        This test implementation will return an empty string."""
+        This test implementation will return an empty string.
+        """
         return ""
 
 
@@ -57,14 +61,12 @@ class WorkflowPlugin(PluginBase):
     input_ports: InputPorts
     """Specifies the input ports that this operator allows."""
 
-    output_port: Optional[Port]
+    output_port: Port | None
     """Specifies the output port (if any) of this operator.
     Should be `None`, if this operator does not return any output."""
 
-    def execute(
-        self, inputs: Sequence[Entities], context: ExecutionContext
-    ) -> Optional[Entities]:
-        """Executes the workflow plugin on a given collection of entities.
+    def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
+        """Execute the workflow plugin on a given collection of entities.
 
         :param inputs: Contains a separate collection of entities for each
             input. Currently, DI sends ALWAYS an input. in case no connected
@@ -80,13 +82,10 @@ class WorkflowPlugin(PluginBase):
 
 
 class TransformPlugin(PluginBase):
-    """
-    Base class of all transform operator plugins.
-    """
+    """Base class of all transform operator plugins."""
 
     def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
-        """
-        Transforms a collection of values.
+        """Transform a collection of values.
 
         :param inputs: A sequence which contains as many elements as there are input
             operators for this transformation.

@@ -1,23 +1,22 @@
 """test description"""
+
 import unittest
-
-from typing import Sequence
-
-from cmem_plugin_base.dataintegration.plugins import TransformPlugin
+from collections.abc import Sequence
 
 from cmem_plugin_base.dataintegration.description import Plugin
+from cmem_plugin_base.dataintegration.plugins import TransformPlugin
 from cmem_plugin_base.dataintegration.types import (
-    StringParameterType,
-    FloatParameterType,
     BoolParameterType,
+    FloatParameterType,
+    StringParameterType,
 )
 
 
 class PluginTest(unittest.TestCase):
     """Plugin Test Class"""
 
-    def test__basic_parameters(self):
-        """test basic parameters"""
+    def test__basic_parameters(self) -> None:
+        """Test basic parameters"""
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
@@ -43,20 +42,24 @@ class PluginTest(unittest.TestCase):
         plugin = Plugin.plugins[0]
 
         no_default_par = plugin.parameters[0]
-        self.assertEqual(no_default_par.param_type.name, StringParameterType.name)
-        self.assertIsNone(no_default_par.default_value)
+        assert no_default_par.param_type is not None
+        assert no_default_par.param_type.name == StringParameterType.name
+        assert no_default_par.default_value is None
 
         string_par = plugin.parameters[1]
-        self.assertEqual(string_par.param_type.name, StringParameterType.name)
-        self.assertEqual(string_par.default_value, "value")
+        assert string_par.param_type is not None
+        assert string_par.param_type.name == StringParameterType.name
+        assert string_par.default_value == "value"
 
         float_par = plugin.parameters[2]
-        self.assertEqual(float_par.param_type.name, FloatParameterType.name)
-        self.assertEqual(float_par.default_value, 1.5)
+        assert float_par.param_type is not None
+        assert float_par.param_type.name == FloatParameterType.name
+        assert float_par.default_value == 1.5
 
         bool_par = plugin.parameters[3]
-        self.assertEqual(bool_par.param_type.name, BoolParameterType.name)
-        self.assertEqual(bool_par.default_value, True)
+        assert bool_par.param_type is not None
+        assert bool_par.param_type.name == BoolParameterType.name
+        assert bool_par.default_value is True
 
 
 if __name__ == "__main__":

@@ -12,7 +12,7 @@ class Password:
         self.system = system
 
     def decrypt(self) -> str:
-        """Returns the decrypted value"""
+        """Return the decrypted value"""
         return self.system.decrypt(self.encrypted_value)
 
 
@@ -26,8 +26,10 @@ class PasswordParameterType(ParameterType[Password]):
     """Prefix to identify already encrypted values."""
 
     def from_string(self, value: str, context: PluginContext) -> Password:
-        """Parses strings into parameter values.
-        Decrypts the password if the encryption preamble is present"""
+        """Parse strings into parameter values.
+
+        Decrypts the password if the encryption preamble is present
+        """
         if value is None or value == "":
             encrypted_value = ""
         elif value.startswith(self.preamble):
@@ -37,8 +39,10 @@ class PasswordParameterType(ParameterType[Password]):
         return Password(encrypted_value, context.system)
 
     def to_string(self, value: Password) -> str:
-        """Converts parameter values into their string representation.
-        Encrypts the password so that it won't be stored verbatim."""
+        """Convert parameter values into their string representation.
+
+        Encrypts the password so that it won't be stored verbatim.
+        """
         if value.encrypted_value == "":
             return ""
         return self.preamble + value.encrypted_value

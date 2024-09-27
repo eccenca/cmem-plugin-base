@@ -1,13 +1,15 @@
 """pytest conftest module"""
+
 import io
+from collections.abc import Generator
 from dataclasses import dataclass
 
 import pytest
 from cmem.cmempy.workspace.projects.datasets.dataset import (
-    make_new_dataset,
     get_dataset,
+    make_new_dataset,
 )
-from cmem.cmempy.workspace.projects.project import make_new_project, delete_project
+from cmem.cmempy.workspace.projects.project import delete_project, make_new_project
 from cmem.cmempy.workspace.projects.resources.resource import create_resource
 
 PROJECT_NAME = "dateset_test_project"
@@ -16,8 +18,8 @@ RESOURCE_NAME = "sample_test.json"
 
 
 @pytest.fixture(name="json_dataset", scope="module")
-def _json_dataset():
-    """setup"""
+def _json_dataset() -> Generator[dict, None, None]:
+    """Provide a dataset"""
     make_new_project(PROJECT_NAME)
     make_new_dataset(
         project_name=PROJECT_NAME,
@@ -26,13 +28,22 @@ def _json_dataset():
         parameters={"file": RESOURCE_NAME},
         autoconfigure=False,
     )
-    yield get_dataset(PROJECT_NAME, DATASET_NAME)
+    dataset = get_dataset(PROJECT_NAME, DATASET_NAME)
+    yield dataset
     delete_project(PROJECT_NAME)
 
 
+@dataclass
+class JSONResourceFixtureDate:
+    """fixture dataclass"""
+
+    project_name: str
+    resource_name: str
+
+
 @pytest.fixture(name="json_resource", scope="module")
-def _json_resource():
-    """setup json resource"""
+def _json_resource() -> Generator[JSONResourceFixtureDate, None, None]:
+    """Set up json resource"""
     _project_name = "resource_test_project"
     _resource_name = "sample_test.json"
     make_new_project(_project_name)
@@ -40,15 +51,9 @@ def _json_resource():
         project_name=_project_name,
         resource_name=_resource_name,
         file_resource=io.StringIO("SAMPLE CONTENT"),
-        replace=True
+        replace=True,
     )
 
-    @dataclass
-    class FixtureDate:
-        """fixture dataclass"""
-        project_name = _project_name
-        resource_name = _resource_name
-
-    _ = FixtureDate()
+    _ = JSONResourceFixtureDate(project_name=_project_name, resource_name=_resource_name)
     yield _
     delete_project(_project_name)
