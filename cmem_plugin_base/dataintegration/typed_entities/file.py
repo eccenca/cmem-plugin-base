@@ -50,9 +50,12 @@ class FileEntitySchema(TypedEntitySchema[File]):
     def from_entity(self, entity: Entity) -> File:
         """Create a file entity from a generic entity."""
         path = entity.values[0][0]
+        file_type = entity.values[1][0]
         mime =  entity.values[2][0] if entity.values[2][0] else None
-        match entity.values[1][0]:
+        match file_type:
             case "Local":
                 return LocalFile(path, mime)
             case "Project":
                 return ProjectFile(path, mime)
+            case _:
+                raise ValueError(f"File '{path}' has unexpected type '{file_type}'.")

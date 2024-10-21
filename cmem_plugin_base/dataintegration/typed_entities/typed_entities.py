@@ -1,5 +1,5 @@
 """Custom entity schema that holds entities of a specific type (e.g. files)"""
-
+from abc import abstractmethod
 from collections.abc import Iterator, Sequence
 from typing import Generic, TypeVar
 
@@ -13,9 +13,11 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
     def __init__(self, type_uri: str, paths: Sequence[EntityPath]):
         super().__init__(type_uri, paths)
 
+    @abstractmethod
     def to_entity(self, value: T) -> Entity:
         """Create a generic entity from a typed entity."""
 
+    @abstractmethod
     def from_entity(self, entity: Entity) -> T:
         """Create a typed entity from a generic entity.
 
