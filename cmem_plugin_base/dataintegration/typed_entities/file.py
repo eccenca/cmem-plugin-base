@@ -40,7 +40,7 @@ class FileEntitySchema(TypedEntitySchema[File]):
                 EntityPath(path_uri("filePath")),
                 EntityPath(path_uri("fileType")),
                 EntityPath(path_uri("mimeType")),
-            ]
+            ],
         )
 
     def to_entity(self, value: File) -> Entity:
@@ -51,7 +51,7 @@ class FileEntitySchema(TypedEntitySchema[File]):
         """Create a file entity from a generic entity."""
         path = entity.values[0][0]
         file_type = entity.values[1][0]
-        mime =  entity.values[2][0] if entity.values[2][0] else None
+        mime = entity.values[2][0] if entity.values[2][0] else None
         match file_type:
             case "Local":
                 return LocalFile(path, mime)

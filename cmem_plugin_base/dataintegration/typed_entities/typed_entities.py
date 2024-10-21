@@ -1,4 +1,5 @@
 """Custom entity schema that holds entities of a specific type (e.g. files)"""
+
 from abc import abstractmethod
 from collections.abc import Iterator, Sequence
 from typing import Generic, TypeVar
@@ -6,6 +7,7 @@ from typing import Generic, TypeVar
 from cmem_plugin_base.dataintegration.entity import Entities, Entity, EntityPath, EntitySchema
 
 T = TypeVar("T")
+
 
 class TypedEntitySchema(EntitySchema, Generic[T]):
     """A custom entity schema that holds entities of a specific type (e.g. files)."""
@@ -50,5 +52,3 @@ class TypedEntities(Entities, Generic[T]):
         super().__init__(map(schema.to_entity, values), schema)
         self.values = values
         self.schema = schema
-
-
