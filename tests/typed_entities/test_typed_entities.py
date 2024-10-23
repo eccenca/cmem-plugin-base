@@ -22,7 +22,6 @@ class ConcatFilesOperator(WorkflowPlugin):
     def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities | None:
         """Concatenate input files"""
         input_files = FileEntitySchema().from_entities(inputs[0])
-        input_files
 
         with tempfile.NamedTemporaryFile(mode="wb", delete=False, delete_on_close=True) as o_file:
             output_name = o_file.name
