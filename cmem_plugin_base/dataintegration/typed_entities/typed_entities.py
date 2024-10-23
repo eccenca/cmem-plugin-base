@@ -31,7 +31,7 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
         """Given a collection of values, create a new typed entities instance."""
         return TypedEntities(values, self)
 
-    def from_entities(self, entities: Entities) -> "TypedEntities[T] | None":
+    def from_entities(self, entities: Entities) -> "TypedEntities[T]":
         """Create typed entities from generic entities.
 
         Returns None if the entities do not match the target type.
@@ -42,8 +42,8 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
             if isinstance(entities, TypedEntities):
                 return entities
             return TypedEntities(map(self.from_entity, entities.entities), self)
-        return None
-
+        raise ValueError(
+            f"Expected entities of type '{self.type_uri}' but got '{entities.schema.type_uri}'.")
 
 class TypedEntities(Entities, Generic[T]):
     """Collection of entities of a particular type."""

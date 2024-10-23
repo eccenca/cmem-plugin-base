@@ -45,7 +45,10 @@ class FileEntitySchema(TypedEntitySchema[File]):
 
     def to_entity(self, value: File) -> Entity:
         """Create a generic entity from a file"""
-        return Entity(instance_uri(value.path), [value.path, value.file_type, value.mime or ""])
+        return Entity(
+            uri = instance_uri(value.path),
+            values = [[value.path], [value.file_type], [value.mime or ""]]
+        )
 
     def from_entity(self, entity: Entity) -> File:
         """Create a file entity from a generic entity."""
