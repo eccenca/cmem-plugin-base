@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Fixed
+
+- Check if passwords can be decrypted, i.e., if the key is valid (CMEM-5932).
+
 ## [4.8.0] 2024-09-12
 
 ### Added
