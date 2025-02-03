@@ -10,6 +10,7 @@ class Password:
     def __init__(self, encrypted_value: str, system: SystemContext):
         self.encrypted_value = encrypted_value
         self.system = system
+        self.decrypt() # Decrypt the password to check if the key is valid
 
     def decrypt(self) -> str:
         """Return the decrypted value"""
