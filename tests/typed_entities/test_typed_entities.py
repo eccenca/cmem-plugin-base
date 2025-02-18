@@ -23,7 +23,7 @@ class ConcatFilesOperator(WorkflowPlugin):
         """Concatenate input files"""
         input_files = FileEntitySchema().from_entities(inputs[0])
 
-        with tempfile.NamedTemporaryFile(mode="wb", delete=False, delete_on_close=True) as o_file:
+        with tempfile.NamedTemporaryFile(mode="wb", delete=False) as o_file:
             output_name = o_file.name
             for file in input_files.values:
                 if isinstance(file, LocalFile):
@@ -40,12 +40,10 @@ class TypedEntitiesTest(unittest.TestCase):
     def test_files(self) -> None:
         """Test file entity schema."""
         # Create two files
-        temp1 = tempfile.NamedTemporaryFile(delete=False, delete_on_close=True, mode="w")
-        temp1.write("ABC")
-        temp1.close()
-        temp2 = tempfile.NamedTemporaryFile(delete=False, delete_on_close=True, mode="w")
-        temp2.write("123")
-        temp2.close()
+        with tempfile.NamedTemporaryFile(delete=False, mode="w") as temp1:
+            temp1.write("ABC")
+        with tempfile.NamedTemporaryFile(delete=False, mode="w") as temp2:
+            temp2.write("123")
 
         # Execute operator
         input_entities = FileEntitySchema().to_entities(

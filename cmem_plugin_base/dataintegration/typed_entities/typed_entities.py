@@ -43,7 +43,9 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
                 return entities
             return TypedEntities(map(self.from_entity, entities.entities), self)
         raise ValueError(
-            f"Expected entities of type '{self.type_uri}' but got '{entities.schema.type_uri}'.")
+            f"Expected entities of type '{self.type_uri}' but got '{entities.schema.type_uri}'."
+        )
+
 
 class TypedEntities(Entities, Generic[T]):
     """Collection of entities of a particular type."""
