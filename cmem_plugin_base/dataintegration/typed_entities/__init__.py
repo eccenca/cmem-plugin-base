@@ -2,13 +2,13 @@
 
 
 def type_uri(suffix: str) -> str:
-    """Create a new  entity schema type URI."""
-    return "https://vocab.eccenca.com/di/entity/type/" + suffix
+    """Create a new entity schema type URI."""
+    return "https://vocab.eccenca.com/di/entity/" + suffix
 
 
 def path_uri(suffix: str) -> str:
     """Create a new entity schema path."""
-    return "https://vocab.eccenca.com/di/entity/path/" + suffix
+    return "https://vocab.eccenca.com/di/entity/" + suffix
 
 
 def instance_uri(suffix: str) -> str:
