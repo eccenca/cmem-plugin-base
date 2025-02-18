@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [4.8.0] 2024-09-12
+## [4.8.0] 2024-09-12 - shipped with DI v24.3.0
 
 ### Added
 
