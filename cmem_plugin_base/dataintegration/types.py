@@ -1,4 +1,5 @@
 """Parameter types."""
+# ruff: noqa: A005
 
 from collections.abc import Iterable
 from dataclasses import dataclass
