@@ -1,4 +1,5 @@
 """DI Resource Parameter Type."""
+# ruff: noqa: A005
 
 from typing import Any
 
