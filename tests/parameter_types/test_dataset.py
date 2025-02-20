@@ -1,7 +1,8 @@
 """graph parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
-from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
+from cmem_plugin_base.testing import TestPluginContext
+from tests.utils import get_autocomplete_values, needs_cmem
 
 
 @needs_cmem

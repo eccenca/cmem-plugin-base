@@ -9,7 +9,8 @@ from cmem.cmempy.workspace.projects.datasets.dataset import get_resource
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
 from cmem_plugin_base.dataintegration.utils import write_to_dataset
-from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
+from cmem_plugin_base.testing import TestPluginContext
+from tests.utils import get_autocomplete_values, needs_cmem
 
 
 @needs_cmem

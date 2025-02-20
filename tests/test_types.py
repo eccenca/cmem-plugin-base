@@ -8,9 +8,9 @@ from cmem_plugin_base.dataintegration.types import (
     EnumParameterType,
     ParameterTypes,
 )
-from tests.utils import TestPluginContext
+from cmem_plugin_base.testing import TestPluginContext
 
-# dummy plugin context to be used in tests
+# testing plugin context to be used in tests
 context = TestPluginContext()
 
 
