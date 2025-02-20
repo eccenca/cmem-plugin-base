@@ -1,8 +1,9 @@
 """resource parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.resource import ResourceParameterType
+from cmem_plugin_base.testing import TestPluginContext
 from tests.conftest import JSONResourceFixtureDate
-from tests.utils import TestPluginContext, get_autocomplete_values, needs_cmem
+from tests.utils import get_autocomplete_values, needs_cmem
 
 
 @needs_cmem

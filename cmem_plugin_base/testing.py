@@ -1,11 +1,11 @@
-"""Module provides dummy context classes for testing purposes in the CMEM plugin environment.
+"""Module provides context classes for testing purposes in the CMEM plugin environment.
 
 Classes included in this module:
-- TestUserContext: Simulates a user context with token management.
-- TestPluginContext: Provides a mock plugin context.
-- TestTaskContext: Represents a task context for testing.
-- TestExecutionContext: Mocks execution context with task and user linkage.
-- TestSystemContext: Supplies a dummy system context with encryption/decryption placeholders.
+- TestUserContext: testing user context with token management
+- TestPluginContext: testing plugin context
+- TestTaskContext: testing task context
+- TestExecutionContext: testing execution context with task and user linkage
+- TestSystemContext: testing system context with encryption/decryption placeholders
 
 These classes are intended for use in unit tests and other testing scenarios where real
 context objects are unavailable or unnecessary.
@@ -27,7 +27,7 @@ from cmem_plugin_base.dataintegration.context import (
 
 
 class TestUserContext(UserContext):
-    """Dummy user context for testing."""
+    """Testing user context"""
 
     __test__ = False
     default_credential: ClassVar[dict] = {}
@@ -40,12 +40,12 @@ class TestUserContext(UserContext):
         ]
 
     def token(self) -> str:
-        """Get an access token."""
+        """Get an access token"""
         return f"{self.access_token}"
 
 
 class TestPluginContext(PluginContext):
-    """Dummy plugin context for testing."""
+    """Testing plugin context"""
 
     __test__ = False
 
@@ -55,7 +55,7 @@ class TestPluginContext(PluginContext):
 
 
 class TestTaskContext(TaskContext):
-    """Dummy task context for testing."""
+    """Testing task context"""
 
     __test__ = False
 
@@ -73,7 +73,7 @@ class TestTaskContext(TaskContext):
 
 
 class TestExecutionContext(ExecutionContext):
-    """Dummy execution context for testing."""
+    """Testing execution context"""
 
     __test__ = False
 
@@ -84,11 +84,11 @@ class TestExecutionContext(ExecutionContext):
 
 
 class TestSystemContext(SystemContext):
-    """Dummy system context for testing."""
+    """Testing system context"""
 
     __test__ = False
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._version: str = "1.0.0"
 
     def di_version(self) -> str:
