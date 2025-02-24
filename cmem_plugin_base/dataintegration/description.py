@@ -96,6 +96,16 @@ class PluginParameter:
         self.visible = visible
 
 
+class PluginAction:
+    """Custom plugin action."""
+
+    def __init__(self, name: str, label: str, description: str, icon: Icon | None = None):
+        self.name = name
+        self.label = label
+        self.description = description
+        self.icon = icon
+
+
 class PluginDescription:
     """A plugin description.
 
@@ -106,6 +116,7 @@ class PluginDescription:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     :param icon: An optional custom plugin icon.
+    :param actions: Custom plugin actions.
     """
 
     def __init__(  # noqa: PLR0913
@@ -118,6 +129,7 @@ class PluginDescription:
         categories: list[str] | None = None,
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
+        actions: list[PluginAction] | None = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -153,6 +165,10 @@ class PluginDescription:
         else:
             self.parameters = parameters
         self.icon = icon
+        if actions is None:
+            self.actions = []
+        else:
+            self.actions = actions
 
 
 @dataclass
@@ -233,6 +249,7 @@ class Plugin:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters.
     :param icon: Optional custom plugin icon.
+    :param actions: Custom plugin actions
     """
 
     plugins: ClassVar[list[PluginDescription]] = []
@@ -246,12 +263,14 @@ class Plugin:
         categories: list[str] | None = None,
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
+        actions: list[PluginAction] | None = None,
     ):
         self.label = label
         self.description = description
         self.documentation = documentation
         self.plugin_id = plugin_id
         self.icon = icon
+        self.actions = actions
         if categories is None:
             self.categories = []
         else:
@@ -272,6 +291,7 @@ class Plugin:
             categories=self.categories,
             parameters=self.retrieve_parameters(func),
             icon=self.icon,
+            actions=self.actions,
         )
         Plugin.plugins.append(plugin_desc)
         return func
