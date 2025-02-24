@@ -324,7 +324,7 @@ class Plugin:
                 # Special handling of PluginContext parameter
                 if isinstance(param.param_type, PluginContextParameterType):
                     param.visible = False  # Should never be visible in the UI
-                    param.default_value = ""  # dummy value
+                    param.default_value = ""  # default value
 
                 if param.default_value is None and sig_param.default != _empty:
                     param.default_value = sig_param.default

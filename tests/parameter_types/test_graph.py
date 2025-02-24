@@ -1,7 +1,8 @@
 """graph parameter type tests"""
 
 from cmem_plugin_base.dataintegration.parameter.graph import GraphParameterType
-from tests.utils import TestPluginContext, needs_cmem
+from cmem_plugin_base.testing import TestPluginContext
+from tests.utils import needs_cmem
 
 
 @needs_cmem
