@@ -106,7 +106,7 @@ class PluginAction:
         self.description = description
         self.icon = icon
         self.validated = False
-        self.provide_plugin_context = False # Will be set by validate()
+        self.provide_plugin_context = False  # Will be set by validate()
 
     def validate(self, plugin_class: type) -> None:
         """Validate the action and set the `provide_plugin_context` boolean.
@@ -117,8 +117,9 @@ class PluginAction:
         try:
             method = getattr(plugin_class, self.name)
         except AttributeError:
-            raise TypeError(f"Plugin class '{plugin_class.__name__}' does "
-                            f"not have a method named '{self.name}'") from None
+            raise TypeError(
+                f"Plugin class '{plugin_class.__name__}' does not have a method named '{self.name}'"
+            ) from None
         if not callable(method):
             raise TypeError(f"'{self.name}' in class '{plugin_class.__name__}' is not a function.")
 
@@ -130,11 +131,15 @@ class PluginAction:
             if parameters[1].annotation is PluginContext:
                 self.provide_plugin_context = True
             else:
-                raise TypeError(f"Argument of method '{self.name}' in {plugin_class.__name__} must "
-                                f"be typed PluginContext (it's {parameters[1].annotation}).")
+                raise TypeError(
+                    f"Argument of method '{self.name}' in {plugin_class.__name__} must "
+                    f"be typed PluginContext (it's {parameters[1].annotation})."
+                )
         else:
-            raise TypeError(f"Method '{self.name}' in {plugin_class.__name__} has more than one"
-                            f" argument (besides 'self').")
+            raise TypeError(
+                f"Method '{self.name}' in {plugin_class.__name__} has more than one"
+                f" argument (besides 'self')."
+            )
         self.validated = True
 
     def execute(self, plugin: PluginBase, context: PluginContext) -> str | None:

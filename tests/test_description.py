@@ -20,7 +20,7 @@ class PluginTest(unittest.TestCase):
 
     def test__basic_parameters(self) -> None:
         """Test basic parameters"""
-        Plugin.plugins = [] # Remove all previous plugins
+        Plugin.plugins = []  # Remove all previous plugins
 
         @Plugin(label="My Transform Plugin")
         class MyTransformPlugin(TransformPlugin):
@@ -65,17 +65,15 @@ class PluginTest(unittest.TestCase):
 
     def test__actions(self) -> None:
         """Test plugin actions"""
-        Plugin.plugins = [] # Remove all previous plugins
+        Plugin.plugins = []  # Remove all previous plugins
 
         @Plugin(
             label="My Workflow Plugin",
             actions=[
                 PluginAction(
-                    name="get_name",
-                    label="Get name",
-                    description="Returns the supplied name"
+                    name="get_name", label="Get name", description="Returns the supplied name"
                 )
-            ]
+            ],
         )
         class MyWorkflowPlugin(WorkflowPlugin):
             """Test workflow plugin"""
