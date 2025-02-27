@@ -102,17 +102,18 @@ class PluginTest(unittest.TestCase):
 
         # There should be two actions
         assert len(plugin.actions) == 2
+        action1 = plugin.actions[0]
+        action2 = plugin.actions[1]
 
         # Check first action
-        action = plugin.actions[0]
-        assert action.name == "get_name"
-        assert action.label == "Get name"
-        assert action.description == "Returns the supplied name"
+        assert action1.name == "get_name"
+        assert action1.label == "Get name"
+        assert action1.description == "Returns the supplied name"
 
         # Call actions on a plugin instance
         plugin_instance = MyWorkflowPlugin("My Name")
-        assert action.execute(plugin_instance, TestPluginContext()) == "My Name"
-        assert action.execute(plugin_instance, TestPluginContext(project_id="movies")) == "movies"
+        assert action1.execute(plugin_instance, TestPluginContext()) == "My Name"
+        assert action2.execute(plugin_instance, TestPluginContext(project_id="movies")) == "movies"
 
 
 if __name__ == "__main__":

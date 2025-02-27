@@ -104,6 +104,10 @@ class PluginAction:
     They can be triggered from the plugin UI.
     Each action is based on a method on the plugin class. Besides the self parameter,
     the method can have one additional parameter of type PluginContext.
+    The return value of the method will be converted to a string and displayed in the UI.
+    The string may use Markdown formatting.
+    The method may return None, in which case no output will be displayed.
+    It may raise an exception to signal an error to the user.
 
     :param name: The name of the method.
     :param label: A human-readable label of the action
