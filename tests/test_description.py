@@ -3,7 +3,7 @@
 import unittest
 from collections.abc import Sequence
 
-from cmem_plugin_base.dataintegration.context import ExecutionContext
+from cmem_plugin_base.dataintegration.context import ExecutionContext, PluginContext
 from cmem_plugin_base.dataintegration.description import Plugin, PluginAction
 from cmem_plugin_base.dataintegration.entity import Entities
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin, WorkflowPlugin
@@ -71,8 +71,15 @@ class PluginTest(unittest.TestCase):
             label="My Workflow Plugin",
             actions=[
                 PluginAction(
-                    name="get_name", label="Get name", description="Returns the supplied name"
-                )
+                    name="get_name",
+                    label="Get name",
+                    description="Returns the supplied name",
+                ),
+                PluginAction(
+                    name="get_project",
+                    label="Get project",
+                    description="Returns the current project.",
+                ),
             ],
         )
         class MyWorkflowPlugin(WorkflowPlugin):
@@ -87,19 +94,25 @@ class PluginTest(unittest.TestCase):
             def get_name(self) -> str:
                 return self.name
 
+            def get_project(self, context: PluginContext) -> str:
+                return context.project_id
+
         # Get plugin description
         plugin = Plugin.plugins[0]
 
-        # Check action
-        assert len(plugin.actions) == 1
+        # There should be two actions
+        assert len(plugin.actions) == 2
+
+        # Check first action
         action = plugin.actions[0]
         assert action.name == "get_name"
         assert action.label == "Get name"
         assert action.description == "Returns the supplied name"
 
-        # Call action on a plugin instance
+        # Call actions on a plugin instance
         plugin_instance = MyWorkflowPlugin("My Name")
-        action.execute(plugin_instance, TestPluginContext())
+        assert action.execute(plugin_instance, TestPluginContext()) == "My Name"
+        assert action.execute(plugin_instance, TestPluginContext(project_id="movies")) == "movies"
 
 
 if __name__ == "__main__":
