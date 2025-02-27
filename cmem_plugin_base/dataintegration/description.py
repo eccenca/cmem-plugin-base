@@ -98,7 +98,18 @@ class PluginParameter:
 
 
 class PluginAction:
-    """Custom plugin action."""
+    """Custom plugin action.
+
+    Plugin actions provide additional functionality besides the default execution.
+    They can be triggered from the plugin UI.
+    Each action is based on a method on the plugin class. Besides the self parameter,
+    the method can have one additional parameter of type PluginContext.
+
+    :param name: The name of the method.
+    :param label: A human-readable label of the action
+    :param description: A human-readable description of the action
+    :param icon: An optional custom icon.
+    """
 
     def __init__(self, name: str, label: str, description: str, icon: Icon | None = None):
         self.name = name
