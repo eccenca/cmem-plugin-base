@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added
+
+- Added `explicit_schema` parameter to `FlexibleOutputSchema` (CMEM-6444).
+
+
 ## [4.9.0] 2025-02-20
 
 ### Added
