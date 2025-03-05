@@ -23,8 +23,9 @@ class FlexibleSchemaPort(Port):
     Flexible output ports will adapt the schema to the connected input.
     It is not allowed to connect two flexible ports.
 
-    :param explicit_schema: Indicates whether an output port has an explicitly defined
-                            and quickly retrievable schema (like CSV).
+    :param explicit_schema: Indicates whether an output port has an explicitly defined and quickly
+                            retrievable schema (like CSV). This allows for connecting it directly to
+                            flexible input ports in which case the explict schema will be used.
     """
 
     def __init__(self, explicit_schema: bool = False):
