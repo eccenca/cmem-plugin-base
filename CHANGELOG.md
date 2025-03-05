@@ -8,8 +8,12 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ### Added
 
-- Custom actions for Workflow plugins (CMEM-5576).
-- Added explicit_schema parameter to FlexibleOutputSchema (CMEM-6444).
+- Custom actions for Workflow plugins (CMEM-5576)
+- Added explicit_schema parameter to FlexibleOutputSchema (CMEM-6444)
+
+### Fixed
+
+- Check if passwords can be decrypted, i.e., if the key is valid (CMEM-5932)
 
 ## [4.9.0] 2025-02-20
 
