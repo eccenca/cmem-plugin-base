@@ -9,7 +9,8 @@ from mimetypes import guess_type
 from pkgutil import get_data
 from typing import Any, ClassVar
 
-from cmem_plugin_base.dataintegration.plugins import TransformPlugin, WorkflowPlugin
+from cmem_plugin_base.dataintegration.context import PluginContext
+from cmem_plugin_base.dataintegration.plugins import PluginBase, TransformPlugin, WorkflowPlugin
 from cmem_plugin_base.dataintegration.types import (
     ParameterType,
     ParameterTypes,
@@ -96,6 +97,84 @@ class PluginParameter:
         self.visible = visible
 
 
+class PluginAction:
+    """Custom plugin action.
+
+    Plugin actions provide additional functionality besides the default execution.
+    They can be triggered from the plugin UI.
+    Each action is based on a method on the plugin class. Besides the self parameter,
+    the method can have one additional parameter of type PluginContext.
+    The return value of the method will be converted to a string and displayed in the UI.
+    The string may use Markdown formatting.
+    The method may return None, in which case no output will be displayed.
+    It may raise an exception to signal an error to the user.
+
+    :param name: The name of the method.
+    :param label: A human-readable label of the action
+    :param description: A human-readable description of the action
+    :param icon: An optional custom icon.
+    """
+
+    def __init__(self, name: str, label: str, description: str, icon: Icon | None = None):
+        self.name = name
+        self.label = label
+        self.description = description
+        self.icon = icon
+        self.validated = False
+        self.provide_plugin_context = False  # Will be set by validate()
+
+    def validate(self, plugin_class: type) -> None:
+        """Validate the action and set the `provide_plugin_context` boolean.
+
+        :param plugin_class: The plugin class
+        """
+        # Get the method from the class.
+        try:
+            method = getattr(plugin_class, self.name)
+        except AttributeError:
+            raise TypeError(
+                f"Plugin class '{plugin_class.__name__}' does not have a method named '{self.name}'"
+            ) from None
+        if not callable(method):
+            raise TypeError(f"'{self.name}' in class '{plugin_class.__name__}' is not a function.")
+
+        # Check parameters
+        parameters = list(inspect.signature(method).parameters.values())
+        if len(parameters) == 1:
+            self.provide_plugin_context = False
+        elif len(parameters) - 1 == 1:
+            if parameters[1].annotation is PluginContext:
+                self.provide_plugin_context = True
+            else:
+                raise TypeError(
+                    f"Argument of method '{self.name}' in {plugin_class.__name__} must "
+                    f"be typed PluginContext (it's {parameters[1].annotation})."
+                )
+        else:
+            raise TypeError(
+                f"Method '{self.name}' in {plugin_class.__name__} has more than one"
+                f" argument (besides 'self')."
+            )
+        self.validated = True
+
+    def execute(self, plugin: PluginBase, context: PluginContext) -> str | None:
+        """Call the action.
+
+        :param plugin: The plugin instance on which the action is called.
+        :param context: The plugin context
+        :return: The result of the action as string
+        """
+        if not self.validated:
+            raise ValueError("Action must be validated before it can be executed.")
+        if self.provide_plugin_context:
+            result = getattr(plugin, self.name)(context)
+        else:
+            result = getattr(plugin, self.name)()
+        if result is None:
+            return None
+        return str(result)
+
+
 class PluginDescription:
     """A plugin description.
 
@@ -106,6 +185,7 @@ class PluginDescription:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters
     :param icon: An optional custom plugin icon.
+    :param actions: Custom plugin actions.
     """
 
     def __init__(  # noqa: PLR0913
@@ -118,6 +198,7 @@ class PluginDescription:
         categories: list[str] | None = None,
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
+        actions: list[PluginAction] | None = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -153,6 +234,12 @@ class PluginDescription:
         else:
             self.parameters = parameters
         self.icon = icon
+        if actions is None:
+            self.actions = []
+        else:
+            self.actions = actions
+        for action in self.actions:
+            action.validate(plugin_class)
 
 
 @dataclass
@@ -233,6 +320,7 @@ class Plugin:
     :param categories: The categories to which this plugin belongs to.
     :param parameters: Available plugin parameters.
     :param icon: Optional custom plugin icon.
+    :param actions: Custom plugin actions
     """
 
     plugins: ClassVar[list[PluginDescription]] = []
@@ -246,12 +334,14 @@ class Plugin:
         categories: list[str] | None = None,
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
+        actions: list[PluginAction] | None = None,
     ):
         self.label = label
         self.description = description
         self.documentation = documentation
         self.plugin_id = plugin_id
         self.icon = icon
+        self.actions = actions
         if categories is None:
             self.categories = []
         else:
@@ -272,6 +362,7 @@ class Plugin:
             categories=self.categories,
             parameters=self.retrieve_parameters(func),
             icon=self.icon,
+            actions=self.actions,
         )
         Plugin.plugins.append(plugin_desc)
         return func
@@ -304,7 +395,7 @@ class Plugin:
                 # Special handling of PluginContext parameter
                 if isinstance(param.param_type, PluginContextParameterType):
                     param.visible = False  # Should never be visible in the UI
-                    param.default_value = ""  # dummy value
+                    param.default_value = ""  # default value
 
                 if param.default_value is None and sig_param.default != _empty:
                     param.default_value = sig_param.default

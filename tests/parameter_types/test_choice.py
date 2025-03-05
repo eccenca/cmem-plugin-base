@@ -3,7 +3,7 @@
 import collections
 
 from cmem_plugin_base.dataintegration.parameter.choice import ChoiceParameterType
-from tests.utils import TestPluginContext
+from cmem_plugin_base.testing import TestPluginContext
 
 CHOICE_LIST = collections.OrderedDict({"ONE": "First Option", "TWO": "Second Option"})
 

@@ -16,7 +16,7 @@ from cmem_plugin_base.dataintegration.parameter.code import (
     YamlCode,
 )
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
-from tests.utils import TestPluginContext
+from cmem_plugin_base.testing import TestPluginContext
 
 
 class CodeParameterTest(unittest.TestCase):
@@ -80,7 +80,7 @@ class CodeParameterTest(unittest.TestCase):
         jinja_type = CodeParameterType[JinjaCode]("jinja2")
 
         # Create a jinja code instance from a string
-        jinja_code = jinja_type.from_string("my code", TestPluginContext(user=None))
+        jinja_code = jinja_type.from_string("my code", TestPluginContext())
         assert jinja_code.code == "my code"
 
         # Convert jinja code instance to a string

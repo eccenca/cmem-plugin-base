@@ -6,11 +6,30 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- Custom actions for Workflow plugins (CMEM-5576)
+- Added explicit_schema parameter to FlexibleOutputSchema (CMEM-6444)
+
 ### Fixed
 
-- Check if passwords can be decrypted, i.e., if the key is valid (CMEM-5932).
+- Check if passwords can be decrypted, i.e., if the key is valid (CMEM-5932)
 
-## [4.8.0] 2024-09-12
+## [4.9.0] 2025-02-20
+
+### Added
+
+- TypedEntitySchema - A custom entity schema that holds entities of a specific type (e.g. files)
+- FileEntitySchema - Entity schema that holds a collection of files
+- testing module with different context classes for tests:
+  - TestUserContext
+  - TestPluginContext
+  - TestTaskContext
+  - TestExecutionContext
+  - TestSystemContext
+
+
+## [4.8.0] 2024-09-12 - shipped with DI v24.3.0
 
 ### Added
 
