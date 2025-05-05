@@ -13,32 +13,31 @@ from cmem_plugin_base.dataintegration.typed_entities.typed_entities import (
 
 # --- RDF Node Types ---
 
+@dataclass()
 class RdfNode(abc.ABC):
     """Abstract base class for an RDF node."""
 
     type: ClassVar[str]
     """The type code that identifies this RDF node type. Must be defined in subclasses."""
 
-    @property
-    @abc.abstractmethod
-    def value(self) -> str:
-        """The string representation of the node's value."""
+    value: str
+    """The value of the RDF node. This is typically a URI, a blank node identifier, or a literal."""
 
 
 class ConcreteNode(RdfNode, abc.ABC):
     """Abstract base class for an RdfNode which is either a Resource or a BlankNode."""
 
 
-@dataclass(frozen=True)
+@dataclass()
 class Resource(ConcreteNode):
     """Represents an RDF resource (typically a URI)."""
 
     type: ClassVar[str] = "URI"
 
-    value: str
+    value: str # The URI of the resource
 
 
-@dataclass(frozen=True)
+@dataclass()
 class BlankNode(ConcreteNode):
     """Represents an RDF blank node."""
 
@@ -51,7 +50,7 @@ class Literal(RdfNode, abc.ABC):
     """Abstract base class for an RDF literal."""
 
 
-@dataclass(frozen=True)
+@dataclass()
 class PlainLiteral(Literal):
     """Represents a plain literal without a language tag or datatype."""
 
@@ -59,7 +58,8 @@ class PlainLiteral(Literal):
 
     value: str
 
-@dataclass(frozen=True)
+
+@dataclass()
 class LanguageLiteral(Literal):
     """Represents a literal with a language tag."""
 
@@ -69,23 +69,25 @@ class LanguageLiteral(Literal):
     language: str
 
 
-@dataclass(frozen=True)
+@dataclass()
 class DataTypeLiteral(Literal):
     """Represents a literal with a specific datatype."""
 
     type: ClassVar[str] = "TypedLiteral"
 
     value: str
-    data_type: str # The datatype IRI (e.g., "http://www.w3.org/2001/XMLSchema#integer")
+    data_type: str = "http://www.w3.org/2001/XMLSchema#string" # Default datatype IRI for literals
 
-@dataclass(frozen=True)
+
+@dataclass()
 class Quad:
     """Represents an RDF Quad."""
 
     subject: ConcreteNode
     predicate: Resource
     object: RdfNode
-    graph: Resource | None
+    graph: Resource | None = None
+
 
 def create_node(type_name: str, value: str,
                 language: str | None = None, data_type: str | None = None) -> RdfNode:
@@ -95,7 +97,7 @@ def create_node(type_name: str, value: str,
             return Resource(value)
         case BlankNode.type:
             return BlankNode(value)
-        case Literal.type:
+        case PlainLiteral.type:
             return PlainLiteral(value)
         case LanguageLiteral.type:
             if language is None:
@@ -110,24 +112,25 @@ def create_node(type_name: str, value: str,
 
 # --- RDF Quad Schema ---
 
-
 class QuadEntitySchema(TypedEntitySchema[Quad]):
     """Entity schema that holds a collection of RDF quads."""
 
     def __init__(self):
-        super().__init__(
-            type_uri=type_uri("Quad"),
-            paths=[
-                EntityPath(path_uri("quad/subject")),
-                EntityPath(path_uri("quad/subjectType")),
-                EntityPath(path_uri("quad/predicate")),
-                EntityPath(path_uri("quad/object")),
-                EntityPath(path_uri("quad/objectType")),
-                EntityPath(path_uri("quad/objectLanguage")),
-                EntityPath(path_uri("quad/objectDataType")),
-                EntityPath(path_uri("quad/graph"))
-            ],
-        )
+        # The parent class TypedEntitySchema implements a singleton pattern
+        if not hasattr(self, "_initialized"):
+            super().__init__(
+                type_uri=type_uri("Quad"),
+                paths=[
+                    EntityPath(path_uri("quad/subject")),
+                    EntityPath(path_uri("quad/subjectType")),
+                    EntityPath(path_uri("quad/predicate")),
+                    EntityPath(path_uri("quad/object")),
+                    EntityPath(path_uri("quad/objectType")),
+                    EntityPath(path_uri("quad/objectLanguage")),
+                    EntityPath(path_uri("quad/objectDataType")),
+                    EntityPath(path_uri("quad/graph"))
+                ],
+            )
 
     def to_entity(self, quad: Quad) -> Entity:
         """Create a generic entity from an RDF quad."""

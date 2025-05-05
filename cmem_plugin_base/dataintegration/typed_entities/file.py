@@ -34,14 +34,16 @@ class FileEntitySchema(TypedEntitySchema[File]):
     """Entity schema that holds a collection of files."""
 
     def __init__(self):
-        super().__init__(
-            type_uri=type_uri("File"),
-            paths=[
-                EntityPath(path_uri("filePath")),
-                EntityPath(path_uri("fileType")),
-                EntityPath(path_uri("mimeType")),
-            ],
-        )
+        # The parent class TypedEntitySchema implements a singleton pattern
+        if not hasattr(self, "_initialized"):
+            super().__init__(
+                type_uri=type_uri("File"),
+                paths=[
+                    EntityPath(path_uri("filePath")),
+                    EntityPath(path_uri("fileType")),
+                    EntityPath(path_uri("mimeType")),
+                ],
+            )
 
     def to_entity(self, value: File) -> Entity:
         """Create a generic entity from a file"""

@@ -2,7 +2,7 @@
 
 from abc import abstractmethod
 from collections.abc import Iterator, Sequence
-from typing import Generic, TypeVar
+from typing import ClassVar, Generic, TypeVar
 
 from cmem_plugin_base.dataintegration.entity import Entities, Entity, EntityPath, EntitySchema
 
@@ -12,8 +12,20 @@ T = TypeVar("T")
 class TypedEntitySchema(EntitySchema, Generic[T]):
     """A custom entity schema that holds entities of a specific type (e.g. files)."""
 
-    def __init__(self, type_uri: str, paths: Sequence[EntityPath]):
-        super().__init__(type_uri, paths)
+    # Class variable to store singleton instances for each subclass
+    _instances: ClassVar[dict[type["TypedEntitySchema"], "TypedEntitySchema"]] = {}
+
+    def __new__(cls, *args, **kwargs) -> "TypedEntitySchema":  # noqa: ANN002, ANN003, ARG003
+        """Implement singleton pattern for all subclasses of TypedEntitySchema."""
+        if cls not in cls._instances:
+            cls._instances[cls] = super().__new__(cls)
+        return cls._instances[cls]
+
+    def __init__(self, type_uri: str, paths: Sequence[EntityPath]) -> None:
+        # Check if this instance has already been initialized
+        if not hasattr(self, "_initialized"):
+            super().__init__(type_uri, paths)
+            self._initialized = True
 
     @abstractmethod
     def to_entity(self, value: T) -> Entity:
