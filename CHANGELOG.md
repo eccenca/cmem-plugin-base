@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Fixed
+
+- Adapted FileEntitySchema so it can be used with datasets (CMEM-6615).
+
 ## [4.10.0] 2025-03-31 - shipped with DI v25.1.0
 
 ### Added

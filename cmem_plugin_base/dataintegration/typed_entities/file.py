@@ -39,9 +39,9 @@ class FileEntitySchema(TypedEntitySchema[File]):
             super().__init__(
                 type_uri=type_uri("File"),
                 paths=[
-                    EntityPath(path_uri("filePath")),
-                    EntityPath(path_uri("fileType")),
-                    EntityPath(path_uri("mimeType")),
+                    EntityPath(path_uri("filePath"), is_single_value=True),
+                    EntityPath(path_uri("fileType"), is_single_value=True),
+                    EntityPath(path_uri("mimeType"), is_single_value=True),
                 ],
             )
 
