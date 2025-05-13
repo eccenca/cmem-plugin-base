@@ -15,7 +15,7 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
     # Class variable to store singleton instances for each subclass
     _instances: ClassVar[dict[type["TypedEntitySchema"], "TypedEntitySchema"]] = {}
 
-    def __new__(cls, *args, **kwargs) -> "TypedEntitySchema":  # noqa: ANN002, ANN003, ARG003
+    def __new__(cls, *args, **kwargs) -> "TypedEntitySchema":  # noqa: ANN002, ANN003, ARG004
         """Implement singleton pattern for all subclasses of TypedEntitySchema."""
         if cls not in cls._instances:
             cls._instances[cls] = super().__new__(cls)
