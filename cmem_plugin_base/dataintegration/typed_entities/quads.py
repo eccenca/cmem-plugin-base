@@ -13,6 +13,7 @@ from cmem_plugin_base.dataintegration.typed_entities.typed_entities import (
 
 # --- RDF Node Types ---
 
+
 class RdfNode(BaseModel):
     """Abstract base class for an RDF node."""
 
@@ -32,7 +33,7 @@ class Resource(ConcreteNode):
 
     type: ClassVar[str] = "URI"
 
-    value: str # The URI of the resource
+    value: str  # The URI of the resource
 
 
 class BlankNode(ConcreteNode):
@@ -40,11 +41,12 @@ class BlankNode(ConcreteNode):
 
     type: ClassVar[str] = "BlankNode"
 
-    value: str # Usually the identifier without the '_:' prefix internally
+    value: str  # Usually the identifier without the '_:' prefix internally
 
 
 class Literal(RdfNode):
     """Abstract base class for an RDF literal."""
+
 
 class PlainLiteral(Literal):
     """Represents a plain literal without a language tag or datatype."""
@@ -69,7 +71,7 @@ class DataTypeLiteral(Literal):
     type: ClassVar[str] = "TypedLiteral"
 
     value: str
-    data_type: str = "http://www.w3.org/2001/XMLSchema#string" # Default datatype IRI for literals
+    data_type: str = "http://www.w3.org/2001/XMLSchema#string"  # Default datatype IRI for literals
 
 
 class Quad(BaseModel):
@@ -81,8 +83,9 @@ class Quad(BaseModel):
     graph: Resource | None = None
 
 
-def create_node(type_name: str, value: str,
-                language: str | None = None, data_type: str | None = None) -> RdfNode:
+def create_node(
+    type_name: str, value: str, language: str | None = None, data_type: str | None = None
+) -> RdfNode:
     """Create an RDF node for a given type name."""
     match type_name:
         case Resource.type:
@@ -102,7 +105,9 @@ def create_node(type_name: str, value: str,
         case _:
             raise ValueError(f"Unknown type: {type_name}")
 
+
 # --- RDF Quad Schema ---
+
 
 class QuadEntitySchema(TypedEntitySchema[Quad]):
     """Entity schema that holds a collection of RDF quads."""
@@ -120,7 +125,7 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
                     EntityPath(path_uri("quad/objectType")),
                     EntityPath(path_uri("quad/objectLanguage")),
                     EntityPath(path_uri("quad/objectDataType")),
-                    EntityPath(path_uri("quad/graph"))
+                    EntityPath(path_uri("quad/graph")),
                 ],
             )
 
@@ -141,14 +146,16 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
                 object_data_type = []
 
         # Generate a UUID-based URI
-        uri_components = "".join([
-            quad.subject.value,
-            quad.predicate.value,
-            quad.object.value,
-            object_language[0] if object_language else "",
-            object_data_type[0] if object_data_type else "",
-            quad.graph.value if quad.graph else ""
-        ])
+        uri_components = "".join(
+            [
+                quad.subject.value,
+                quad.predicate.value,
+                quad.object.value,
+                object_language[0] if object_language else "",
+                object_data_type[0] if object_data_type else "",
+                quad.graph.value if quad.graph else "",
+            ]
+        )
         uri = f"urn:uuid:{uuid.uuid5(uuid.NAMESPACE_DNS, uri_components)}"
 
         # Build entity
@@ -162,7 +169,7 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
                 [quad.object.type],
                 object_language,
                 object_data_type,
-                [quad.graph.value] if quad.graph else []
+                [quad.graph.value] if quad.graph else [],
             ],
         )
 
@@ -210,7 +217,8 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
 
         # Build the Quad
         return Quad(
-            subject=cast(ConcreteNode, subject),
+            subject=cast("ConcreteNode", subject),
             predicate=predicate,
             object=object_value,
-            graph=graph)
+            graph=graph,
+        )

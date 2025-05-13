@@ -1,4 +1,5 @@
 """Test for RDF quads."""
+
 import copy
 import unittest
 from collections.abc import Sequence
@@ -38,30 +39,32 @@ class QuadsTest(unittest.TestCase):
         # Creat quads with all supported node types
         quads = [
             Quad(
-                subject = Resource(value="urn:instance:person1"),
-                predicate = Resource(value="urn:instance:hasCity"),
-                object = Resource(value="urn:instance:city1")
+                subject=Resource(value="urn:instance:person1"),
+                predicate=Resource(value="urn:instance:hasCity"),
+                object=Resource(value="urn:instance:city1"),
             ),
             Quad(
-                subject = Resource(value="urn:instance:person2"),
-                predicate = Resource(value="urn:instance:hasCity"),
-                object = PlainLiteral(value="Berlin")
+                subject=Resource(value="urn:instance:person2"),
+                predicate=Resource(value="urn:instance:hasCity"),
+                object=PlainLiteral(value="Berlin"),
             ),
             Quad(
-                subject = Resource(value="urn:instance:person3"),
-                predicate = Resource(value="urn:instance:hasCity"),
-                object = LanguageLiteral(value="Berlin", language="en")
+                subject=Resource(value="urn:instance:person3"),
+                predicate=Resource(value="urn:instance:hasCity"),
+                object=LanguageLiteral(value="Berlin", language="en"),
             ),
             Quad(
-                subject = Resource(value="urn:instance:person4"),
-                predicate = Resource(value="urn:instance:age"),
-                object = DataTypeLiteral(value="29", data_type="http://www.w3.org/2001/XMLSchema#int")
+                subject=Resource(value="urn:instance:person4"),
+                predicate=Resource(value="urn:instance:age"),
+                object=DataTypeLiteral(
+                    value="29", data_type="http://www.w3.org/2001/XMLSchema#int"
+                ),
             ),
             Quad(
-                subject = BlankNode(value="person5"),
-                predicate = Resource(value="urn:instance:hasCity"),
-                object = BlankNode(value="city1")
-            )
+                subject=BlankNode(value="person5"),
+                predicate=Resource(value="urn:instance:hasCity"),
+                object=BlankNode(value="city1"),
+            ),
         ]
 
         # Execute operator
