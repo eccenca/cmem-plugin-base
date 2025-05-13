@@ -1,9 +1,9 @@
 """Quad entities"""
 
-import abc
 import uuid
-from dataclasses import dataclass
 from typing import ClassVar, cast
+
+from pydantic import BaseModel
 
 from cmem_plugin_base.dataintegration.entity import Entity, EntityPath
 from cmem_plugin_base.dataintegration.typed_entities import path_uri, type_uri
@@ -13,8 +13,7 @@ from cmem_plugin_base.dataintegration.typed_entities.typed_entities import (
 
 # --- RDF Node Types ---
 
-@dataclass()
-class RdfNode(abc.ABC):
+class RdfNode(BaseModel):
     """Abstract base class for an RDF node."""
 
     type: ClassVar[str]
@@ -24,11 +23,10 @@ class RdfNode(abc.ABC):
     """The value of the RDF node. This is typically a URI, a blank node identifier, or a literal."""
 
 
-class ConcreteNode(RdfNode, abc.ABC):
+class ConcreteNode(RdfNode):
     """Abstract base class for an RdfNode which is either a Resource or a BlankNode."""
 
 
-@dataclass()
 class Resource(ConcreteNode):
     """Represents an RDF resource (typically a URI)."""
 
@@ -37,7 +35,6 @@ class Resource(ConcreteNode):
     value: str # The URI of the resource
 
 
-@dataclass()
 class BlankNode(ConcreteNode):
     """Represents an RDF blank node."""
 
@@ -46,11 +43,9 @@ class BlankNode(ConcreteNode):
     value: str # Usually the identifier without the '_:' prefix internally
 
 
-class Literal(RdfNode, abc.ABC):
+class Literal(RdfNode):
     """Abstract base class for an RDF literal."""
 
-
-@dataclass()
 class PlainLiteral(Literal):
     """Represents a plain literal without a language tag or datatype."""
 
@@ -59,7 +54,6 @@ class PlainLiteral(Literal):
     value: str
 
 
-@dataclass()
 class LanguageLiteral(Literal):
     """Represents a literal with a language tag."""
 
@@ -69,7 +63,6 @@ class LanguageLiteral(Literal):
     language: str
 
 
-@dataclass()
 class DataTypeLiteral(Literal):
     """Represents a literal with a specific datatype."""
 
@@ -79,8 +72,7 @@ class DataTypeLiteral(Literal):
     data_type: str = "http://www.w3.org/2001/XMLSchema#string" # Default datatype IRI for literals
 
 
-@dataclass()
-class Quad:
+class Quad(BaseModel):
     """Represents an RDF Quad."""
 
     subject: ConcreteNode
@@ -94,19 +86,19 @@ def create_node(type_name: str, value: str,
     """Create an RDF node for a given type name."""
     match type_name:
         case Resource.type:
-            return Resource(value)
+            return Resource(value=value)
         case BlankNode.type:
-            return BlankNode(value)
+            return BlankNode(value=value)
         case PlainLiteral.type:
-            return PlainLiteral(value)
+            return PlainLiteral(value=value)
         case LanguageLiteral.type:
             if language is None:
                 raise ValueError("Language must be provided for LanguageLiteral.")
-            return LanguageLiteral(value, language)
+            return LanguageLiteral(value=value, language=language)
         case DataTypeLiteral.type:
             if data_type is None:
                 raise ValueError("Data type must be provided for DataTypeLiteral.")
-            return DataTypeLiteral(value, data_type)
+            return DataTypeLiteral(value=value, data_type=data_type)
         case _:
             raise ValueError(f"Unknown type: {type_name}")
 
@@ -197,7 +189,7 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
             raise ValueError(f"Invalid subject type: {subject_type_list}. Expected a single value.")
 
         # Predicate
-        predicate = Resource(values[predicate_index][0])
+        predicate = Resource(value=values[predicate_index][0])
 
         # Object
         object_type_list = values[object_type_index]
@@ -214,7 +206,11 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
         graph_list = values[graph_index]
         graph: Resource | None = None
         if graph_list:
-            graph = Resource(graph_list[0])
+            graph = Resource(value=graph_list[0])
 
         # Build the Quad
-        return Quad(cast(ConcreteNode, subject), predicate, object_value, graph)
+        return Quad(
+            subject=cast(ConcreteNode, subject),
+            predicate=predicate,
+            object=object_value,
+            graph=graph)

@@ -18,11 +18,13 @@ from cmem_plugin_base.dataintegration.typed_entities.quads import (
 
 
 class ProcessQuadsOperator(WorkflowPlugin):
+    """Test operator that modifies the subject of the first quad."""
 
     def __init__(self) -> None:
         pass
 
     def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities:
+        """Modify the subject of the first quad."""
         quads = list(QuadEntitySchema().from_entities(inputs[0]).values)
         quads[0].subject.value = "urn:instance:modified"
         return QuadEntitySchema().to_entities(iter(quads))
@@ -36,29 +38,29 @@ class QuadsTest(unittest.TestCase):
         # Creat quads with all supported node types
         quads = [
             Quad(
-                subject = Resource("urn:instance:person1"),
-                predicate = Resource("urn:instance:hasCity"),
-                object = Resource("urn:instance:city1")
+                subject = Resource(value="urn:instance:person1"),
+                predicate = Resource(value="urn:instance:hasCity"),
+                object = Resource(value="urn:instance:city1")
             ),
             Quad(
-                subject = Resource("urn:instance:person2"),
-                predicate = Resource("urn:instance:hasCity"),
-                object = PlainLiteral("Berlin")
+                subject = Resource(value="urn:instance:person2"),
+                predicate = Resource(value="urn:instance:hasCity"),
+                object = PlainLiteral(value="Berlin")
             ),
             Quad(
-                subject = Resource("urn:instance:person3"),
-                predicate = Resource("urn:instance:hasCity"),
-                object = LanguageLiteral("Berlin", "en")
+                subject = Resource(value="urn:instance:person3"),
+                predicate = Resource(value="urn:instance:hasCity"),
+                object = LanguageLiteral(value="Berlin", language="en")
             ),
             Quad(
-                subject = Resource("urn:instance:person4"),
-                predicate = Resource("urn:instance:age"),
-                object = DataTypeLiteral("29", "http://www.w3.org/2001/XMLSchema#int")
+                subject = Resource(value="urn:instance:person4"),
+                predicate = Resource(value="urn:instance:age"),
+                object = DataTypeLiteral(value="29", data_type="http://www.w3.org/2001/XMLSchema#int")
             ),
             Quad(
-                subject = BlankNode("person5"),
-                predicate = Resource("urn:instance:hasCity"),
-                object = BlankNode("city1")
+                subject = BlankNode(value="person5"),
+                predicate = Resource(value="urn:instance:hasCity"),
+                object = BlankNode(value="city1")
             )
         ]
 
@@ -69,7 +71,7 @@ class QuadsTest(unittest.TestCase):
         # Check output
         output_quads = list(QuadEntitySchema().from_entities(output).values)
         expected_output_quads = copy.deepcopy(quads)
-        expected_output_quads[0].subject = Resource("urn:instance:modified")
+        expected_output_quads[0].subject = Resource(value="urn:instance:modified")
         assert output_quads == expected_output_quads
 
 
