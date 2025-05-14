@@ -47,14 +47,14 @@ class FileEntitySchema(TypedEntitySchema[File]):
         """Create a generic entity from a file"""
         return Entity(
             uri=instance_uri(value.path),
-            values=[[value.path], [value.file_type], [value.mime or ""]],
+            values=[[value.path], [value.file_type], [value.mime] if value.mime else []]
         )
 
     def from_entity(self, entity: Entity) -> File:
         """Create a file entity from a generic entity."""
         path = entity.values[0][0]
         file_type = entity.values[1][0]
-        mime = entity.values[2][0] if entity.values[2][0] else None
+        mime = entity.values[2][0] if entity.values[2] and entity.values[2][0] else None
         match file_type:
             case "Local":
                 return LocalFile(path, mime)
