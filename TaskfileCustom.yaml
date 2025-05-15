@@ -1,0 +1,36 @@
+version: '3'
+
+tasks:
+  container:install:
+    desc: "Install plugin package into container (copied to /tmp)"
+    cmds:
+      - |
+        echo "Checking if container is running..."
+        docker inspect -f '{{.State.Running}}' dockerlocalhost-dataintegration-1 || (echo "Container not running!" && exit 1)
+
+      - |
+        echo "Locating plugin package in dist/..."
+        PACKAGE=$(ls dist/cmem_plugin_base-*.tar.gz | head -n 1)
+        echo "Found package: $PACKAGE"
+
+        echo "Copying package to /tmp in container..."
+        docker cp "$PACKAGE" dockerlocalhost-dataintegration-1:/tmp/
+
+        echo "Installing package in container from /tmp..."
+        docker exec dockerlocalhost-dataintegration-1 bash -c "pip install /tmp/$(basename $PACKAGE) --target /data/python-packages/ --upgrade && rm /tmp/$(basename $PACKAGE)"
+
+  container:restart:
+    desc: "Restart the dockerlocalhost-dataintegration-1 container"
+    cmds:
+      - echo "Restarting container dockerlocalhost-dataintegration-1..."
+      - docker restart dockerlocalhost-dataintegration-1
+
+  container:reload:
+    desc: "Build, install, and restart container to reload the plugin"
+    cmds:
+      - echo "Building plugin package..."
+      - task build
+      - echo "Installing package into container..."
+      - task custom:container:install
+      - echo "Restarting container to apply changes..."
+      - task custom:container:restart
