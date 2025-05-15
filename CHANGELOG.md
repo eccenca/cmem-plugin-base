@@ -5,13 +5,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## Unreleased
+## [4.10.2] 2025-05-15 - shipped with DI v25.1.1
 
 ### Fixed
 
 - Resolved an issue in `FileEntitySchema` for empty MIME types (CMEM-6623).
 
-## [4.10.1] 2025-05-08 - shipped with DI v25.1.1
+## [4.10.1] 2025-05-08
 
 ### Fixed
 
