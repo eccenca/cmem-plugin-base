@@ -1,0 +1,29 @@
+---
+version: '3'
+
+tasks:
+
+  container:install:
+    desc: "Install package in container (then restart)"
+    summary: >
+      Note that `cmemc admin workspace python uninstall cmem-plugin-base` will
+      uninstall the dev-version and reveal the shipped package version again.
+    cmds:
+      - task clean build
+      - docker cp dist/{{.PACKAGE_FILE}} {{.DI_CONTAINER}}:/tmp/
+      - docker exec -t {{.DI_CONTAINER}} bash -c "{{.PIP_COMMAND}} /tmp/{{.PACKAGE_FILE}}"
+      - docker exec -t {{.DI_CONTAINER}} bash -c "rm -f /tmp/{{.PACKAGE_FILE}}"
+      - docker restart {{.DI_CONTAINER}}
+    preconditions:
+      - sh: '[ "{{.DI_RUNNING}}" == "true" ]'
+        msg: "Container {{.DI_CONTAINER}} not running ({{.DI_RUNNING}})"
+    vars:
+      DI_CONTAINER: dockerlocalhost-dataintegration-1
+      DI_RUNNING:
+        sh: docker inspect -f '{{ "{{" }}.State.Running{{ "}}" }}' {{.DI_CONTAINER}}
+      PACKAGE: cmem_plugin_base
+      PACKAGE_VERSION:
+        sh: poetry version -s
+      PACKAGE_FILE: "{{.PACKAGE}}-{{.PACKAGE_VERSION}}.tar.gz"
+      PIP_COMMAND: pip install --target /data/python-packages -q --upgrade
+
