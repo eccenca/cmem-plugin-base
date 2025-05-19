@@ -5,8 +5,10 @@ import unittest
 from collections.abc import Sequence
 from pathlib import Path
 
+import pytest
+
 from cmem_plugin_base.dataintegration.context import ExecutionContext
-from cmem_plugin_base.dataintegration.entity import Entities
+from cmem_plugin_base.dataintegration.entity import Entities, Entity
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 from cmem_plugin_base.dataintegration.ports import FixedNumberOfInputs, FixedSchemaPort
 from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema, LocalFile
@@ -58,6 +60,19 @@ class TypedEntitiesTest(unittest.TestCase):
         with Path(FileEntitySchema().from_entity(output_entities[0]).path).open() as output_file:
             output_str = output_file.read()
             assert output_str == "ABC123"
+
+    def test_file_entity_conversion(self) -> None:
+        """Test conversion from entity to file"""
+        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Project"], []])
+        assert FileEntitySchema().from_entity(file_entity)
+
+        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Project"], [""]])
+        assert FileEntitySchema().from_entity(file_entity)
+
+        with pytest.raises(ValueError, match="File 'test.txt' has unexpected type 'Wrong Type'"):
+            FileEntitySchema().from_entity(
+                Entity(uri="test.uri", values=[["test.txt"], ["Wrong Type"], []])
+            )
 
 
 if __name__ == "__main__":
