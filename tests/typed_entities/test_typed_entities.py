@@ -12,6 +12,7 @@ from cmem_plugin_base.dataintegration.entity import Entities, Entity
 from cmem_plugin_base.dataintegration.plugins import WorkflowPlugin
 from cmem_plugin_base.dataintegration.ports import FixedNumberOfInputs, FixedSchemaPort
 from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema, LocalFile
+from cmem_plugin_base.testing import TestTaskContext
 
 
 class ConcatFilesOperator(WorkflowPlugin):
@@ -29,9 +30,8 @@ class ConcatFilesOperator(WorkflowPlugin):
             output_name = o_file.name
             for file in input_files.values:
                 if isinstance(file, LocalFile):
-                    with Path(file.path).open("rb") as f:
-                        contents = f.read()
-                        o_file.write(contents)
+                    with file.read_stream(context.task.project_id()) as in_stream:
+                        o_file.write(in_stream.read())
 
         return FileEntitySchema().to_entities(iter([LocalFile(output_name)]))
 
@@ -51,7 +51,9 @@ class TypedEntitiesTest(unittest.TestCase):
         input_entities = FileEntitySchema().to_entities(
             iter([LocalFile(temp1.name), LocalFile(temp2.name)])
         )
-        output = ConcatFilesOperator().execute([input_entities], ExecutionContext())
+        context = ExecutionContext()
+        context.task = TestTaskContext(project_id="TestProject", task_id="TestTask")
+        output = ConcatFilesOperator().execute([input_entities], context)
 
         # Check output
         assert output is not None
@@ -63,15 +65,15 @@ class TypedEntitiesTest(unittest.TestCase):
 
     def test_file_entity_conversion(self) -> None:
         """Test conversion from entity to file"""
-        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Project"], []])
+        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Local"], [], []])
         assert FileEntitySchema().from_entity(file_entity)
 
-        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Project"], [""]])
+        file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Local"], [""], [""]])
         assert FileEntitySchema().from_entity(file_entity)
 
         with pytest.raises(ValueError, match="File 'test.txt' has unexpected type 'Wrong Type'"):
             FileEntitySchema().from_entity(
-                Entity(uri="test.uri", values=[["test.txt"], ["Wrong Type"], []])
+                Entity(uri="test.uri", values=[["test.txt"], ["Wrong Type"], [], []])
             )
 
 
