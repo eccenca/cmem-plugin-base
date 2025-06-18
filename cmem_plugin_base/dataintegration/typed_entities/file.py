@@ -63,7 +63,7 @@ class LocalFile(File):
         else:
             if not Path(self.path).is_file():
                 raise FileNotFoundError(f"File '{self.path}' does not exist.")
-            return Path.open(self.path, "rb")
+            return Path(self.path).open("rb")
 
 
 class ProjectFile(File):
