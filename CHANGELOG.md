@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleases]
+## [4.11.0] 2025-06-19
 
 ### Added
 
@@ -23,11 +23,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - Resolved an issue in `FileEntitySchema` for empty MIME types (CMEM-6623).
 
+
 ## [4.10.1] 2025-05-08
 
 ### Fixed
 
 - Adapted FileEntitySchema so it can be used with datasets (CMEM-6615).
+
 
 ## [4.10.0] 2025-03-31 - shipped with DI v25.1.0
 
@@ -39,6 +41,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - Check if passwords can be decrypted, i.e., if the key is valid (CMEM-5932)
+
 
 ## [4.9.0] 2025-02-20
 
