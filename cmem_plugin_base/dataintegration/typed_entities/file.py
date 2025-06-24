@@ -107,6 +107,7 @@ class FileEntitySchema(TypedEntitySchema[File]):
                     EntityPath(path_uri("filePath"), is_single_value=True),
                     EntityPath(path_uri("fileType"), is_single_value=True),
                     EntityPath(path_uri("mimeType"), is_single_value=True),
+                    EntityPath(path_uri("entryPath"), is_single_value=True),
                 ],
             )
 
