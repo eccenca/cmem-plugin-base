@@ -5,7 +5,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [4.12.1] 2025-06-24
+## [Unreleased]
+
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
+
+## [4.12.1] 2025-06-24 - shipped with DI v25.2.0
 
 ### Fixed
 
