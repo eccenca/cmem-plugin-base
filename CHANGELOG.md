@@ -16,7 +16,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - TestExecutionContext now includes system and workflow contexts to match ExecutionContext specification
 
 
-## [4.12.1] 2025-06-24
+## [4.12.1] 2025-06-24 - shipped with DI v25.2.0
 
 ### Fixed
 
