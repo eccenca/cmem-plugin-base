@@ -6,6 +6,7 @@ Classes included in this module:
 - TestTaskContext: testing task context
 - TestExecutionContext: testing execution context with task and user linkage
 - TestSystemContext: testing system context with encryption/decryption placeholders
+- TestWorkflowContext: testing workflow context with workflow ID and status
 
 These classes are intended for use in unit tests and other testing scenarios where real
 context objects are unavailable or unnecessary.
@@ -23,6 +24,7 @@ from cmem_plugin_base.dataintegration.context import (
     SystemContext,
     TaskContext,
     UserContext,
+    WorkflowContext,
 )
 
 
@@ -77,10 +79,12 @@ class TestExecutionContext(ExecutionContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "TestProject", task_id: str = "TestTask"):
+    def __init__(self, project_id: str = "TestProject", task_id: str = "TestTask", workflow_id: str = "TestWorkflow"):
+        self.system = TestSystemContext()
         self.report = ReportContext()
         self.task = TestTaskContext(project_id=project_id, task_id=task_id)
         self.user = TestUserContext()
+        self.workflow = TestWorkflowContext(workflow_id=workflow_id)
 
 
 class TestSystemContext(SystemContext):
@@ -102,3 +106,21 @@ class TestSystemContext(SystemContext):
     def decrypt(self, value: str) -> str:
         """Decrypt a value."""
         return value
+
+
+class TestWorkflowContext(WorkflowContext):
+    """Testing workflow context"""
+
+    __test__ = False
+
+    def __init__(self, workflow_id: str = "TestWorkflow", status: str = "Running"):
+        self._workflow_id = workflow_id
+        self._status = status
+
+    def workflow_id(self) -> str:
+        """Get the workflow ID."""
+        return self._workflow_id
+
+    def status(self):
+        """Get the workflow status."""
+        return self._status
