@@ -5,6 +5,17 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Added
+
+- TestWorkflowContext class to testing module for workflow context testing scenarios
+
+### Changed
+
+- TestExecutionContext now includes system and workflow contexts to match ExecutionContext specification
+
+
 ## [4.12.1] 2025-06-24
 
 ### Fixed

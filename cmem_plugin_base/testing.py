@@ -12,7 +12,7 @@ These classes are intended for use in unit tests and other testing scenarios whe
 context objects are unavailable or unnecessary.
 """
 
-from typing import ClassVar
+from typing import ClassVar, Literal
 
 from cmem.cmempy.api import get_token
 from cmem.cmempy.config import get_oauth_default_credentials
@@ -79,7 +79,12 @@ class TestExecutionContext(ExecutionContext):
 
     __test__ = False
 
-    def __init__(self, project_id: str = "TestProject", task_id: str = "TestTask", workflow_id: str = "TestWorkflow"):
+    def __init__(
+        self,
+        project_id: str = "TestProject",
+        task_id: str = "TestTask",
+        workflow_id: str = "TestWorkflow",
+    ):
         self.system = TestSystemContext()
         self.report = ReportContext()
         self.task = TestTaskContext(project_id=project_id, task_id=task_id)
@@ -113,7 +118,11 @@ class TestWorkflowContext(WorkflowContext):
 
     __test__ = False
 
-    def __init__(self, workflow_id: str = "TestWorkflow", status: str = "Running"):
+    def __init__(
+        self,
+        workflow_id: str = "TestWorkflow",
+        status: Literal["Idle", "Waiting", "Running", "Canceling", "Finished"] = "Running",
+    ):
         self._workflow_id = workflow_id
         self._status = status
 
@@ -121,6 +130,6 @@ class TestWorkflowContext(WorkflowContext):
         """Get the workflow ID."""
         return self._workflow_id
 
-    def status(self):
+    def status(self) -> Literal["Idle", "Waiting", "Running", "Canceling", "Finished"]:
         """Get the workflow status."""
         return self._status
