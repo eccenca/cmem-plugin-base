@@ -44,7 +44,7 @@ class GraphParameterType(StringParameterType):
             self.classes = {
                 "https://vocab.eccenca.com/di/Dataset",
                 "http://rdfs.org/ns/void#Dataset",
-                "https://vocab.eccenca.com/shui/QueryCatalog"
+                "https://vocab.eccenca.com/shui/QueryCatalog",
             }
 
     def autocomplete(
