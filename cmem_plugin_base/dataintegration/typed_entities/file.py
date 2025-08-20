@@ -4,10 +4,11 @@ import gzip
 import io
 import zipfile
 from abc import abstractmethod
+from collections.abc import Iterator
 from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
-from typing import IO, Iterator
+from typing import IO
 
 from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
 
@@ -43,6 +44,7 @@ def _prepare_stream_for_processing(
         A tuple containing:
         - The processed stream (TextIOWrapper for text, original stream for binary)
         - Boolean indicating if the content is text (True) or binary (False)
+
     """
     buffered = io.BufferedReader(input_stream)  # type: ignore[type-var]
 
@@ -157,8 +159,7 @@ class File:
             if is_text:
                 content = processed_stream.read()  # type: ignore[attr-defined]
                 return content.encode("utf-8") if isinstance(content, str) else content
-            else:
-                return processed_stream.read()  # type: ignore[return-value]
+            return processed_stream.read()  # type: ignore[return-value]
 
     @contextmanager
     def text_stream(self, project_id: str) -> Iterator[io.TextIOWrapper]:
@@ -174,6 +175,7 @@ class File:
                 for line in stream:
                     process_line(line)
             ```
+
         """
         with self.read_stream(project_id) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
@@ -194,6 +196,7 @@ class File:
                 while chunk := stream.read(8192):
                     process_chunk(chunk)
             ```
+
         """
         with self.read_stream(project_id) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
