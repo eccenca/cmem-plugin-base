@@ -4,9 +4,10 @@ import gzip
 import io
 import zipfile
 from abc import abstractmethod
+from contextlib import contextmanager
 from io import BytesIO
 from pathlib import Path
-from typing import IO
+from typing import IO, Iterator
 
 from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
 
@@ -59,6 +60,38 @@ def _prepare_stream_for_processing(
         stream_for_processing = decompressed_stream  # type: ignore[assignment]
 
     return stream_for_processing, is_text
+
+
+class _TextToBytesWrapper:
+    """Helper class to wrap a text stream and provide a bytes interface."""
+
+    def __init__(self, text_stream: io.TextIOWrapper) -> None:
+        self._text_stream = text_stream
+
+    def read(self, size: int = -1) -> bytes:
+        """Read and encode text as bytes."""
+        text_content = self._text_stream.read(size)
+        return text_content.encode("utf-8") if text_content else b""
+
+    def readline(self, size: int = -1) -> bytes:
+        """Read a line and encode as bytes."""
+        text_line = self._text_stream.readline(size)
+        return text_line.encode("utf-8") if text_line else b""
+
+    def __iter__(self) -> Iterator[bytes]:
+        """Iterate over lines as bytes."""
+        for line in self._text_stream:
+            yield line.encode("utf-8")
+
+    def close(self) -> None:
+        """Close the underlying text stream."""
+        self._text_stream.close()
+
+    def __enter__(self) -> "_TextToBytesWrapper":
+        return self
+
+    def __exit__(self, *args: object) -> None:
+        self.close()
 
 
 class File:
@@ -126,6 +159,51 @@ class File:
                 return content.encode("utf-8") if isinstance(content, str) else content
             else:
                 return processed_stream.read()  # type: ignore[return-value]
+
+    @contextmanager
+    def text_stream(self, project_id: str) -> Iterator[io.TextIOWrapper]:
+        """Get a text stream for memory-efficient processing.
+
+        Returns a context manager that yields a text stream for reading file content.
+        Automatically handles gzip decompression if needed.
+        Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
+
+        Example:
+            ```python
+            with file.text_stream(project_id) as stream:
+                for line in stream:
+                    process_line(line)
+            ```
+        """
+        with self.read_stream(project_id) as raw_stream:
+            processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
+            if not is_text:
+                raise UnicodeDecodeError("utf-8", b"", 0, 0, "File content is not valid UTF-8 text")
+            yield processed_stream  # type: ignore[misc]
+
+    @contextmanager
+    def bytes_stream(self, project_id: str) -> Iterator[IO[bytes]]:
+        """Get a binary stream for memory-efficient processing.
+
+        Returns a context manager that yields a binary stream for reading file content.
+        Automatically handles gzip decompression if needed.
+
+        Example:
+            ```python
+            with file.bytes_stream(project_id) as stream:
+                while chunk := stream.read(8192):
+                    process_chunk(chunk)
+            ```
+        """
+        with self.read_stream(project_id) as raw_stream:
+            processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
+            if is_text:
+                # Convert text stream back to bytes for consistent API
+                text_stream = processed_stream  # type: ignore[assignment]
+                # Create a bytes stream by encoding the text stream
+                yield _TextToBytesWrapper(text_stream)  # type: ignore[arg-type,misc]
+            else:
+                yield processed_stream  # type: ignore[misc]
 
 
 class LocalFile(File):

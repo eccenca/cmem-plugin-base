@@ -47,3 +47,40 @@ def test_file_class_methods(
     assert checksum == "ec19194d4aad4f0a452b60f92009c0ba3a2b909ddbb2483f65ff91f72c2ec8b3"
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True, mode="wb") as temp2:
         temp2.write(content)
+
+
+def test_file_streaming_methods(
+    json_resource: ResourceFixture, pdf_resource: ResourceFixture
+) -> None:
+    """Test the File class streaming methods for memory-efficient processing.
+
+    This test validates:
+    1. Text streaming - ensures line-by-line processing of text files
+    2. Binary streaming - ensures chunk-based processing of binary files
+
+    Args:
+        json_resource: Fixture providing a JSON test resource
+        pdf_resource: Fixture providing a PDF test resource
+    """
+    # Test text streaming
+    file_entity = Entity(uri="test.uri", values=[["sample_test.json"], ["Project"], [], []])
+    file = FileEntitySchema().from_entity(file_entity)
+    
+    with file.text_stream(json_resource.project_name) as stream:
+        content_lines = []
+        for line in stream:
+            content_lines.append(line.strip())
+        assert "".join(content_lines) == "SAMPLE CONTENT"
+
+    # Test binary streaming
+    file_entity = Entity(uri="test.uri", values=[["sample.pdf"], ["Project"], [], []])
+    file = FileEntitySchema().from_entity(file_entity)
+    
+    with file.bytes_stream(pdf_resource.project_name) as stream:
+        chunks = []
+        while chunk := stream.read(1024):
+            chunks.append(chunk)
+        
+        full_content = b"".join(chunks)
+        checksum = hashlib.sha256(full_content).hexdigest()
+        assert checksum == "ec19194d4aad4f0a452b60f92009c0ba3a2b909ddbb2483f65ff91f72c2ec8b3"
