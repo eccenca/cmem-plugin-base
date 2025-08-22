@@ -12,7 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - TestWorkflowContext class to testing module for workflow context testing scenarios
 - GraphParameterType: add QueryCatalog class to default list
 
-### Changed
+### Fixed
 
 - TestExecutionContext now includes system and workflow contexts to match ExecutionContext specification
 
