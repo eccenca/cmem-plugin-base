@@ -31,7 +31,7 @@ class GraphParameterType(StringParameterType):
         :param show_di_graphs: show DI project graphs
         :param show_system_graphs: show system graphs such as shape and query catalogs
         :param classes: allowed classes of the shown graphs
-            - if None -> defaults to di:Dataset and void:Dataset
+            - if None -> defaults to di:Dataset, void:Dataset and shui:QueryCatalog
         :param allow_only_autocompleted_values: allow entering new graph URLs
         """
         self.show_di_graphs = show_di_graphs
@@ -44,6 +44,7 @@ class GraphParameterType(StringParameterType):
             self.classes = {
                 "https://vocab.eccenca.com/di/Dataset",
                 "http://rdfs.org/ns/void#Dataset",
+                "https://vocab.eccenca.com/shui/QueryCatalog",
             }
 
     def autocomplete(

@@ -3,6 +3,7 @@
 import io
 from collections.abc import Generator
 from dataclasses import dataclass
+from pathlib import Path
 
 import pytest
 from cmem.cmempy.workspace.projects.datasets.dataset import (
@@ -15,6 +16,8 @@ from cmem.cmempy.workspace.projects.resources.resource import create_resource
 PROJECT_NAME = "dateset_test_project"
 DATASET_NAME = "sample_test"
 RESOURCE_NAME = "sample_test.json"
+
+FIXTURE_DIR = Path(__file__).parent / "fixture"
 
 
 @pytest.fixture(name="json_dataset", scope="module")
@@ -34,7 +37,7 @@ def _json_dataset() -> Generator[dict, None, None]:
 
 
 @dataclass
-class JSONResourceFixtureDate:
+class ResourceFixture:
     """fixture dataclass"""
 
     project_name: str
@@ -42,9 +45,9 @@ class JSONResourceFixtureDate:
 
 
 @pytest.fixture(name="json_resource", scope="module")
-def _json_resource() -> Generator[JSONResourceFixtureDate, None, None]:
+def _json_resource() -> Generator[ResourceFixture, None, None]:
     """Set up json resource"""
-    _project_name = "resource_test_project"
+    _project_name = "json_test_project"
     _resource_name = "sample_test.json"
     make_new_project(_project_name)
     create_resource(
@@ -54,6 +57,25 @@ def _json_resource() -> Generator[JSONResourceFixtureDate, None, None]:
         replace=True,
     )
 
-    _ = JSONResourceFixtureDate(project_name=_project_name, resource_name=_resource_name)
+    _ = ResourceFixture(project_name=_project_name, resource_name=_resource_name)
+    yield _
+    delete_project(_project_name)
+
+
+@pytest.fixture(name="pdf_resource", scope="module")
+def _pdf_resource() -> Generator[ResourceFixture, None, None]:
+    """Set up pdf resource"""
+    _project_name = "pdf_test_project"
+    _resource_name = "sample.pdf"
+    make_new_project(_project_name)
+    with Path(FIXTURE_DIR / "sample.pdf").open("rb") as pdf:
+        create_resource(
+            project_name=_project_name,
+            resource_name=_resource_name,
+            file_resource=pdf,
+            replace=True,
+        )
+
+    _ = ResourceFixture(project_name=_project_name, resource_name=_resource_name)
     yield _
     delete_project(_project_name)

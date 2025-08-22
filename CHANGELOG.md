@@ -7,7 +7,14 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- TestWorkflowContext class to testing module for workflow context testing scenarios
+- GraphParameterType: add QueryCatalog class to default list
+
+### Changed
+
+- TestExecutionContext now includes system and workflow contexts to match ExecutionContext specification
 
 
 ## [4.12.1] 2025-06-24 - shipped with DI v25.2.0
