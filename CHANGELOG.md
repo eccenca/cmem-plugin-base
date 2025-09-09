@@ -7,6 +7,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
+## [4.13.0] 2025-09-09
+
 ### Added
 
 - TestWorkflowContext class to testing module for workflow context testing scenarios
