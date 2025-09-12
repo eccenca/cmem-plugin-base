@@ -60,6 +60,17 @@ class ParameterType(Generic[T]):
         """Convert parameter values into their string representation."""
         return str(value)
 
+    def autocomplete_query(
+        self, query: str, depend_on_parameter_values: list[Any], context: PluginContext
+    ) -> list[Autocompletion]:
+        """Search for autocompletions based on a query string.
+
+        Splits the query string into separate lower-cased terms and calls `autocomplete`.
+        Usually, it is preferred to implement `autocomplete` instead of this method.
+        """
+        terms = [query.lower() for query in query.split() if query.strip()]
+        return self.autocomplete(terms, depend_on_parameter_values, context)
+
     def autocomplete(
         self,
         query_terms: list[str],
@@ -94,7 +105,10 @@ class ParameterType(Generic[T]):
         True, if autocompletion should be enabled on this type.
         By default, checks if the type implements its own autocomplete method.
         """
-        return type(self).autocomplete != ParameterType.autocomplete
+        return (
+            type(self).autocomplete != ParameterType.autocomplete
+            or type(self).autocomplete_query != ParameterType.autocomplete_query
+        )
 
 
 class StringParameterType(ParameterType[str]):
