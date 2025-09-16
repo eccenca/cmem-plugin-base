@@ -57,7 +57,8 @@ ignore_missing_imports = true
 module = [
     "cmem_plugin_base.dataintegration.context",
     "cmem_plugin_base.dataintegration.plugins",
-    "cmem_plugin_base.dataintegration.types"
+    "cmem_plugin_base.dataintegration.types",
+    "cmem_plugin_base.dataintegration.ai.schema_matcher",
 ]
 disable_error_code = "empty-body"
 
