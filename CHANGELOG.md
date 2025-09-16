@@ -7,7 +7,9 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Added
+
+- Added `autocomplete_query` to `ParameterType`, which gives more flexibility than the existing `autocomplete` function (CMEM-6755).
 
 ## [4.13.0] 2025-09-09
 
