@@ -1,38 +1,46 @@
 """Code parameter types tests"""
+
 import unittest
-from typing import Sequence
-from tests.utils import TestPluginContext
+from collections.abc import Sequence
+
 from cmem_plugin_base.dataintegration.description import Plugin
-from cmem_plugin_base.dataintegration.parameter.code import (XmlCode,
-                                                             CodeParameterType,
-                                                             JsonCode,
-                                                             JinjaCode, YamlCode,
-                                                             SqlCode, SparqlCode,
-                                                             TurtleCode, PythonCode)
+from cmem_plugin_base.dataintegration.parameter.code import (
+    CodeParameterType,
+    JinjaCode,
+    JsonCode,
+    PythonCode,
+    SparqlCode,
+    SqlCode,
+    TurtleCode,
+    XmlCode,
+    YamlCode,
+)
 from cmem_plugin_base.dataintegration.plugins import TransformPlugin
+from cmem_plugin_base.testing import TestPluginContext
 
 
 class CodeParameterTest(unittest.TestCase):
     """Code Parameter Test"""
 
-    def test__detection(self):
-        """test detection"""
+    def test__detection(self) -> None:
+        """Test detection"""
         Plugin.plugins = []
 
         @Plugin(label="My Transform Plugin")
         class MyTransformPlugin(TransformPlugin):
             """Test My Transform Plugin"""
 
-            def __init__(  # pylint: disable=too-many-arguments
-                         self,
-                         xml: XmlCode = XmlCode("<xml></xml>"),
-                         json: JsonCode = JsonCode("{}"),
-                         jinja: JinjaCode = JinjaCode(""),
-                         sql: SqlCode = SqlCode(""),
-                         yaml: YamlCode = YamlCode(""),
-                         sparql: SparqlCode = SparqlCode(""),
-                         turtle: TurtleCode = TurtleCode(""),
-                         python: PythonCode = PythonCode("")) -> None:
+            def __init__(  # pylint: disable=too-many-arguments  # noqa: PLR0913
+                self,
+                xml: XmlCode = XmlCode("<xml></xml>"),  # noqa: B008
+                json: JsonCode = JsonCode("{}"),  # noqa: B008
+                jinja: JinjaCode = JinjaCode(""),  # noqa: B008
+                sql: SqlCode = SqlCode(""),  # noqa: B008
+                yaml: YamlCode = YamlCode(""),  # noqa: B008
+                sparql: SparqlCode = SparqlCode(""),  # noqa: B008
+                turtle: TurtleCode = TurtleCode(""),  # noqa: B008
+                python: PythonCode = PythonCode(""),  # noqa: B008
+            ) -> None:
                 self.xml = xml
                 self.json = json
                 self.jinja = jinja
@@ -43,35 +51,44 @@ class CodeParameterTest(unittest.TestCase):
                 self.python = python
 
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
-                """test transform"""
+                """Test transform"""
                 return []
 
         MyTransformPlugin()
 
         plugin = Plugin.plugins[0]
-        self.assertEqual(plugin.parameters[0].param_type.name, "code-xml")
-        self.assertEqual(plugin.parameters[1].param_type.name, "code-json")
-        self.assertEqual(plugin.parameters[2].param_type.name, "code-jinja2")
-        self.assertEqual(plugin.parameters[3].param_type.name, "code-sql")
-        self.assertEqual(plugin.parameters[4].param_type.name, "code-yaml")
-        self.assertEqual(plugin.parameters[5].param_type.name, "code-sparql")
-        self.assertEqual(plugin.parameters[6].param_type.name, "code-turtle")
-        self.assertEqual(plugin.parameters[7].param_type.name, "code-python")
+        assert plugin.parameters[0].param_type is not None
+        assert plugin.parameters[1].param_type is not None
+        assert plugin.parameters[2].param_type is not None
+        assert plugin.parameters[3].param_type is not None
+        assert plugin.parameters[4].param_type is not None
+        assert plugin.parameters[5].param_type is not None
+        assert plugin.parameters[6].param_type is not None
+        assert plugin.parameters[7].param_type is not None
 
-    def test_serialization(self):
-        """test serialization from/to strings"""
+        assert plugin.parameters[0].param_type.name == "code-xml"
+        assert plugin.parameters[1].param_type.name == "code-json"
+        assert plugin.parameters[2].param_type.name == "code-jinja2"
+        assert plugin.parameters[3].param_type.name == "code-sql"
+        assert plugin.parameters[4].param_type.name == "code-yaml"
+        assert plugin.parameters[5].param_type.name == "code-sparql"
+        assert plugin.parameters[6].param_type.name == "code-turtle"
+        assert plugin.parameters[7].param_type.name == "code-python"
+
+    def test_serialization(self) -> None:
+        """Test serialization from/to strings"""
         jinja_type = CodeParameterType[JinjaCode]("jinja2")
 
         # Create a jinja code instance from a string
-        jinja_code = jinja_type.from_string("my code", TestPluginContext(user=None))
-        self.assertEqual(jinja_code.code, "my code")
+        jinja_code = jinja_type.from_string("my code", TestPluginContext())
+        assert jinja_code.code == "my code"
 
         # Convert jinja code instance to a string
         code_str = jinja_type.to_string(jinja_code)
-        self.assertEqual(code_str, "my code")
+        assert code_str == "my code"
 
         # Make sure __str__ will return the code itself
-        self.assertEqual(str(jinja_code), "my code")
+        assert str(jinja_code) == "my code"
 
 
 if __name__ == "__main__":

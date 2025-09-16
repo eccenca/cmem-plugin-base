@@ -1,24 +1,26 @@
 """test description"""
+
 import unittest
+from collections.abc import Sequence
 
-from typing import Sequence
-
-from cmem_plugin_base.dataintegration.plugins import TransformPlugin
-
-from cmem_plugin_base.dataintegration.description import Plugin
+from cmem_plugin_base.dataintegration.context import ExecutionContext, PluginContext
+from cmem_plugin_base.dataintegration.description import Plugin, PluginAction
+from cmem_plugin_base.dataintegration.entity import Entities
+from cmem_plugin_base.dataintegration.plugins import TransformPlugin, WorkflowPlugin
 from cmem_plugin_base.dataintegration.types import (
-    StringParameterType,
-    FloatParameterType,
     BoolParameterType,
+    FloatParameterType,
+    StringParameterType,
 )
+from cmem_plugin_base.testing import TestPluginContext
 
 
 class PluginTest(unittest.TestCase):
     """Plugin Test Class"""
 
-    def test__basic_parameters(self):
-        """test basic parameters"""
-        Plugin.plugins = []
+    def test__basic_parameters(self) -> None:
+        """Test basic parameters"""
+        Plugin.plugins = []  # Remove all previous plugins
 
         @Plugin(label="My Transform Plugin")
         class MyTransformPlugin(TransformPlugin):
@@ -39,24 +41,79 @@ class PluginTest(unittest.TestCase):
             def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
                 return []
 
-        _ = MyTransformPlugin
         plugin = Plugin.plugins[0]
 
         no_default_par = plugin.parameters[0]
-        self.assertEqual(no_default_par.param_type.name, StringParameterType.name)
-        self.assertIsNone(no_default_par.default_value)
+        assert no_default_par.param_type is not None
+        assert no_default_par.param_type.name == StringParameterType.name
+        assert no_default_par.default_value is None
 
         string_par = plugin.parameters[1]
-        self.assertEqual(string_par.param_type.name, StringParameterType.name)
-        self.assertEqual(string_par.default_value, "value")
+        assert string_par.param_type is not None
+        assert string_par.param_type.name == StringParameterType.name
+        assert string_par.default_value == "value"
 
         float_par = plugin.parameters[2]
-        self.assertEqual(float_par.param_type.name, FloatParameterType.name)
-        self.assertEqual(float_par.default_value, 1.5)
+        assert float_par.param_type is not None
+        assert float_par.param_type.name == FloatParameterType.name
+        assert float_par.default_value == 1.5
 
         bool_par = plugin.parameters[3]
-        self.assertEqual(bool_par.param_type.name, BoolParameterType.name)
-        self.assertEqual(bool_par.default_value, True)
+        assert bool_par.param_type is not None
+        assert bool_par.param_type.name == BoolParameterType.name
+        assert bool_par.default_value is True
+
+    def test__actions(self) -> None:
+        """Test plugin actions"""
+        Plugin.plugins = []  # Remove all previous plugins
+
+        @Plugin(
+            label="My Workflow Plugin",
+            actions=[
+                PluginAction(
+                    name="get_name",
+                    label="Get name",
+                    description="Returns the supplied name",
+                ),
+                PluginAction(
+                    name="get_project",
+                    label="Get project",
+                    description="Returns the current project.",
+                ),
+            ],
+        )
+        class MyWorkflowPlugin(WorkflowPlugin):
+            """Test workflow plugin"""
+
+            def __init__(self, name: str) -> None:
+                self.name = name
+
+            def execute(self, inputs: Sequence[Entities], context: ExecutionContext) -> Entities:
+                return inputs[0]
+
+            def get_name(self) -> str:
+                return self.name
+
+            def get_project(self, context: PluginContext) -> str:
+                return context.project_id
+
+        # Get plugin description
+        plugin = Plugin.plugins[0]
+
+        # There should be two actions
+        assert len(plugin.actions) == 2
+        action1 = plugin.actions[0]
+        action2 = plugin.actions[1]
+
+        # Check first action
+        assert action1.name == "get_name"
+        assert action1.label == "Get name"
+        assert action1.description == "Returns the supplied name"
+
+        # Call actions on a plugin instance
+        plugin_instance = MyWorkflowPlugin("My Name")
+        assert action1.execute(plugin_instance, TestPluginContext()) == "My Name"
+        assert action2.execute(plugin_instance, TestPluginContext(project_id="movies")) == "movies"
 
 
 if __name__ == "__main__":

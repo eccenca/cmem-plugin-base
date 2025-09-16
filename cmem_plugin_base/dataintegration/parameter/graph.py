@@ -1,10 +1,11 @@
 """Knowledge Graph Parameter Type."""
-from typing import Optional, Set, List, Any
+
+from typing import Any
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
 
 from cmem_plugin_base.dataintegration.context import PluginContext
-from cmem_plugin_base.dataintegration.types import StringParameterType, Autocompletion
+from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
 from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 
 
@@ -15,23 +16,22 @@ class GraphParameterType(StringParameterType):
 
     autocomplete_value_with_labels: bool = True
 
-    classes: Optional[Set[str]] = None
+    classes: set[str] | None = None
 
     def __init__(
         self,
         show_di_graphs: bool = False,
         show_system_graphs: bool = False,
         show_graphs_without_class: bool = False,
-        classes: Optional[List[str]] = None,
+        classes: list[str] | None = None,
         allow_only_autocompleted_values: bool = True,
     ):
-        """
-        Knowledge Graph parameter type.
+        """Knowledge Graph parameter type.
 
         :param show_di_graphs: show DI project graphs
         :param show_system_graphs: show system graphs such as shape and query catalogs
         :param classes: allowed classes of the shown graphs
-            - if None -> defaults to di:Dataset and void:Dataset
+            - if None -> defaults to di:Dataset, void:Dataset and shui:QueryCatalog
         :param allow_only_autocompleted_values: allow entering new graph URLs
         """
         self.show_di_graphs = show_di_graphs
@@ -44,6 +44,7 @@ class GraphParameterType(StringParameterType):
             self.classes = {
                 "https://vocab.eccenca.com/di/Dataset",
                 "http://rdfs.org/ns/void#Dataset",
+                "https://vocab.eccenca.com/shui/QueryCatalog",
             }
 
     def autocomplete(
@@ -52,6 +53,7 @@ class GraphParameterType(StringParameterType):
         depend_on_parameter_values: list[Any],
         context: PluginContext,
     ) -> list[Autocompletion]:
+        """Autocompletion request - Returns all results that match ALL provided query terms"""
         setup_cmempy_user_access(context=context.user)
         graphs = get_graphs_list()
         result = []
@@ -87,5 +89,5 @@ class GraphParameterType(StringParameterType):
                 if term.lower() in label.lower():
                     result.append(Autocompletion(value=iri, label=label))
                     continue
-        result.sort(key=lambda x: x.label)  # type: ignore
+        result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
         return list(set(result))

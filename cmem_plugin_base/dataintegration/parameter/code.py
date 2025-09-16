@@ -1,4 +1,5 @@
 """DI Code Parameter Type."""
+
 import typing
 from typing import TypeVar, Generic
 
