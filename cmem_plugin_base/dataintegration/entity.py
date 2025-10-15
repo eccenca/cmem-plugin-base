@@ -83,12 +83,14 @@ class EntitySchema:
 
     def __hash__(self) -> int:
         """Return a hash value based on its attributes."""
-        return hash((
-            self.type_uri,
-            tuple(self.paths),
-            self.path_to_root,
-            tuple(self.sub_schemata) if self.sub_schemata is not None else None
-        ))
+        return hash(
+            (
+                self.type_uri,
+                tuple(self.paths),
+                self.path_to_root,
+                tuple(self.sub_schemata) if self.sub_schemata is not None else None,
+            )
+        )
 
 
 class Entity:

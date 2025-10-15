@@ -1,4 +1,5 @@
 """DI Resource Parameter Type."""
+
 from typing import Any
 
 from cmem.cmempy.workspace.projects.resources import get_resources
