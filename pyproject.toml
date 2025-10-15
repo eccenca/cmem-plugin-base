@@ -21,21 +21,22 @@ keywords = [
 homepage = "https://github.com/eccenca/cmem-plugin-base"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.13"
 cmem-cmempy = ">=25.2.0"
-pydantic = "^2.11.4"
-python-ulid = "^3.0.0"
+pydantic = "^2.12.2"
+python-ulid = "^3.1.0"
 
 [tool.poetry.group.dev.dependencies]
-genbadge = {extras = ["coverage"], version = "^1.1.1"}
-mypy = "^1.14.1"
-pip = "^25.0"
-pytest = "^8.3.4"
-pytest-cov = "^6.0.0"
+deptry = "^0.23.1"
+genbadge = {extras = ["coverage"], version = "^1.1.2"}
+mypy = "^1.18.2"
+pip = "^25.2"
+pytest = "^8.4.2"
+pytest-cov = "^7.0.0"
 pytest-dotenv = "^0.5.2"
 pytest-html = "^4.1.1"
-pytest-memray = { version = "^1.7.0",  markers = "platform_system != 'Windows'" }
-ruff = "^0.9.4"
+pytest-memray = { version = "^1.8.0",  markers = "platform_system != 'Windows'" }
+ruff = "^0.13.3"
 safety = "^1.10.3"
 types-requests = "^2.32.0.20240907"
 
@@ -111,4 +112,3 @@ ignore = [
     "PT009",   # Use a regular `assert` instead of unittest-style `assertListEqual`
     "PT027"    # Use pytest.raises instead of unittest-style {assertion}
 ]
-

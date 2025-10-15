@@ -26,9 +26,9 @@ def test_for_errors() -> None:
     """Test Icon inits with errors."""
     with pytest.raises(FileNotFoundError):
         Icon(file_name="no.file", package=__package__)
-    with pytest.raises(ValueError, match="^Guessed mime type.*does not start with.*image.*"):
+    with pytest.raises(ValueError, match=r"^Guessed mime type.*does not start with.*image.*"):
         Icon(file_name="icons/test.txt", package=__package__)
-    with pytest.raises(ValueError, match="^Could not guess the mime type of the file"):
+    with pytest.raises(ValueError, match=r"^Could not guess the mime type of the file"):
         Icon(file_name="icons/test.nomime", package=__package__)
 
 

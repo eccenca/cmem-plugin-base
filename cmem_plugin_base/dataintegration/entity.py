@@ -36,6 +36,10 @@ class EntityPath:
             and self.is_single_value == other.is_single_value
         )
 
+    def __hash__(self) -> int:
+        """Return a hash value based on its path, relation status, and single value status."""
+        return hash((self.path, self.is_relation, self.is_single_value))
+
 
 class EntitySchema:
     """An entity schema.
@@ -75,6 +79,17 @@ class EntitySchema:
             and self.paths == other.paths
             and self.path_to_root == other.path_to_root
             and self.sub_schemata == other.sub_schemata
+        )
+
+    def __hash__(self) -> int:
+        """Return a hash value based on its attributes."""
+        return hash(
+            (
+                self.type_uri,
+                tuple(self.paths),
+                self.path_to_root,
+                tuple(self.sub_schemata) if self.sub_schemata is not None else None,
+            )
         )
 
 
