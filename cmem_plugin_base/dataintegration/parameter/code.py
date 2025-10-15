@@ -90,7 +90,7 @@ class CodeParameterType(ParameterType[LANG], Generic[LANG]):
     # pylint: disable=no-member
     def get_type(self) -> type:
         """Retrieve the concrete code type."""
-        return typing.get_args(self.__orig_class__)[0]
+        return typing.get_args(self.__orig_class__)[0]  # type: ignore[attr-defined, no-any-return]
 
     def from_string(self, value: str, context: PluginContext) -> LANG:
         """Parse strings into code instances."""
