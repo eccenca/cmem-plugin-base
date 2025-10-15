@@ -25,7 +25,7 @@ def get_packages() -> object:
      - version - package version
     """
     return json.loads(
-        check_output(["pip", "list", "--format", "json"], shell=False)  # noqa: S603, S607
+        check_output(["pip", "list", "--format", "json"], shell=False)  # noqa: S607
     )
 
 

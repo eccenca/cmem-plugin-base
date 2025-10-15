@@ -71,7 +71,7 @@ class TypedEntitiesTest(unittest.TestCase):
         file_entity = Entity(uri="test.uri", values=[["test.txt"], ["Local"], [""], [""]])
         assert FileEntitySchema().from_entity(file_entity)
 
-        with pytest.raises(ValueError, match="File 'test.txt' has unexpected type 'Wrong Type'"):
+        with pytest.raises(ValueError, match=r"File 'test.txt' has unexpected type 'Wrong Type'"):
             FileEntitySchema().from_entity(
                 Entity(uri="test.uri", values=[["test.txt"], ["Wrong Type"], [], []])
             )

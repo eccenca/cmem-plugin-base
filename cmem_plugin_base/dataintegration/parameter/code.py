@@ -1,20 +1,23 @@
 """DI Code Parameter Type."""
 
 import typing
-from typing import TypeVar, Generic
+from typing import Generic, TypeVar
 
 from cmem_plugin_base.dataintegration.context import PluginContext
-from cmem_plugin_base.dataintegration.types import ParameterTypes, ParameterType
+from cmem_plugin_base.dataintegration.types import ParameterType, ParameterTypes
 
 
 class Code:
     """Base class of all code types.
-    Don't use directly, instead use one of the subclasses."""
+
+    Don't use directly, instead use one of the subclasses.
+    """
 
     code: str
     """The code string"""
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """Return the code string representation."""
         return self.code
 
 
@@ -77,26 +80,25 @@ class PythonCode(Code):
 LANG = TypeVar("LANG", bound=Code)
 
 
-class CodeParameterType(Generic[LANG], ParameterType[LANG]):
+class CodeParameterType(ParameterType[LANG], Generic[LANG]):
     """Code parameter type."""
 
     def __init__(self, code_mode: str):
         """Code parameter type."""
         self.name = "code-" + code_mode
 
-    # flake8: noqa
     # pylint: disable=no-member
-    def get_type(self):
-        """Retrieves the concrete code type."""
+    def get_type(self) -> type:
+        """Retrieve the concrete code type."""
         return typing.get_args(self.__orig_class__)[0]
 
     def from_string(self, value: str, context: PluginContext) -> LANG:
-        """Parses strings into code instances."""
+        """Parse strings into code instances."""
         code: LANG = self.get_type()(value)
         return code
 
     def to_string(self, value: LANG) -> str:
-        """Converts code values into their string representation."""
+        """Convert code values into their string representation."""
         return value.code
 
 

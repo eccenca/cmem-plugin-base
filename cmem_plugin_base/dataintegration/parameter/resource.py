@@ -1,6 +1,4 @@
 """DI Resource Parameter Type."""
-# ruff: noqa: A005
-
 from typing import Any
 
 from cmem.cmempy.workspace.projects.resources import get_resources

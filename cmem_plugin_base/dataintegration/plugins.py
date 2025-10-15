@@ -15,21 +15,24 @@ class PluginLogger:
     log into DI using the path: plugins.python.<plugin_id>.
     """
 
+    def __init__(self) -> None:
+        self.logger = logging.getLogger(__name__)
+
     def debug(self, message: str) -> None:
         """Log a message with severity 'DEBUG'."""
-        logging.debug(message)
+        self.logger.debug(message)
 
     def info(self, message: str) -> None:
         """Log a message with severity 'INFO'."""
-        logging.info(message)
+        self.logger.info(message)
 
     def warning(self, message: str) -> None:
         """Log a message with severity 'WARNING'."""
-        logging.warning(message)
+        self.logger.warning(message)
 
     def error(self, message: str) -> None:
         """Log a message with severity 'ERROR'."""
-        logging.error(message)
+        self.logger.error(message)
 
 
 class PluginConfig:
