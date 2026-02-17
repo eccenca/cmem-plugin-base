@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
+
+## [4.16.0] 2026-02-17
+
 ### Added
 
 - Added `cmem_base_uri`, `dp_api_endpoint`, and `di_api_endpoint` to `SystemContext`.
@@ -15,6 +20,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Updated template 
+
 
 ## [4.15.0] 2025-10-15
 
