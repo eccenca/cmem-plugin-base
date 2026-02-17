@@ -7,6 +7,11 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Added
+
+- Added `cmem_base_uri`, `dp_api_endpoint`, and `di_api_endpoint` to `SystemContext`.
+- Added `refresh_token` to `UserContext`.
+
 ### Changed
 
 - Updated template 
