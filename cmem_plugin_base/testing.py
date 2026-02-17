@@ -99,10 +99,15 @@ class TestSystemContext(SystemContext):
 
     def __init__(self) -> None:
         self._version: str = "1.0.0"
+        self._cmem_base_uri: str = "https://docker.localhost"
 
     def di_version(self) -> str:
         """Get data integration version."""
         return self._version
+
+    def cmem_base_uri(self) -> str:
+        """Get data integration base URI."""
+        return self._cmem_base_uri
 
     def encrypt(self, value: str) -> str:
         """Encrypt a value."""
