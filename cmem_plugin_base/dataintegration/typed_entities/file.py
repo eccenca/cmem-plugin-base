@@ -89,7 +89,7 @@ class _TextToBytesWrapper:
         """Close the underlying text stream."""
         self._text_stream.close()
 
-    def __enter__(self) -> "_TextToBytesWrapper":
+    def __enter__(self) -> "_TextToBytesWrapper":  # noqa: PYI034
         return self
 
     def __exit__(self, *args: object) -> None:
