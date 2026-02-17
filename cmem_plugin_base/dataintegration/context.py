@@ -16,6 +16,24 @@ class SystemContext:
     def di_version(self) -> str:
         """Get the version of the running DataIntegration instance"""
 
+    def cmem_base_uri(self) -> str | None:
+        """Get the base URI of eccenca DataManager.
+
+        Returns the base URI without trailing slash if configured, otherwise None.
+        """
+
+    def dp_api_endpoint(self) -> str | None:
+        """Get the base URI of eccenca DataPlatform.
+
+        Returns the base URI without trailing slash if configured, otherwise None.
+        """
+
+    def di_api_endpoint(self) -> str:
+        """Get the base URI of eccenca DataIntegration.
+
+        Returns the base URI without trailing slash.
+        """
+
     def encrypt(self, value: str) -> str:
         """Encrypt a value using the secret key
 
@@ -39,7 +57,13 @@ class UserContext:
         """Get the name of the user"""
 
     def token(self) -> str:
-        """Retrieve the oAuth token for the user"""
+        """Retrieve the oAuth token for the user.
+
+        Will already be refreshed if expired.
+        """
+
+    def refresh_token(self) -> str:
+        """Retrieve the oAuth refresh token for the user"""
 
 
 class TaskContext:
