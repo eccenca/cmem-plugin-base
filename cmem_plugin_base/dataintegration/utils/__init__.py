@@ -64,7 +64,7 @@ def split_task_id(task_id: str) -> tuple:
 
     """
     try:
-        project_part = task_id.split(":")[0]
+        project_part = task_id.split(":", maxsplit=1)[0]
         task_part = task_id.split(":")[1]
     except IndexError as error:
         raise ValueError(f"{task_id} is not a valid task ID.") from error
