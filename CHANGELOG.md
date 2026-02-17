@@ -5,6 +5,23 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+
+
+## [4.16.0] 2026-02-17
+
+### Added
+
+- Added `cmem_base_uri`, `dp_api_endpoint`, and `di_api_endpoint` to `SystemContext`.
+- Added `refresh_token` to `UserContext`.
+
+### Changed
+
+- Updated template 
+
+
 ## [4.15.0] 2025-10-15
 
 ### Changed
