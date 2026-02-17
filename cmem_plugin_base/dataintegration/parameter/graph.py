@@ -37,7 +37,7 @@ class GraphParameterType(StringParameterType):
             - if None -> defaults to di:Dataset, void:Dataset and shui:QueryCatalog
         :param allow_only_autocompleted_values: allow entering new graph URLs
         """
-        self.name = "test:test"
+        self.name = "scheme:string"
         self._validate_graph()
         self.show_di_graphs = show_di_graphs
         self.show_system_graphs = show_system_graphs
