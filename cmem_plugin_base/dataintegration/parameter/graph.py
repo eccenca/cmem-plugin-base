@@ -1,5 +1,6 @@
 """Knowledge Graph Parameter Type."""
 
+import re
 from typing import Any
 
 from cmem.cmempy.dp.proxy.graph import get_graphs_list
@@ -7,6 +8,8 @@ from cmem.cmempy.dp.proxy.graph import get_graphs_list
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
 from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
+
+IRI_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:.+$")
 
 
 class GraphParameterType(StringParameterType):
@@ -34,6 +37,8 @@ class GraphParameterType(StringParameterType):
             - if None -> defaults to di:Dataset, void:Dataset and shui:QueryCatalog
         :param allow_only_autocompleted_values: allow entering new graph URLs
         """
+        self.name = "scheme:string"
+        self._validate_graph()
         self.show_di_graphs = show_di_graphs
         self.show_system_graphs = show_system_graphs
         self.show_graphs_without_class = show_graphs_without_class
@@ -91,3 +96,9 @@ class GraphParameterType(StringParameterType):
                     continue
         result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
         return list(set(result))
+
+    def _validate_graph(self) -> None:
+        """Verify that graph name is valid aka it has at least a scheme and something after it"""
+        is_valid = bool(IRI_PATTERN.match(self.name))
+        if not is_valid:
+            raise ValueError(f"Could not validate graph IRI '{self.name}'")
