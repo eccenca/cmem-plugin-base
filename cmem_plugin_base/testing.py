@@ -101,7 +101,7 @@ class TestSystemContext(SystemContext):
         self,
         di_version: str = "1.0.0",
         cmem_base_uri: str | None = "http://docker.localhost",
-        dp_api_endpoint: str | None = None,
+        dp_api_endpoint: str | None = "http://docker.localhost/dataplatform",
         di_api_endpoint: str = "http://docker.localhost/dataintegration",
     ) -> None:
         self._version = di_version
