@@ -5,9 +5,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [4.16.1] 2026-02-20
 
-TODO: add at least one Added, Changed, Deprecated, Removed, Fixed or Security section
+### Fixed
+
+- TestSystemContext: new properties from 4.16.0 added
+- TestPluginContext: TestSystemContext added
 
 
 ## [4.16.0] 2026-02-17
