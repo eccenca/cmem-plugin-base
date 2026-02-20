@@ -54,6 +54,7 @@ class TestPluginContext(PluginContext):
     def __init__(self, project_id: str = "TestProject"):
         self.project_id = project_id
         self.user = TestUserContext()
+        self.system = TestSystemContext()
 
 
 class TestTaskContext(TaskContext):
