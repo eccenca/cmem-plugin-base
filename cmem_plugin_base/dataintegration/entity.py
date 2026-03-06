@@ -1,6 +1,7 @@
 """Instance of any given concept."""
 
 from collections.abc import Iterator, Sequence
+from uuid import uuid4
 
 
 class EntityPath:
@@ -96,16 +97,16 @@ class EntitySchema:
 class Entity:
     """An Entity can represent an instance of any given concept.
 
-    :param uri: The URI of this entity
+    :param uri: The URI of this entity - if not given, a uuid4 URN will be generated.
     :param values: All values of this entity. Contains a sequence of values for
         each path in the schema.
-
-    TODO: uri generation
     """
 
-    def __init__(self, uri: str, values: Sequence[Sequence[str]]) -> None:
-        self.uri = uri
-        self.values = values
+    def __init__(
+        self, uri: str | None = None, values: Sequence[Sequence[str]] | None = None
+    ) -> None:
+        self.uri = uuid4().urn if uri is None else uri
+        self.values = [] if values is None else values
 
 
 class Entities:
