@@ -33,6 +33,14 @@ class PydanticEntities(ABC, Generic[PydanticModel]):
         """Iterate over pydantic entities."""
         return self
 
+    def to_list(self) -> list[PydanticModel]:
+        """Convert pydantic entities to list."""
+        return [self.entity_to_model(entity=_) for _ in self._entities]
+
+    def to_dict(self) -> dict[str, PydanticModel]:
+        """Convert pydantic entities to dict."""
+        return {_.uri: self.entity_to_model(entity=_) for _ in self._entities}
+
     def entity_to_model(self, entity: Entity) -> PydanticModel:
         """Convert an entity to a pydantic model"""
         entity_dict = self.entity_to_dict(entity=entity, schema=self._schema)

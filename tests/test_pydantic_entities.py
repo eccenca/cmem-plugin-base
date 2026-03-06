@@ -11,7 +11,7 @@ class Person(BaseModel):
     """Person model"""
 
     name: str
-    age: int = Field(gt=20)
+    age: int | None = Field(gt=20, default=None)
     interests: list[str] = Field(default_factory=list)
 
     model_config = ConfigDict(extra="forbid")
@@ -31,6 +31,13 @@ PERSON_ENTITIES: dict[str, list[Entity]] = {
     "no-interest-valid": [Entity(values=[["Adam"], ["25"], []])],
     "additional-field-valid": [
         Entity(values=[["Satoshi"], ["50"], ["crypto", "blockchain"], ["unclear"]])
+    ],
+    "no-age-valid": [Entity(values=[["Amanda"], [], ["swimming", "running"]])],
+    "multiple-persons-valid": [
+        Entity(values=[["John"], ["30"], ["swimming", "running"]]),
+        Entity(values=[["Adam"], ["25"], []]),
+        Entity(values=[["Satoshi"], ["50"], ["crypto", "blockchain"], ["unclear"]]),
+        Entity(values=[["Amanda"], [], ["swimming", "running"]]),
     ],
     "name-missing-invalid": [Entity(values=[[], ["30"], ["hacking", "D&D"]])],
     "age-gt-invalid": [Entity(values=[["Jane"], ["18"], ["dancing", "smoking"]])],
@@ -91,3 +98,17 @@ def test_invalid_entities(key: str) -> None:
     pydantic_entities = PersonEntities(entities=entities)
     with pytest.raises(ValidationError):
         list(pydantic_entities)
+
+
+def test_entities_to_list_and_dict() -> None:
+    """Test that Entity list creation works."""
+    list_of_entities = PERSON_ENTITIES["multiple-persons-valid"]
+    entities = Entities(schema=PERSON_SCHEMA, entities=iter(list_of_entities))
+    pydantic_entities = PersonEntities(entities=entities)
+    list_: list[Person] = pydantic_entities.to_list()
+    assert len(list_) == len(list_of_entities)
+
+    entities = Entities(schema=PERSON_SCHEMA, entities=iter(list_of_entities))
+    pydantic_entities = PersonEntities(entities=entities)
+    dict_: dict[str, Person] = pydantic_entities.to_dict()
+    assert len(dict_) == len(list_of_entities)
