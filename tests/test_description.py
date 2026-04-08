@@ -115,6 +115,29 @@ class PluginTest(unittest.TestCase):
         assert action1.execute(plugin_instance, TestPluginContext()) == "My Name"
         assert action2.execute(plugin_instance, TestPluginContext(project_id="movies")) == "movies"
 
+    def test__deprecation(self) -> None:
+        """Test plugin deprecation message."""
+        Plugin.plugins = []  # Remove all previous plugins
+
+        @Plugin(label="My Plugin")
+        class MyPlugin(TransformPlugin):
+            """Test transform plugin without deprecation message."""
+
+            def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
+                return []
+
+        @Plugin(label="My Deprecated Plugin", deprecation="Use new plugin instead.")
+        class MyDeprecatedPlugin(TransformPlugin):
+            """Test transform plugin with deprecation message."""
+
+            def transform(self, inputs: Sequence[Sequence[str]]) -> Sequence[str]:
+                return []
+
+        plugin = Plugin.plugins[0]
+        deprecated_plugin = Plugin.plugins[1]
+        assert plugin.deprecation is None
+        assert deprecated_plugin.deprecation == "Use new plugin instead."
+
 
 if __name__ == "__main__":
     unittest.main()
