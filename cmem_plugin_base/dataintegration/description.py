@@ -186,6 +186,8 @@ class PluginDescription:
     :param parameters: Available plugin parameters
     :param icon: An optional custom plugin icon.
     :param actions: Custom plugin actions.
+    :param deprecation: Optional deprecation message.
+        If set, the plugin will be marked as deprecated in the UI.
     """
 
     def __init__(  # noqa: PLR0913
@@ -199,6 +201,7 @@ class PluginDescription:
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
         actions: list[PluginAction] | None = None,
+        deprecation: str | None = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -238,6 +241,7 @@ class PluginDescription:
             self.actions = []
         else:
             self.actions = actions
+        self.deprecation = deprecation
         for action in self.actions:
             action.validate(plugin_class)
 
@@ -321,6 +325,8 @@ class Plugin:
     :param parameters: Available plugin parameters.
     :param icon: Optional custom plugin icon.
     :param actions: Custom plugin actions
+    :param deprecation: Optional deprecation message.
+        If set, the plugin will be marked as deprecated in the UI.
     """
 
     plugins: ClassVar[list[PluginDescription]] = []
@@ -335,6 +341,7 @@ class Plugin:
         parameters: list[PluginParameter] | None = None,
         icon: Icon | None = None,
         actions: list[PluginAction] | None = None,
+        deprecation: str | None = None,
     ):
         self.label = label
         self.description = description
@@ -342,6 +349,7 @@ class Plugin:
         self.plugin_id = plugin_id
         self.icon = icon
         self.actions = actions
+        self.deprecation = deprecation
         if categories is None:
             self.categories = []
         else:
@@ -363,6 +371,7 @@ class Plugin:
             parameters=self.retrieve_parameters(func),
             icon=self.icon,
             actions=self.actions,
+            deprecation=self.deprecation,
         )
         Plugin.plugins.append(plugin_desc)
         return func
