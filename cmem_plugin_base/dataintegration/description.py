@@ -203,7 +203,7 @@ class PluginDescription:
     :param related_plugins: Optional list of references to related plugins.
     """
 
-    def __init__(  # noqa: PLR0912, PLR0913
+    def __init__(  # noqa: PLR0913
         self,
         plugin_class: type,
         label: str,
@@ -239,27 +239,15 @@ class PluginDescription:
             )
         else:
             self.plugin_id = plugin_id
-        if categories is None:
-            self.categories = []
-        else:
-            self.categories = categories
+        self.categories = categories if categories is not None else []
         self.label = label
         self.description = description
         self.documentation = documentation
-        if parameters is None:
-            self.parameters = []
-        else:
-            self.parameters = parameters
+        self.parameters = parameters if parameters is not None else []
         self.icon = icon
-        if actions is None:
-            self.actions = []
-        else:
-            self.actions = actions
+        self.actions = actions if actions is not None else []
         self.deprecation = deprecation
-        if related_plugins is None:
-            self.related_plugins = []
-        else:
-            self.related_plugins = related_plugins
+        self.related_plugins = related_plugins if related_plugins is not None else []
         for action in self.actions:
             action.validate(plugin_class)
 
