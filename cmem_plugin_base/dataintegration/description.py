@@ -62,6 +62,18 @@ class Icon:
         return f"""data:{self.mime_type};base64,{data_base64}"""
 
 
+class PluginReference:
+    """A reference to a related plugin.
+
+    :param plugin_id: The identifier of the related plugin.
+    :param description: An optional description of the relationship.
+    """
+
+    def __init__(self, plugin_id: str, description: str = "") -> None:
+        self.plugin_id = plugin_id
+        self.description = description
+
+
 class PluginParameter:
     """A plugin parameter.
 
@@ -188,6 +200,7 @@ class PluginDescription:
     :param actions: Custom plugin actions.
     :param deprecation: Optional deprecation message.
         If set, the plugin will be marked as deprecated in the UI.
+    :param related_plugins: Optional list of references to related plugins.
     """
 
     def __init__(  # noqa: PLR0913
@@ -202,6 +215,7 @@ class PluginDescription:
         icon: Icon | None = None,
         actions: list[PluginAction] | None = None,
         deprecation: str | None = None,
+        related_plugins: list[PluginReference] | None = None,
     ) -> None:
         #  Set the type of the plugin. Same as the class name of the plugin
         #  base class, e.g., 'WorkflowPlugin'.
@@ -242,6 +256,10 @@ class PluginDescription:
         else:
             self.actions = actions
         self.deprecation = deprecation
+        if related_plugins is None:
+            self.related_plugins = []
+        else:
+            self.related_plugins = related_plugins
         for action in self.actions:
             action.validate(plugin_class)
 
@@ -327,6 +345,7 @@ class Plugin:
     :param actions: Custom plugin actions
     :param deprecation: Optional deprecation message.
         If set, the plugin will be marked as deprecated in the UI.
+    :param related_plugins: Optional list of references to related plugins.
     """
 
     plugins: ClassVar[list[PluginDescription]] = []
@@ -342,6 +361,7 @@ class Plugin:
         icon: Icon | None = None,
         actions: list[PluginAction] | None = None,
         deprecation: str | None = None,
+        related_plugins: list[PluginReference] | None = None,
     ):
         self.label = label
         self.description = description
@@ -350,6 +370,7 @@ class Plugin:
         self.icon = icon
         self.actions = actions
         self.deprecation = deprecation
+        self.related_plugins = related_plugins
         if categories is None:
             self.categories = []
         else:
@@ -372,6 +393,7 @@ class Plugin:
             icon=self.icon,
             actions=self.actions,
             deprecation=self.deprecation,
+            related_plugins=self.related_plugins,
         )
         Plugin.plugins.append(plugin_desc)
         return func
