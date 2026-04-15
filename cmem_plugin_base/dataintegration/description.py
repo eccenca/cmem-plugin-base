@@ -203,7 +203,7 @@ class PluginDescription:
     :param related_plugins: Optional list of references to related plugins.
     """
 
-    def __init__(  # noqa: PLR0913
+    def __init__(  # noqa: PLR0912, PLR0913
         self,
         plugin_class: type,
         label: str,

@@ -1563,14 +1563,14 @@ syntax = ["tree-sitter (>=0.25.0) ; python_version >= \"3.10\"", "tree-sitter-ba
 
 [[package]]
 name = "trivy-py-ecc"
-version = "0.68.2.1"
+version = "0.69.3.1"
 description = "Python wrapper around invoking trivy (https://trivy.dev/)"
 optional = false
 python-versions = ">=3.9"
 groups = ["dev"]
 files = [
-    {file = "trivy_py_ecc-0.68.2.1-py2.py3-none-manylinux2014_x86_64.whl", hash = "sha256:568a84931302cc26a117da9b5616fa51c873f46bcfc0dc8b87a4c53c1a5674b4"},
-    {file = "trivy_py_ecc-0.68.2.1.tar.gz", hash = "sha256:4d8e66bbf99ac2a59ec705421bace102cc85fb7528bef72e132b50fbbc83e681"},
+    {file = "trivy_py_ecc-0.69.3.1-py2.py3-none-manylinux2014_x86_64.whl", hash = "sha256:4f629e5a750dba12377c5b0b71c9fb1bd7a18523da85f6f889af4b2ab5b6cb73"},
+    {file = "trivy_py_ecc-0.69.3.1.tar.gz", hash = "sha256:ac02db504cc92f5824b4327fa00261f9168709114a0bdd70c99b482348be32c2"},
 ]
 
 [[package]]
@@ -1652,4 +1652,4 @@ zstd = ["backports-zstd (>=1.0.0) ; python_version < \"3.14\""]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13, ^3"
-content-hash = "6d03f2e04417f3632167c17d1c930d62d1ee61b1512d80e79dc9cff291757777"
+content-hash = "455acbc0b6ea9f27b46181d8b7228f709f929e20c987659cf8bc819607de4f47"
