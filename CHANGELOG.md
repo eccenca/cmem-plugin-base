@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Added
 
 - Plugins can be deprecated now (CMEM-6706)
+- Plugins can now reference related plugins via `related_plugins` (CMEM-7549)
 
 ## [4.16.1] 2026-02-20
 
