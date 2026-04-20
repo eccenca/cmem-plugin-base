@@ -87,7 +87,7 @@ def _get_schema(data: dict | list) -> dict[str, EntitySchema] | None:
             )
         schema = EntitySchema(
             type_uri="",
-            paths=schema_paths,
+            paths=tuple(schema_paths),
         )
         path_to_schema_map[path] = schema
     return path_to_schema_map
