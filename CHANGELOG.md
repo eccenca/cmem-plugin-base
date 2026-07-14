@@ -12,6 +12,10 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Plugins can be deprecated now (CMEM-6706)
 - Plugins can now reference related plugins via `related_plugins` (CMEM-7549)
 
+### Fixed
+
+- TestSystemContext: `cmem_base_uri`, `dp_api_endpoint` and `di_api_endpoint` now fall back to the `CMEM_BASE_URI`, `DP_API_ENDPOINT` and `DI_API_ENDPOINT` environment variables instead of always defaulting to hardcoded `docker.localhost` URLs (CMEM-7831)
+
 ## [4.16.1] 2026-02-20
 
 ### Fixed

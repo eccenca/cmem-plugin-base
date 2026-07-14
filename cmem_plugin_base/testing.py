@@ -12,6 +12,7 @@ These classes are intended for use in unit tests and other testing scenarios whe
 context objects are unavailable or unnecessary.
 """
 
+import os
 from typing import ClassVar, Literal
 
 from cmem.cmempy.api import get_token
@@ -101,14 +102,24 @@ class TestSystemContext(SystemContext):
     def __init__(
         self,
         di_version: str = "1.0.0",
-        cmem_base_uri: str | None = "http://docker.localhost",
-        dp_api_endpoint: str | None = "http://docker.localhost/dataplatform",
-        di_api_endpoint: str = "http://docker.localhost/dataintegration",
+        cmem_base_uri: str | None = None,
+        dp_api_endpoint: str | None = None,
+        di_api_endpoint: str | None = None,
     ) -> None:
         self._version = di_version
-        self._cmem_base_uri = cmem_base_uri
-        self._dp_api_endpoint = dp_api_endpoint
-        self._di_api_endpoint = di_api_endpoint
+        self._cmem_base_uri = (
+            cmem_base_uri or os.environ.get("CMEM_BASE_URI") or "http://docker.localhost"
+        )
+        self._dp_api_endpoint = (
+            dp_api_endpoint
+            or os.environ.get("DP_API_ENDPOINT")
+            or f"{self._cmem_base_uri}/dataplatform"
+        )
+        self._di_api_endpoint = (
+            di_api_endpoint
+            or os.environ.get("DI_API_ENDPOINT")
+            or f"{self._cmem_base_uri}/dataintegration"
+        )
 
     def di_version(self) -> str:
         """Get data integration version."""
