@@ -43,7 +43,13 @@ class PasswordParameterType(ParameterType[Password]):
         """Convert parameter values into their string representation.
 
         Encrypts the password so that it won't be stored verbatim.
+
+        Also accepts a raw string, since a plugin's default_value (e.g. for an
+        optional password parameter) is never converted via from_string before
+        DI serializes it.
         """
+        if isinstance(value, str):
+            return value
         if value.encrypted_value == "":
             return ""
         return self.preamble + value.encrypted_value
