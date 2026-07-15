@@ -21,10 +21,10 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
             cls._instances[cls] = super().__new__(cls)
         return cls._instances[cls]
 
-    def __init__(self, type_uri: str, paths: Sequence[EntityPath]) -> None:
+    def __init__(self, type_uri: str, paths: Sequence[EntityPath] | tuple[EntityPath, ...]) -> None:
         # Check if this instance has already been initialized
         if not hasattr(self, "_initialized"):
-            super().__init__(type_uri, paths)
+            super().__init__(type_uri=type_uri, paths=tuple(paths))
             self._initialized = True
 
     @abstractmethod
