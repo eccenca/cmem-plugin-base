@@ -7,15 +7,26 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## Unreleased
 
-### Added
+### Changed
 
-- Plugins can be deprecated now (CMEM-6706)
-- Plugins can now reference related plugins via `related_plugins` (CMEM-7549)
+- Updated template to v8.5.0
 
 ### Fixed
 
 - TestSystemContext: `cmem_base_uri`, `dp_api_endpoint` and `di_api_endpoint` now fall back to the `CMEM_BASE_URI`, `DP_API_ENDPOINT` and `DI_API_ENDPOINT` environment variables instead of always defaulting to hardcoded `docker.localhost` URLs (CMEM-7831)
 - PasswordParameterType.to_string: no longer raises an AttributeError when passed a raw string default value (e.g. `PluginParameter(default_value="")` on an optional password parameter), which DI never converts via from_string (CMEM-7861)
+
+## [4.18.0] 2026-04-17
+
+### Added
+
+- Plugins can now reference related plugins via `related_plugins` (CMEM-7549)
+
+## [4.17.0] 2026-04-15
+
+### Added
+
+- Plugins can be deprecated now (CMEM-6706)
 
 ## [4.16.1] 2026-02-20
 
