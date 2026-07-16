@@ -39,7 +39,7 @@ class PasswordParameterType(ParameterType[Password]):
             encrypted_value = context.system.encrypt(value)
         return Password(encrypted_value, context.system)
 
-    def to_string(self, value: Password) -> str:
+    def to_string(self, value: Password | str) -> str:
         """Convert parameter values into their string representation.
 
         Encrypts the password so that it won't be stored verbatim.
