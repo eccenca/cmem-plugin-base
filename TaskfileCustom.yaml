@@ -10,9 +10,10 @@ tasks:
       uninstall the dev-version and reveal the shipped package version again.
     cmds:
       - task clean build
-      - docker cp dist/{{.PACKAGE_FILE}} {{.DI_CONTAINER}}:/tmp/
-      - docker exec -t {{.DI_CONTAINER}} bash -c "{{.PIP_COMMAND}} /tmp/{{.PACKAGE_FILE}}"
-      - docker exec -t {{.DI_CONTAINER}} bash -c "rm -f /tmp/{{.PACKAGE_FILE}}"
+      - docker exec -t {{.DI_CONTAINER}} bash -c "mkdir -p /data/tmp/"
+      - docker cp dist/{{.PACKAGE_FILE}} {{.DI_CONTAINER}}:/data/tmp/
+      - docker exec -t {{.DI_CONTAINER}} bash -c "{{.PIP_COMMAND}} /data/tmp/{{.PACKAGE_FILE}}"
+      - docker exec -t {{.DI_CONTAINER}} bash -c "rm -f /data/tmp/{{.PACKAGE_FILE}}"
       - docker restart {{.DI_CONTAINER}}
     preconditions:
       - sh: '[ "{{.DI_RUNNING}}" == "true" ]'

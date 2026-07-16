@@ -4,7 +4,7 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from enum import Enum
 from inspect import Parameter
-from typing import Any, ClassVar, Generic, TypeVar
+from typing import Any, ClassVar, TypeVar
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 
@@ -23,7 +23,7 @@ class Autocompletion:
 T = TypeVar("T")
 
 
-class ParameterType(Generic[T]):
+class ParameterType[T]:
     """Represent a plugin parameter type.
 
     Provides string-based serialization and autocompletion.

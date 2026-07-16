@@ -39,11 +39,17 @@ class PasswordParameterType(ParameterType[Password]):
             encrypted_value = context.system.encrypt(value)
         return Password(encrypted_value, context.system)
 
-    def to_string(self, value: Password) -> str:
+    def to_string(self, value: Password | str) -> str:
         """Convert parameter values into their string representation.
 
         Encrypts the password so that it won't be stored verbatim.
+
+        Also accepts a raw string, since a plugin's default_value (e.g. for an
+        optional password parameter) is never converted via from_string before
+        DI serializes it.
         """
+        if isinstance(value, str):
+            return value
         if value.encrypted_value == "":
             return ""
         return self.preamble + value.encrypted_value

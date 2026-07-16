@@ -21,7 +21,7 @@ FIXTURE_DIR = Path(__file__).parent / "fixture"
 
 
 @pytest.fixture(name="json_dataset", scope="module")
-def _json_dataset() -> Generator[dict, None, None]:
+def _json_dataset() -> Generator[dict]:
     """Provide a dataset"""
     make_new_project(PROJECT_NAME)
     make_new_dataset(
@@ -45,7 +45,7 @@ class ResourceFixture:
 
 
 @pytest.fixture(name="json_resource", scope="module")
-def _json_resource() -> Generator[ResourceFixture, None, None]:
+def _json_resource() -> Generator[ResourceFixture]:
     """Set up json resource"""
     _project_name = "json_test_project"
     _resource_name = "sample_test.json"
@@ -63,7 +63,7 @@ def _json_resource() -> Generator[ResourceFixture, None, None]:
 
 
 @pytest.fixture(name="pdf_resource", scope="module")
-def _pdf_resource() -> Generator[ResourceFixture, None, None]:
+def _pdf_resource() -> Generator[ResourceFixture]:
     """Set up pdf resource"""
     _project_name = "pdf_test_project"
     _resource_name = "sample.pdf"

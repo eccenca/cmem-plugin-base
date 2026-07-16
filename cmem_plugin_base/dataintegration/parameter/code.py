@@ -1,7 +1,7 @@
 """DI Code Parameter Type."""
 
 import typing
-from typing import Generic, TypeVar
+from typing import TypeVar
 
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import ParameterType, ParameterTypes
@@ -80,7 +80,7 @@ class PythonCode(Code):
 LANG = TypeVar("LANG", bound=Code)
 
 
-class CodeParameterType(ParameterType[LANG], Generic[LANG]):
+class CodeParameterType[LANG: Code](ParameterType[LANG]):
     """Code parameter type."""
 
     def __init__(self, code_mode: str):

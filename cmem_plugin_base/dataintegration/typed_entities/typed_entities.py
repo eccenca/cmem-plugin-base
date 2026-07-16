@@ -2,14 +2,14 @@
 
 from abc import abstractmethod
 from collections.abc import Iterator, Sequence
-from typing import ClassVar, Generic, TypeVar
+from typing import ClassVar, TypeVar
 
 from cmem_plugin_base.dataintegration.entity import Entities, Entity, EntityPath, EntitySchema
 
 T = TypeVar("T")
 
 
-class TypedEntitySchema(EntitySchema, Generic[T]):
+class TypedEntitySchema[T](EntitySchema):
     """A custom entity schema that holds entities of a specific type (e.g. files)."""
 
     # Class variable to store singleton instances for each subclass
@@ -59,7 +59,7 @@ class TypedEntitySchema(EntitySchema, Generic[T]):
         )
 
 
-class TypedEntities(Entities, Generic[T]):
+class TypedEntities[T](Entities):
     """Collection of entities of a particular type."""
 
     def __init__(self, values: Iterator[T], schema: TypedEntitySchema[T]):

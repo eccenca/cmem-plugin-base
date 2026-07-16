@@ -34,6 +34,17 @@ class PasswordParameterTest(unittest.TestCase):
         assert password_param.param_type is not None
         assert password_param.param_type.name == PasswordParameterType.name
 
+    def test__to_string_with_raw_string_default_value(self) -> None:
+        """Test to_string handles a raw (unconverted) string default value.
+
+        Plugins may declare an optional password parameter via
+        PluginParameter(default_value=""). That raw string is passed
+        straight through to DI without ever going through from_string,
+        so to_string must accept it as well as a real Password instance.
+        """
+        param_type = PasswordParameterType()
+        assert param_type.to_string("") == ""
+
 
 if __name__ == "__main__":
     unittest.main()
