@@ -10,6 +10,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Updated template to v8.5.0
+- Replaced the `cmem-cmempy` dependency with `cmem-client`. `setup_cmempy_user_access`/`setup_cmempy_super_user_access` remain available but are deprecated in favor of `setup_cmem_client`/`setup_cmem_client_super_user_access`, which return a ready-to-use `cmem_client.Client`. `File.read_stream` (and the other `File` convenience methods) gained an optional `client` parameter. **Breaking:** `write_to_dataset` now returns `None` (was `requests.Response`) and raises `httpx.HTTPStatusError` (was `requests.exceptions.HTTPError`) on failed uploads
 
 ### Fixed
 
