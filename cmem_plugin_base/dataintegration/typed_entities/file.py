@@ -10,7 +10,7 @@ from io import BytesIO
 from pathlib import Path
 from typing import IO
 
-from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
+from cmem_client.client import Client
 
 from cmem_plugin_base.dataintegration.entity import Entity, EntityPath
 from cmem_plugin_base.dataintegration.typed_entities import instance_uri, path_uri, type_uri
@@ -112,49 +112,57 @@ class File:
         self.entry_path = entry_path
 
     @abstractmethod
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(self, project_id: str, client: Client | None = None) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
+
+        Args:
+            project_id: The project ID.
+            client: An already configured cmem_client.Client. If omitted, a client
+                is built from the ambient environment (CMEM_BASE_URI/OAUTH_* vars),
+                matching the identity set up by
+                cmem_plugin_base.dataintegration.utils.setup_cmem_client.
+
         """
 
-    def is_text(self, project_id: str) -> bool:
+    def is_text(self, project_id: str, client: Client | None = None) -> bool:
         """Check if the file contains text data.
 
         Returns True if the file content can be decoded as UTF-8 text, False otherwise.
         This method automatically handles gzip decompression if needed.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, client) as stream:
             _, is_text = _prepare_stream_for_processing(stream)
             return is_text
 
-    def is_bytes(self, project_id: str) -> bool:
+    def is_bytes(self, project_id: str, client: Client | None = None) -> bool:
         """Check if the file contains binary data.
 
         Returns True if the file content is binary (cannot be decoded as UTF-8), False otherwise.
         This method automatically handles gzip decompression if needed.
         """
-        return not self.is_text(project_id)
+        return not self.is_text(project_id, client)
 
-    def read_text(self, project_id: str) -> str:
+    def read_text(self, project_id: str, client: Client | None = None) -> str:
         """Read the file content as text.
 
         Returns the file content as a string. Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, client) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
             if not is_text:
                 raise UnicodeDecodeError("utf-8", b"", 0, 0, "File content is not valid UTF-8 text")
             return processed_stream.read()  # type: ignore[return-value]
 
-    def read_bytes(self, project_id: str) -> bytes:
+    def read_bytes(self, project_id: str, client: Client | None = None) -> bytes:
         """Read the file content as bytes.
 
         Returns the file content as bytes. Automatically handles gzip decompression if needed.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, client) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
             if is_text:
                 content = processed_stream.read()  # type: ignore[attr-defined]
@@ -162,7 +170,9 @@ class File:
             return processed_stream.read()  # type: ignore[return-value]
 
     @contextmanager
-    def text_stream(self, project_id: str) -> Iterator[io.TextIOWrapper]:
+    def text_stream(
+        self, project_id: str, client: Client | None = None
+    ) -> Iterator[io.TextIOWrapper]:
         """Get a text stream for memory-efficient processing.
 
         Returns a context manager that yields a text stream for reading file content.
@@ -177,14 +187,14 @@ class File:
             ```
 
         """
-        with self.read_stream(project_id) as raw_stream:
+        with self.read_stream(project_id, client) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
             if not is_text:
                 raise UnicodeDecodeError("utf-8", b"", 0, 0, "File content is not valid UTF-8 text")
             yield processed_stream  # type: ignore[misc]
 
     @contextmanager
-    def bytes_stream(self, project_id: str) -> Iterator[IO[bytes]]:
+    def bytes_stream(self, project_id: str, client: Client | None = None) -> Iterator[IO[bytes]]:
         """Get a binary stream for memory-efficient processing.
 
         Returns a context manager that yields a binary stream for reading file content.
@@ -198,7 +208,7 @@ class File:
             ```
 
         """
-        with self.read_stream(project_id) as raw_stream:
+        with self.read_stream(project_id, client) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
             if is_text:
                 # Convert text stream back to bytes for consistent API
@@ -215,7 +225,7 @@ class LocalFile(File):
     def __init__(self, path: str, mime: str | None = None, entry_path: str | None = None) -> None:
         super().__init__(path, "Local", mime, entry_path)
 
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(self, project_id: str, client: Client | None = None) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
@@ -242,16 +252,17 @@ class ProjectFile(File):
     def __init__(self, path: str, mime: str | None = None, entry_path: str | None = None) -> None:
         super().__init__(path, "Project", mime, entry_path)
 
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(self, project_id: str, client: Client | None = None) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
         """
-        response = get_resource_response(project_id, self.path)
-        if response.status_code != 200:  # noqa: PLR2004
-            raise FileNotFoundError(f"Project file '{self.path}' not found.")
-        response_bytes = BytesIO(response.raw.read())
+        client = client or Client.from_env()
+        with client.datasets.get_file_resource(project_id, self.path) as response:
+            if response.status_code != 200:  # noqa: PLR2004
+                raise FileNotFoundError(f"Project file '{self.path}' not found.")
+            response_bytes = BytesIO(response.read())
         if self.entry_path:
             archive = zipfile.ZipFile(response_bytes, "r")
             try:
