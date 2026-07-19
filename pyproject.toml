@@ -27,7 +27,7 @@ poetry-dynamic-versioning = "^1.10.0"
 
 [tool.poetry.dependencies]
 python = ">=3.13, ^3"
-cmem-cmempy = "^25.4.0"
+cmem-client = "^0.16.0"
 pydantic = "^2.12.2"
 python-ulid = "^3.1.0"
 
