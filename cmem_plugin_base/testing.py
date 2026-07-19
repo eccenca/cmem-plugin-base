@@ -15,8 +15,8 @@ context objects are unavailable or unnecessary.
 import os
 from typing import ClassVar, Literal
 
-from cmem.cmempy.api import get_token
-from cmem.cmempy.config import get_oauth_default_credentials
+from cmem_client.auth_provider.abc import AuthProvider
+from cmem_client.config import Config
 
 from cmem_plugin_base.dataintegration.context import (
     ExecutionContext,
@@ -33,14 +33,12 @@ class TestUserContext(UserContext):
     """Testing user context"""
 
     __test__ = False
-    default_credential: ClassVar[dict] = {}
+    _auth_provider: ClassVar[AuthProvider | None] = None
 
     def __init__(self):
-        if not TestUserContext.default_credential:
-            TestUserContext.default_credential = get_oauth_default_credentials()
-        self.access_token = get_token(_oauth_credentials=TestUserContext.default_credential)[
-            "access_token"
-        ]
+        if TestUserContext._auth_provider is None:
+            TestUserContext._auth_provider = AuthProvider.from_env(config=Config.from_env())
+        self.access_token = TestUserContext._auth_provider.get_access_token()
 
     def token(self) -> str:
         """Get an access token"""
