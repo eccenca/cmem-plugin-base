@@ -7,9 +7,14 @@ with various file types including text (JSON) and binary (PDF) files.
 
 import hashlib
 import tempfile
+import zipfile
+from pathlib import Path
+
+import pytest
+from cmem_client.client import Client
 
 from cmem_plugin_base.dataintegration.entity import Entity
-from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema
+from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema, LocalFile
 from tests.conftest import ResourceFixture
 
 
@@ -81,3 +86,34 @@ def test_file_streaming_methods(
         full_content = b"".join(chunks)
         checksum = hashlib.sha256(full_content).hexdigest()
         assert checksum == "ec19194d4aad4f0a452b60f92009c0ba3a2b909ddbb2483f65ff91f72c2ec8b3"
+
+
+def test_project_file_accepts_an_explicit_client(json_resource: ResourceFixture) -> None:
+    """read_stream (and friends) must work with an explicitly-passed client.
+
+    The ambient Client.from_env() fallback is exercised by every other test in this
+    module; this test exercises the other half of the hybrid client/ambient-fallback
+    design: passing an already-configured Client in directly.
+    """
+    client = Client.from_env()
+    file_entity = Entity(uri="test.uri", values=[["sample_test.json"], ["Project"], [], []])
+    file = FileEntitySchema().from_entity(file_entity)
+
+    assert file.is_text(json_resource.project_name, client) is True
+    assert file.read_text(json_resource.project_name, client) == "SAMPLE CONTENT"
+    with file.text_stream(json_resource.project_name, client) as stream:
+        assert "".join(line.strip() for line in stream) == "SAMPLE CONTENT"
+
+
+def test_local_file_reads_entry_from_zip_archive(tmp_path: Path) -> None:
+    """LocalFile.read_stream must extract a named entry from a local zip archive."""
+    zip_path = tmp_path / "archive.zip"
+    with zipfile.ZipFile(zip_path, "w") as zip_file:
+        zip_file.writestr("inner.txt", "INNER CONTENT")
+
+    file = LocalFile(str(zip_path), entry_path="inner.txt")
+    assert file.read_text("unused-project-id") == "INNER CONTENT"
+
+    missing_entry = LocalFile(str(zip_path), entry_path="does-not-exist.txt")
+    with pytest.raises(FileNotFoundError, match=r"does-not-exist\.txt' not found in archive"):
+        missing_entry.read_text("unused-project-id")
