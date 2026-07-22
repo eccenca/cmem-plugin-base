@@ -58,6 +58,7 @@ def test_graph_parameter_type_shows_unclassified_graphs_only_when_requested(
     graph_iri = "https://example.org/test/unclassified-graph/"
     ttl_file = tmp_path / "graph.ttl"
     ttl_file.write_text(f'<{graph_iri}s> <{graph_iri}p> "value" .\n')
+    client.graphs.delete_item(graph_iri, skip_if_missing=True)
     client.graphs.import_item(path=ttl_file, key=graph_iri)
     try:
         assert client.graphs[graph_iri].assigned_classes == []
