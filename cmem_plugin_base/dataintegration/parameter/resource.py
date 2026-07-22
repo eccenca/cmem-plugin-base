@@ -2,11 +2,9 @@
 
 from typing import Any
 
-from cmem.cmempy.workspace.projects.resources import get_resources
-
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
+from cmem_plugin_base.dataintegration.utils import setup_cmem_client
 
 
 class ResourceParameterType(StringParameterType):
@@ -23,14 +21,14 @@ class ResourceParameterType(StringParameterType):
         context: PluginContext,
     ) -> list[Autocompletion]:
         """Autocompletion request - Returns all results that match ALL provided query terms."""
-        setup_cmempy_user_access(context.user)
-        resources = get_resources(context.project_id)
+        client = setup_cmem_client(context.user)
+        resources = client.files.get_resources(context.project_id)
         result = [
             Autocompletion(
-                value=f"{_['fullPath']}",
-                label=f"{_['name']}",
+                value=resource.full_path,
+                label=resource.name,
             )
-            for _ in resources
+            for resource in resources
         ]
         if query_terms:
             result = [_ for _ in result if _.value.find(query_terms[0]) > -1]

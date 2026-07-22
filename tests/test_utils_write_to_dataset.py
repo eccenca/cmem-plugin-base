@@ -3,13 +3,14 @@
 import io
 import json
 
+import httpx
 import pytest
-import requests.exceptions
-from cmem.cmempy.workspace.projects.datasets.dataset import get_resource
+from cmem_client.client import Client
 
 from cmem_plugin_base.dataintegration.parameter.dataset import DatasetParameterType
 from cmem_plugin_base.dataintegration.utils import write_to_dataset
 from cmem_plugin_base.testing import TestPluginContext
+from tests.conftest import RESOURCE_NAME
 from tests.utils import get_autocomplete_values, needs_cmem
 
 
@@ -26,8 +27,9 @@ def test_write_to_json_dataset(json_dataset: dict) -> None:
 
     write_to_dataset(dataset_id, io.StringIO(json.dumps(json_dataset)), TestPluginContext().user)
 
-    get_response = get_resource(project_id=project_name, dataset_id=dataset_name)
-    get_response = json.loads(get_response)
+    client = Client.from_env()
+    with client.datasets.get_file_resource(project_name, RESOURCE_NAME) as response:
+        get_response = json.loads(response.read())
     assert get_response == json_dataset
 
 
@@ -35,8 +37,8 @@ def test_write_to_json_dataset(json_dataset: dict) -> None:
 def test_write_to_not_valid_dataset() -> None:
     """Test write to not valid dataset"""
     with pytest.raises(
-        requests.exceptions.HTTPError,
-        match=r"404 Client Error: Not Found for url.*datasets/INVALID_DATASET/file.*",
+        httpx.HTTPStatusError,
+        match=r"404 Not Found",
     ):
         write_to_dataset(
             "INVALID_PROJECT:INVALID_DATASET",

@@ -3,11 +3,9 @@
 import re
 from typing import Any
 
-from cmem.cmempy.dp.proxy.graph import get_graphs_list
-
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
+from cmem_plugin_base.dataintegration.utils import setup_cmem_client
 
 IRI_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:.+$")
 
@@ -59,19 +57,19 @@ class GraphParameterType(StringParameterType):
         context: PluginContext,
     ) -> list[Autocompletion]:
         """Autocompletion request - Returns all results that match ALL provided query terms"""
-        setup_cmempy_user_access(context=context.user)
-        graphs = get_graphs_list()
+        client = setup_cmem_client(context.user)
         result = []
-        for _ in graphs:
-            iri = _["iri"]
-            title = _["label"]["title"]
+        for graph in client.graphs.values():
+            iri = graph.iri
+            title = graph.label.title if graph.label else iri
             label = f"{title} ({iri})"
-            assigned_classes = set(_["assignedClasses"])
+            assigned_classes = set(graph.assigned_classes)
+            extra = graph.model_extra or {}
             # ignore DI project graphs
-            if self.show_di_graphs is False and _["diProjectGraph"] is True:
+            if self.show_di_graphs is False and extra.get("diProjectGraph") is True:
                 continue
             # ignore system resource graphs
-            if self.show_system_graphs is False and _["systemResource"] is True:
+            if self.show_system_graphs is False and extra.get("systemResource") is True:
                 continue
             # show graphs without assigned classes only if explicitly wanted
             if len(assigned_classes) == 0:
