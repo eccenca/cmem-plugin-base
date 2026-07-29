@@ -224,14 +224,14 @@ colorama = {version = "*", markers = "platform_system == \"Windows\""}
 
 [[package]]
 name = "cmem-client"
-version = "0.16.1"
+version = "0.16.2"
 description = "Next generation eccenca Corporate Memory client library."
 optional = false
 python-versions = "<4,>=3.13"
 groups = ["main"]
 files = [
-    {file = "cmem_client-0.16.1-py3-none-any.whl", hash = "sha256:fe730fb58134741ca38cbec805318c1721565f7b3156dd8333464fee4d7dfa29"},
-    {file = "cmem_client-0.16.1.tar.gz", hash = "sha256:e4b66d80a2f3308ff2daebfb4979ceeac550fb16e532cc28b974271b6d39d9e7"},
+    {file = "cmem_client-0.16.2-py3-none-any.whl", hash = "sha256:864e269cc9b8abbd2c8de1065ec93c0e7bfe5f84c83971f929d3ee866bd4adc0"},
+    {file = "cmem_client-0.16.2.tar.gz", hash = "sha256:e48ef16c60b41823d06685368bef220ae2ac26f9dc9d0fe043ebc032abcbb49e"},
 ]
 
 [package.dependencies]
@@ -1964,4 +1964,4 @@ files = [
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.13, ^3"
-content-hash = "dd5790bd065c2f68cca586ab18e801f98d405d40921000d27a8a91c9fd8d49bf"
+content-hash = "5b4c9494f534ea03975f438fde6dde673992ac513e4978b87774a64e3534b352"
