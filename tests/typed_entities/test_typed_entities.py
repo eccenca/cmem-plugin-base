@@ -30,7 +30,7 @@ class ConcatFilesOperator(WorkflowPlugin):
             output_name = o_file.name
             for file in input_files.values:
                 if isinstance(file, LocalFile):
-                    with file.read_stream(context.task.project_id()) as in_stream:
+                    with file.read_stream(context=context) as in_stream:
                         o_file.write(in_stream.read())
 
         return FileEntitySchema().to_entities(iter([LocalFile(output_name)]))

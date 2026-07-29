@@ -11,12 +11,41 @@ from pathlib import Path
 from typing import IO
 
 from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
+from cmem_client.exceptions import FilesNotFoundError
 
+from cmem_plugin_base.dataintegration.client import get_client
+from cmem_plugin_base.dataintegration.context import ExecutionContext, PluginContext
 from cmem_plugin_base.dataintegration.entity import Entity, EntityPath
 from cmem_plugin_base.dataintegration.typed_entities import instance_uri, path_uri, type_uri
 from cmem_plugin_base.dataintegration.typed_entities.typed_entities import (
     TypedEntitySchema,
 )
+
+
+def _resolve_project_id(
+    project_id: str | None,
+    context: ExecutionContext | PluginContext | None,
+) -> str:
+    """Determine the project to read a file from.
+
+    An explicitly given project ID takes precedence, which allows reading a file from
+    another project than the one of the context.
+
+    DataIntegration injects duck-typed context objects which are no instances of the
+    context classes in this package, so attributes are probed instead of using isinstance.
+
+    Raises:
+        ValueError: in case neither a project ID nor a context is given
+
+    """
+    if project_id is not None:
+        return project_id
+    if context is None:
+        raise ValueError("Either project_id or context needs to be given.")
+    plugin_context_project_id = getattr(context, "project_id", None)
+    if plugin_context_project_id is not None:
+        return str(plugin_context_project_id)
+    return context.task.project_id()  # type: ignore[union-attr]
 
 
 def _is_gzip(stream: io.BufferedReader) -> bool:
@@ -112,49 +141,73 @@ class File:
         self.entry_path = entry_path
 
     @abstractmethod
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
+
+        Pass the context of the plugin to read the file with cmem-client. Passing only a
+        project ID reads the file with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand.
         """
 
-    def is_text(self, project_id: str) -> bool:
+    def is_text(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> bool:
         """Check if the file contains text data.
 
         Returns True if the file content can be decoded as UTF-8 text, False otherwise.
         This method automatically handles gzip decompression if needed.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, context) as stream:
             _, is_text = _prepare_stream_for_processing(stream)
             return is_text
 
-    def is_bytes(self, project_id: str) -> bool:
+    def is_bytes(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> bool:
         """Check if the file contains binary data.
 
         Returns True if the file content is binary (cannot be decoded as UTF-8), False otherwise.
         This method automatically handles gzip decompression if needed.
         """
-        return not self.is_text(project_id)
+        return not self.is_text(project_id, context)
 
-    def read_text(self, project_id: str) -> str:
+    def read_text(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> str:
         """Read the file content as text.
 
         Returns the file content as a string. Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
             if not is_text:
                 raise UnicodeDecodeError("utf-8", b"", 0, 0, "File content is not valid UTF-8 text")
             return processed_stream.read()  # type: ignore[return-value]
 
-    def read_bytes(self, project_id: str) -> bytes:
+    def read_bytes(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> bytes:
         """Read the file content as bytes.
 
         Returns the file content as bytes. Automatically handles gzip decompression if needed.
         """
-        with self.read_stream(project_id) as stream:
+        with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
             if is_text:
                 content = processed_stream.read()  # type: ignore[attr-defined]
@@ -162,7 +215,11 @@ class File:
             return processed_stream.read()  # type: ignore[return-value]
 
     @contextmanager
-    def text_stream(self, project_id: str) -> Iterator[io.TextIOWrapper]:
+    def text_stream(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> Iterator[io.TextIOWrapper]:
         """Get a text stream for memory-efficient processing.
 
         Returns a context manager that yields a text stream for reading file content.
@@ -171,20 +228,24 @@ class File:
 
         Example:
             ```python
-            with file.text_stream(project_id) as stream:
+            with file.text_stream(context=context) as stream:
                 for line in stream:
                     process_line(line)
             ```
 
         """
-        with self.read_stream(project_id) as raw_stream:
+        with self.read_stream(project_id, context) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
             if not is_text:
                 raise UnicodeDecodeError("utf-8", b"", 0, 0, "File content is not valid UTF-8 text")
             yield processed_stream  # type: ignore[misc]
 
     @contextmanager
-    def bytes_stream(self, project_id: str) -> Iterator[IO[bytes]]:
+    def bytes_stream(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> Iterator[IO[bytes]]:
         """Get a binary stream for memory-efficient processing.
 
         Returns a context manager that yields a binary stream for reading file content.
@@ -192,13 +253,13 @@ class File:
 
         Example:
             ```python
-            with file.bytes_stream(project_id) as stream:
+            with file.bytes_stream(context=context) as stream:
                 while chunk := stream.read(8192):
                     process_chunk(chunk)
             ```
 
         """
-        with self.read_stream(project_id) as raw_stream:
+        with self.read_stream(project_id, context) as raw_stream:
             processed_stream, is_text = _prepare_stream_for_processing(raw_stream)
             if is_text:
                 # Convert text stream back to bytes for consistent API
@@ -215,11 +276,18 @@ class LocalFile(File):
     def __init__(self, path: str, mime: str | None = None, entry_path: str | None = None) -> None:
         super().__init__(path, "Local", mime, entry_path)
 
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
+
+        Local files are read from the file system, so neither the project ID nor the
+        context is used.
         """
         if self.entry_path:
             archive = zipfile.ZipFile(self.path, "r")
@@ -242,16 +310,27 @@ class ProjectFile(File):
     def __init__(self, path: str, mime: str | None = None, entry_path: str | None = None) -> None:
         super().__init__(path, "Project", mime, entry_path)
 
-    def read_stream(self, project_id: str) -> IO[bytes]:
+    def read_stream(
+        self,
+        project_id: str | None = None,
+        context: ExecutionContext | PluginContext | None = None,
+    ) -> IO[bytes]:
         """Open the referenced file as a stream.
 
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
+
+        Pass the context of the plugin to read the file with cmem-client. Passing only a
+        project ID reads the file with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand.
         """
-        response = get_resource_response(project_id, self.path)
-        if response.status_code != 200:  # noqa: PLR2004
-            raise FileNotFoundError(f"Project file '{self.path}' not found.")
-        response_bytes = BytesIO(response.raw.read())
+        project = _resolve_project_id(project_id, context)
+        content = (
+            self._read_with_cmem_client(project, context)
+            if context is not None
+            else self._read_with_cmempy(project)
+        )
+        response_bytes = BytesIO(content)
         if self.entry_path:
             archive = zipfile.ZipFile(response_bytes, "r")
             try:
@@ -263,6 +342,25 @@ class ProjectFile(File):
                 ) from err
         else:
             return response_bytes
+
+    def _read_with_cmem_client(
+        self, project_id: str, context: ExecutionContext | PluginContext
+    ) -> bytes:
+        """Read the file content with cmem-client."""
+        try:
+            return bytes(get_client(context).files.read(f"{project_id}:{self.path}"))
+        except FilesNotFoundError as error:
+            raise FileNotFoundError(f"Project file '{self.path}' not found.") from error
+
+    def _read_with_cmempy(self, project_id: str) -> bytes:
+        """Read the file content with cmempy.
+
+        Requires setup_cmempy_user_access() to be called beforehand.
+        """
+        response = get_resource_response(project_id, self.path)
+        if response.status_code != 200:  # noqa: PLR2004
+            raise FileNotFoundError(f"Project file '{self.path}' not found.")
+        return bytes(response.raw.read())
 
 
 class FileEntitySchema(TypedEntitySchema[File]):
