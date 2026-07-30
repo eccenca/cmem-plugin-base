@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - TestSystemContext: `cmem_base_uri`, `dp_api_endpoint` and `di_api_endpoint` now fall back to the `CMEM_BASE_URI`, `DP_API_ENDPOINT` and `DI_API_ENDPOINT` environment variables instead of always defaulting to hardcoded `docker.localhost` URLs (CMEM-7831)
 - PasswordParameterType.to_string: no longer raises an AttributeError when passed a raw string default value (e.g. `PluginParameter(default_value="")` on an optional password parameter), which DI never converts via from_string (CMEM-7861)
 
-### Deprecation
+### Deprecated
 
 - `cmempy` will be deprecated with the next major release of `cmem-plugin-base`
 
