@@ -17,8 +17,9 @@ def get_client(
     the token of the context's UserContext. The token is requested lazily per request,
     so a token refreshed during a long running execution is picked up automatically.
 
-    The returned client holds a lazily created httpx client and offers no explicit
-    close method. Create one client per plugin execution rather than one per entity.
+    The returned client holds a lazily created httpx client and offers no explicit close
+    method. Reusing a client is therefore cheaper than creating one per entity, but the
+    client is light enough to be created per call where that is more convenient.
 
     Args:
         context (ExecutionContext | PluginContext): The context to configure from.

@@ -31,9 +31,6 @@ def _resolve_project_id(
     An explicitly given project ID takes precedence, which allows reading a file from
     another project than the one of the context.
 
-    DataIntegration injects duck-typed context objects which are no instances of the
-    context classes in this package, so attributes are probed instead of using isinstance.
-
     Raises:
         ValueError: in case neither a project ID nor a context is given
 
@@ -154,6 +151,10 @@ class File:
         Pass the context of the plugin to read the file with cmem-client. Passing only a
         project ID reads the file with cmempy and requires setup_cmempy_user_access() to
         be called beforehand.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
 
     def is_text(
@@ -323,6 +324,10 @@ class ProjectFile(File):
         Pass the context of the plugin to read the file with cmem-client. Passing only a
         project ID reads the file with cmempy and requires setup_cmempy_user_access() to
         be called beforehand.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
         project = _resolve_project_id(project_id, context)
         content = (
