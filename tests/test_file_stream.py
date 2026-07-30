@@ -71,6 +71,39 @@ def test_reads_project_file_with_cmempy(pdf_resource: ResourceFixture) -> None:
     assert hashlib.sha256(content).hexdigest() == PDF_CHECKSUM
 
 
+def test_reads_project_file_without_cmempy_environment(
+    pdf_resource: ResourceFixture, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Reading with a context needs no cmempy environment at all.
+
+    This simulates a plugin running inside DataIntegration: the context carries the token
+    and the endpoint URLs, and nothing in the process configures cmempy. The context is
+    built before the environment is stripped, because TestUserContext still mints its
+    token via cmempy and TestSystemContext resolves its URLs in __init__.
+
+    Args:
+        pdf_resource: Fixture providing a PDF test resource
+        monkeypatch: Fixture used to remove the cmempy environment
+
+    """
+    context = TestPluginContext(project_id=pdf_resource.project_name)
+    file_entity = Entity(uri="test.uri", values=[["sample.pdf"], ["Project"], [], []])
+    file = FileEntitySchema().from_entity(file_entity)
+    for variable in (
+        "CMEM_BASE_URI",
+        "DEPLOY_BASE_URL",
+        "OAUTH_GRANT_TYPE",
+        "OAUTH_ACCESS_TOKEN",
+        "OAUTH_CLIENT_ID",
+        "OAUTH_CLIENT_SECRET",
+    ):
+        monkeypatch.delenv(variable, raising=False)
+
+    content = file.read_bytes(context=context)
+
+    assert hashlib.sha256(content).hexdigest() == PDF_CHECKSUM
+
+
 def test_reports_missing_project_file_as_file_not_found_error(
     pdf_resource: ResourceFixture,
 ) -> None:
