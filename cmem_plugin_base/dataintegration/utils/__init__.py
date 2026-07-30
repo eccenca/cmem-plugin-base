@@ -2,6 +2,7 @@
 
 import os
 import re
+import warnings
 from typing import IO
 
 from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
@@ -18,7 +19,17 @@ def generate_id(name: str) -> str:
 
 
 def setup_cmempy_user_access(context: UserContext | None) -> None:
-    """Set up environment for accessing CMEM with cmempy."""
+    """Set up environment for accessing CMEM with cmempy.
+
+    .. deprecated::
+        Use cmem_plugin_base.dataintegration.client.get_client instead.
+    """
+    warnings.warn(
+        "setup_cmempy_user_access is deprecated and will be removed together with cmempy. "
+        "Use cmem_plugin_base.dataintegration.client.get_client instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     if context is None:
         raise ValueError("No UserContext given.")
     if context.token() is None:
@@ -35,7 +46,16 @@ def setup_cmempy_super_user_access() -> None:
     The helper function is used to setup the environment for accessing CMEM with cmempy.
     It does nothing if there is already a working environment.
     If not, it will try to use the configured DI environment.
+
+    .. deprecated::
+        Use cmem_plugin_base.dataintegration.client.get_client instead.
     """
+    warnings.warn(
+        "setup_cmempy_super_user_access is deprecated and will be removed together with cmempy. "
+        "Use cmem_plugin_base.dataintegration.client.get_client instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     try:
         os.environ["OAUTH_GRANT_TYPE"] = "client_credentials"
         if "CMEM_BASE_URI" not in os.environ:
