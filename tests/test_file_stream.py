@@ -13,7 +13,7 @@ import pytest
 from cmem_plugin_base.dataintegration.entity import Entity
 from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema
 from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
-from cmem_plugin_base.testing import TestPluginContext
+from cmem_plugin_base.testing import TestExecutionContext, TestPluginContext
 from tests.conftest import ResourceFixture
 
 PDF_CHECKSUM = "ec19194d4aad4f0a452b60f92009c0ba3a2b909ddbb2483f65ff91f72c2ec8b3"
@@ -53,6 +53,26 @@ def test_file_class_methods(json_resource: ResourceFixture, pdf_resource: Resour
     assert checksum == PDF_CHECKSUM
     with tempfile.NamedTemporaryFile(suffix=".pdf", delete=True, mode="wb") as temp2:
         temp2.write(content)
+
+
+def test_reads_project_file_with_execution_context(pdf_resource: ResourceFixture) -> None:
+    """An ExecutionContext provides the project via its TaskContext.
+
+    Unlike a PluginContext, an ExecutionContext has no project_id attribute, so the
+    project is taken from context.task.project_id(). This is the path a workflow plugin
+    takes.
+
+    Args:
+        pdf_resource: Fixture providing a PDF test resource
+
+    """
+    context = TestExecutionContext(project_id=pdf_resource.project_name)
+    file_entity = Entity(uri="test.uri", values=[["sample.pdf"], ["Project"], [], []])
+    file = FileEntitySchema().from_entity(file_entity)
+
+    content = file.read_bytes(context=context)
+
+    assert hashlib.sha256(content).hexdigest() == PDF_CHECKSUM
 
 
 def test_reads_project_file_with_cmempy(pdf_resource: ResourceFixture) -> None:
