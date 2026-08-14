@@ -148,9 +148,9 @@ class File:
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
 
-        Pass the context of the plugin to read the file with cmem-client. Passing only a
-        project ID reads the file with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand.
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
 
         Both ways of reading report a missing project file differently: reading with a
         context raises a FileNotFoundError, while reading with cmempy raises the
@@ -166,6 +166,14 @@ class File:
 
         Returns True if the file content can be decoded as UTF-8 text, False otherwise.
         This method automatically handles gzip decompression if needed.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
         with self.read_stream(project_id, context) as stream:
             _, is_text = _prepare_stream_for_processing(stream)
@@ -180,6 +188,14 @@ class File:
 
         Returns True if the file content is binary (cannot be decoded as UTF-8), False otherwise.
         This method automatically handles gzip decompression if needed.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
         return not self.is_text(project_id, context)
 
@@ -192,6 +208,14 @@ class File:
 
         Returns the file content as a string. Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
         with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
@@ -207,6 +231,14 @@ class File:
         """Read the file content as bytes.
 
         Returns the file content as bytes. Automatically handles gzip decompression if needed.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
         """
         with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
@@ -226,6 +258,14 @@ class File:
         Returns a context manager that yields a text stream for reading file content.
         Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
 
         Example:
             ```python
@@ -251,6 +291,14 @@ class File:
 
         Returns a context manager that yields a binary stream for reading file content.
         Automatically handles gzip decompression if needed.
+
+        Pass the context of the plugin to read a project file with cmem-client. Passing
+        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
+        be called beforehand. Local files are read from the file system and need neither.
+
+        Both ways of reading report a missing project file differently: reading with a
+        context raises a FileNotFoundError, while reading with cmempy raises the
+        requests HTTPError that cmempy itself raises.
 
         Example:
             ```python
