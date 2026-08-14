@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [Unreleased]
+## [4.20.0] 2026-08-14
 
 ### Added
 
@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Changed
 
 - Bumped `cmem-client` version to `1.0.0`
+
 
 ## [4.19.0] 2026-08-03
 
@@ -36,17 +37,20 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 - `cmempy` will be deprecated with the next major release of `cmem-plugin-base`
 
+
 ## [4.18.0] 2026-04-17
 
 ### Added
 
 - Plugins can now reference related plugins via `related_plugins` (CMEM-7549)
 
+
 ## [4.17.0] 2026-04-15
 
 ### Added
 
 - Plugins can be deprecated now (CMEM-6706)
+
 
 ## [4.16.1] 2026-02-20
 
