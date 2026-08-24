@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
-## [4.20.0] 2026-08-14
+## [4.20.0] 2026-08-14 - shipped with DI v26.2.0
 
 ### Added
 
@@ -52,7 +52,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Plugins can be deprecated now (CMEM-6706)
 
 
-## [4.16.1] 2026-02-20
+## [4.16.1] 2026-02-20 - shipped with DI v26.1.0
 
 ### Fixed
 
@@ -72,7 +72,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 - Updated template 
 
 
-## [4.15.0] 2025-10-15
+## [4.15.0] 2025-10-15 - shipped with DI v25.3.3
 
 ### Changed
 
