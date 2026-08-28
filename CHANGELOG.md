@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/) and this project adheres to [Semantic Versioning](https://semver.org/)
 
+## [Unreleased]
+
+### Fixed
+
+- GraphParameterType.autocomplete: results are now sorted by label and only include graphs matching all given query terms, instead of an unsorted, non-deterministic order matching any single term
+
+
 ## [4.20.0] 2026-08-14 - shipped with DI v26.2.0
 
 ### Added
