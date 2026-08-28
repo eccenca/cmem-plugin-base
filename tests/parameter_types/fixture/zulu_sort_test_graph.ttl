@@ -1,0 +1,6 @@
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix void: <http://rdfs.org/ns/void#> .
+
+<https://ns.eccenca.com/cmem-plugin-base/tests/graph-parameter-type/zulu-sort-test-graph>
+    a void:Dataset ;
+    rdfs:label "Zulu CmemPluginBase SortRegressionTest Graph" .

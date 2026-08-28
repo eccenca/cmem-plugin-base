@@ -89,13 +89,12 @@ class GraphParameterType(StringParameterType):
             if len(query_terms) == 0:
                 result.append(Autocompletion(value=iri, label=label))
                 continue
-            # show only graphs which match the given terms
-            for term in query_terms:
-                if term.lower() in label.lower():
-                    result.append(Autocompletion(value=iri, label=label))
-                    continue
+            # show only graphs which match all given terms
+            if all(term.lower() in label.lower() for term in query_terms):
+                result.append(Autocompletion(value=iri, label=label))
+        result = list(dict.fromkeys(result))
         result.sort(key=lambda x: x.label)  # type: ignore[return-value, arg-type]
-        return list(set(result))
+        return result
 
     def _validate_graph(self) -> None:
         """Verify that graph name is valid aka it has at least a scheme and something after it"""
