@@ -24,9 +24,11 @@ class DatasetParameterType(StringParameterType):
         self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
     ) -> str | None:
         """Return the label for the given dataset."""
-        task_label = get_client(context).datasets.get_task(
-            project_id=context.project_id, task_id=value
-        ).label
+        task_label = (
+            get_client(context)
+            .datasets.get_task(project_id=context.project_id, task_id=value)
+            .label
+        )
         return f"{task_label}"
 
     def autocomplete(
