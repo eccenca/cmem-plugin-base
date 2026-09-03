@@ -5,9 +5,8 @@ import re
 import warnings
 from typing import IO
 
-from cmem.cmempy.workspace.projects.datasets.dataset import post_resource
-
-from cmem_plugin_base.dataintegration.context import UserContext
+from cmem_plugin_base.dataintegration.client import get_client
+from cmem_plugin_base.dataintegration.context import ExecutionContext, PluginContext, UserContext
 
 
 def generate_id(name: str) -> str:
@@ -91,29 +90,31 @@ def split_task_id(task_id: str) -> tuple:
     return project_part, task_part
 
 
-def write_to_dataset(  # noqa: ANN201
-    dataset_id: str, file_resource: IO | None = None, context: UserContext | None = None
-):
+def write_to_dataset(
+    dataset_id: str,
+    file_resource: IO | None = None,
+    context: ExecutionContext | PluginContext | None = None,
+) -> None:
     """Write to a dataset.
 
     Args:
         dataset_id (str): The combined task ID.
         file_resource (file stream): Already opened byte file stream
-        context (UserContext):
-            The user context to setup environment for accessing CMEM with cmempy.
-
-    Returns:
-        requests.Response object
+        context (ExecutionContext | PluginContext):
+            The context to create a cmem-client Client from.
 
     Raises:
         ValueError: in case the task ID is not splittable
         ValueError: missing parameter
 
     """
-    setup_cmempy_user_access(context=context)
+    if context is None:
+        raise ValueError("No context given.")
+    if file_resource is None:
+        raise ValueError("No file_resource given.")
     project_id, task_id = split_task_id(dataset_id)
 
-    return post_resource(
+    get_client(context).datasets.post_file_resource(
         project_id=project_id,
         dataset_id=task_id,
         file_resource=file_resource,

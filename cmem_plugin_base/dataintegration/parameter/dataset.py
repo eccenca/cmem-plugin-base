@@ -2,12 +2,9 @@
 
 from typing import Any
 
-from cmem.cmempy.workspace.search import list_items
-from cmem.cmempy.workspace.tasks import get_task
-
+from cmem_plugin_base.dataintegration.client import get_client
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 
 
 class DatasetParameterType(StringParameterType):
@@ -27,8 +24,9 @@ class DatasetParameterType(StringParameterType):
         self, value: str, depend_on_parameter_values: list[Any], context: PluginContext
     ) -> str | None:
         """Return the label for the given dataset."""
-        setup_cmempy_user_access(context.user)
-        task_label = str(get_task(project=context.project_id, task=value)["metadata"]["label"])
+        task_label = get_client(context).datasets.get_task(
+            project_id=context.project_id, task_id=value
+        ).label
         return f"{task_label}"
 
     def autocomplete(
@@ -38,15 +36,16 @@ class DatasetParameterType(StringParameterType):
         context: PluginContext,
     ) -> list[Autocompletion]:
         """Autocompletion request - Returns all results that match all provided query terms."""
-        setup_cmempy_user_access(context.user)
-        datasets = list_items(item_type="dataset", project=context.project_id)["results"]
+        datasets = [
+            _ for _ in get_client(context).datasets.values() if _.project_id == context.project_id
+        ]
 
         result = []
         for _ in datasets:
-            identifier = _["id"]
-            title = _["label"]
+            identifier = _.id
+            title = _.metadata.get("label", "")
             label = f"{title} ({identifier})"
-            if self.dataset_type is not None and self.dataset_type != _["pluginId"]:
+            if self.dataset_type is not None and self.dataset_type != _.data.type:
                 # Ignore datasets of other types
                 continue
             for term in query_terms:

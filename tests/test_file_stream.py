@@ -12,7 +12,6 @@ import pytest
 
 from cmem_plugin_base.dataintegration.entity import Entity
 from cmem_plugin_base.dataintegration.typed_entities.file import FileEntitySchema
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
 from cmem_plugin_base.testing import TestExecutionContext, TestPluginContext
 from tests.conftest import ResourceFixture
 
@@ -75,35 +74,35 @@ def test_reads_project_file_with_execution_context(pdf_resource: ResourceFixture
     assert hashlib.sha256(content).hexdigest() == PDF_CHECKSUM
 
 
-def test_reads_project_file_with_cmempy(pdf_resource: ResourceFixture) -> None:
-    """Passing only a project ID reads the file with cmempy.
+def test_requires_context_to_read_a_project_file(pdf_resource: ResourceFixture) -> None:
+    """A project ID alone is no longer enough to read a project file.
+
+    There is no ambient credential source (cmempy is gone), so a context is required.
 
     Args:
         pdf_resource: Fixture providing a PDF test resource
 
     """
-    setup_cmempy_user_access(TestPluginContext().user)
     file_entity = Entity(uri="test.uri", values=[["sample.pdf"], ["Project"], [], []])
     file = FileEntitySchema().from_entity(file_entity)
 
-    content = file.read_bytes(pdf_resource.project_name)
-
-    assert hashlib.sha256(content).hexdigest() == PDF_CHECKSUM
+    with pytest.raises(ValueError, match="A context is required"):
+        file.read_bytes(pdf_resource.project_name)
 
 
 def test_reads_project_file_without_cmempy_environment(
     pdf_resource: ResourceFixture, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    """Reading with a context needs no cmempy environment at all.
+    """Reading with a context needs no ambient environment at all.
 
     This simulates a plugin running inside DataIntegration: the context carries the token
-    and the endpoint URLs, and nothing in the process configures cmempy. The context is
-    built before the environment is stripped, because TestUserContext still mints its
-    token via cmempy and TestSystemContext resolves its URLs in __init__.
+    and the endpoint URLs, and nothing in the process configures cmem-client either. The
+    context is built before the environment is stripped, because TestSystemContext resolves
+    its URLs in __init__ and TestUserContext mints its token eagerly too.
 
     Args:
         pdf_resource: Fixture providing a PDF test resource
-        monkeypatch: Fixture used to remove the cmempy environment
+        monkeypatch: Fixture used to remove the environment
 
     """
     context = TestPluginContext(project_id=pdf_resource.project_name)
@@ -129,9 +128,6 @@ def test_reports_missing_project_file_as_file_not_found_error(
 ) -> None:
     """Reading a missing project file with cmem-client raises FileNotFoundError.
 
-    Note that the cmempy path behaves differently: get_resource_response() calls
-    raise_for_status(), so it raises a requests HTTPError instead.
-
     Args:
         pdf_resource: Fixture providing an existing project to read from
 
@@ -150,7 +146,7 @@ def test_requires_project_id_or_context() -> None:
     file = FileEntitySchema().from_entity(file_entity)
 
     with pytest.raises(ValueError, match="Either project_id or context"):
-        file.read_bytes()
+        file.read_bytes(context=None)
 
 
 def test_file_streaming_methods(

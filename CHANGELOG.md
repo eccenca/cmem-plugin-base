@@ -7,6 +7,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 
 ## [Unreleased]
 
+### Changed
+
+- `DatasetParameterType` and `ResourceParameterType` autocomplete, `DatasetParameterType.label`, `ProjectFile` reading and `write_to_dataset` now use `cmem-client` internally instead of `cmempy`
+- BREAKING: `ProjectFile` read methods (`read_stream`, `is_text`, `is_bytes`, `read_text`, `read_bytes`, `text_stream`, `bytes_stream`) require a `context` argument now; reading a project file via a bare `project_id` (relying on `setup_cmempy_user_access` having configured cmempy) is no longer supported and raises a `ValueError`
+- BREAKING: `write_to_dataset`'s `context` parameter is now `ExecutionContext | PluginContext` instead of `UserContext` (pass the context itself instead of `context.user`), and it returns `None` instead of a `requests.Response`
+- `GraphParameterType` and `setup_cmempy_user_access`/`setup_cmempy_super_user_access` still use `cmempy`, pending a `cmem-client` release that types the `diProjectGraph`/`systemResource` fields of a graph
+
 ### Fixed
 
 - GraphParameterType.autocomplete: results are now sorted by label and only include graphs matching all given query terms, instead of an unsorted, non-deterministic order matching any single term
