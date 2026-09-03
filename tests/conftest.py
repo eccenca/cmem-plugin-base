@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
-from cmem_client.models.dataset import Dataset, DatasetData
 from cmem_client.models.project import Project
 from cmem_client.repositories.protocols.import_item import ImportConflictPolicy
 
@@ -25,14 +24,27 @@ def _json_dataset() -> Generator[dict]:
     """Provide a dataset"""
     client = get_client(TestPluginContext())
     client.projects.create_item(Project(name=PROJECT_NAME))
-    dataset = client.datasets.create_item(
-        Dataset(
-            project_id=PROJECT_NAME,
-            id=DATASET_NAME,
-            data=DatasetData(type="json", parameters={"file": RESOURCE_NAME}),
-        )
+    # DatasetsRepository.create_item() sends "taskType" at the top level of the
+    # payload, but the live /workspace/projects/{project}/tasks endpoint requires it
+    # nested under "data" (confirmed against a real instance: create_item raises
+    # "400 Bad Request: attribute 'data' is missing" / "Attribute 'taskType' not
+    # found!" depending on where it's placed) - a cmem-client bug, worth reporting
+    # upstream. Posting the payload directly here until that's fixed.
+    url = client.config.url_build_api / f"/workspace/projects/{PROJECT_NAME}/tasks"
+    response = client.http.post(
+        str(url),
+        json={
+            "id": DATASET_NAME,
+            "metadata": {},
+            "data": {
+                "taskType": "Dataset",
+                "type": "json",
+                "parameters": {"file": RESOURCE_NAME},
+            },
+        },
     )
-    yield {"project": dataset.project_id, "id": dataset.id}
+    response.raise_for_status()
+    yield {"project": PROJECT_NAME, "id": DATASET_NAME}
     client.projects.delete_item(PROJECT_NAME)
 
 

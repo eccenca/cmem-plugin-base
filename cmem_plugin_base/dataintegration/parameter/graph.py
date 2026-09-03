@@ -1,15 +1,31 @@
 """Knowledge Graph Parameter Type."""
 
 import re
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
-from cmem.cmempy.dp.proxy.graph import get_graphs_list
-
+from cmem_plugin_base.dataintegration.client import get_client
 from cmem_plugin_base.dataintegration.context import PluginContext
 from cmem_plugin_base.dataintegration.types import Autocompletion, StringParameterType
-from cmem_plugin_base.dataintegration.utils import setup_cmempy_user_access
+
+if TYPE_CHECKING:
+    from cmem_client.models.graph import Graph
 
 IRI_PATTERN = re.compile(r"^[A-Za-z][A-Za-z0-9+.-]*:.+$")
+
+
+def _get_untyped_flag(graph: "Graph", attribute: str, extra_key: str) -> bool:
+    """Get a bool flag that cmem-client's Graph model doesn't type (yet).
+
+    Checks the real attribute first, falling back to the raw response captured in
+    model_extra only if it doesn't exist. Once cmem-client types `attribute`, this
+    picks up the real value directly and the fallback is never reached again - do not
+    replace this with a plain `graph.model_extra.get(extra_key)`, which would silently
+    return None forever the moment cmem-client adds the typed field.
+    """
+    value = getattr(graph, attribute, None)
+    if value is None:
+        value = (graph.model_extra or {}).get(extra_key, False)
+    return bool(value)
 
 
 class GraphParameterType(StringParameterType):
@@ -59,19 +75,22 @@ class GraphParameterType(StringParameterType):
         context: PluginContext,
     ) -> list[Autocompletion]:
         """Autocompletion request - Returns all results that match ALL provided query terms"""
-        setup_cmempy_user_access(context=context.user)
-        graphs = get_graphs_list()
+        graphs = get_client(context).graphs.values()
         result = []
         for _ in graphs:
-            iri = _["iri"]
-            title = _["label"]["title"]
+            iri = _.iri
+            title = _.label.title if _.label is not None else iri
             label = f"{title} ({iri})"
-            assigned_classes = set(_["assignedClasses"])
+            assigned_classes = set(_.assigned_classes)
             # ignore DI project graphs
-            if self.show_di_graphs is False and _["diProjectGraph"] is True:
+            if self.show_di_graphs is False and _get_untyped_flag(
+                _, "di_project_graph", "diProjectGraph"
+            ):
                 continue
             # ignore system resource graphs
-            if self.show_system_graphs is False and _["systemResource"] is True:
+            if self.show_system_graphs is False and _get_untyped_flag(
+                _, "system_resource", "systemResource"
+            ):
                 continue
             # show graphs without assigned classes only if explicitly wanted
             if len(assigned_classes) == 0:
