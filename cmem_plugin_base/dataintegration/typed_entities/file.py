@@ -10,7 +10,6 @@ from io import BytesIO
 from pathlib import Path
 from typing import IO
 
-from cmem.cmempy.workspace.projects.resources.resource import get_resource_response
 from cmem_client.exceptions import FilesNotFoundError
 
 from cmem_plugin_base.dataintegration.client import get_client
@@ -148,13 +147,13 @@ class File:
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
+
         """
 
     def is_text(
@@ -167,13 +166,13 @@ class File:
         Returns True if the file content can be decoded as UTF-8 text, False otherwise.
         This method automatically handles gzip decompression if needed.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
+
         """
         with self.read_stream(project_id, context) as stream:
             _, is_text = _prepare_stream_for_processing(stream)
@@ -189,13 +188,13 @@ class File:
         Returns True if the file content is binary (cannot be decoded as UTF-8), False otherwise.
         This method automatically handles gzip decompression if needed.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
+
         """
         return not self.is_text(project_id, context)
 
@@ -209,13 +208,13 @@ class File:
         Returns the file content as a string. Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
+
         """
         with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
@@ -232,13 +231,13 @@ class File:
 
         Returns the file content as bytes. Automatically handles gzip decompression if needed.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
+
         """
         with self.read_stream(project_id, context) as stream:
             processed_stream, is_text = _prepare_stream_for_processing(stream)
@@ -259,13 +258,12 @@ class File:
         Automatically handles gzip decompression if needed.
         Raises UnicodeDecodeError if the file content is not valid UTF-8 text.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
 
         Example:
             ```python
@@ -292,13 +290,12 @@ class File:
         Returns a context manager that yields a binary stream for reading file content.
         Automatically handles gzip decompression if needed.
 
-        Pass the context of the plugin to read a project file with cmem-client. Passing
-        only a project ID reads it with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand. Local files are read from the file system and need neither.
+        Pass the context of the plugin to read a project file with cmem-client. Local
+        files are read from the file system and need neither project_id nor context.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if the file is a project file and no context is given.
+            FileNotFoundError: if the referenced project file does not exist.
 
         Example:
             ```python
@@ -369,20 +366,17 @@ class ProjectFile(File):
         Returns a file-like object (stream) in binary mode.
         Caller is responsible for closing the stream.
 
-        Pass the context of the plugin to read the file with cmem-client. Passing only a
-        project ID reads the file with cmempy and requires setup_cmempy_user_access() to
-        be called beforehand.
+        Requires the context of the plugin to read the file with cmem-client.
 
-        Both ways of reading report a missing project file differently: reading with a
-        context raises a FileNotFoundError, while reading with cmempy raises the
-        requests HTTPError that cmempy itself raises.
+        Raises:
+            ValueError: if no context is given.
+            FileNotFoundError: if the project file does not exist.
+
         """
         project = _resolve_project_id(project_id, context)
-        content = (
-            self._read_with_cmem_client(project, context)
-            if context is not None
-            else self._read_with_cmempy(project)
-        )
+        if context is None:
+            raise ValueError("A context is required to read a project file.")
+        content = self._read_with_cmem_client(project, context)
         response_bytes = BytesIO(content)
         if self.entry_path:
             archive = zipfile.ZipFile(response_bytes, "r")
@@ -404,16 +398,6 @@ class ProjectFile(File):
             return bytes(get_client(context).files.read(f"{project_id}:{self.path}"))
         except FilesNotFoundError as error:
             raise FileNotFoundError(f"Project file '{self.path}' not found.") from error
-
-    def _read_with_cmempy(self, project_id: str) -> bytes:
-        """Read the file content with cmempy.
-
-        Requires setup_cmempy_user_access() to be called beforehand.
-        """
-        response = get_resource_response(project_id, self.path)
-        if response.status_code != 200:  # noqa: PLR2004
-            raise FileNotFoundError(f"Project file '{self.path}' not found.")
-        return bytes(response.raw.read())
 
 
 class FileEntitySchema(TypedEntitySchema[File]):

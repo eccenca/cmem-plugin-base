@@ -5,8 +5,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
+from cmem_client.models.graph import Graph
 from cmem_client.repositories.protocols.import_item import ImportConflictPolicy
 
+import cmem_plugin_base.dataintegration.parameter.graph as graph_module
 from cmem_plugin_base.dataintegration.client import get_client
 from cmem_plugin_base.dataintegration.parameter.graph import GraphParameterType
 from cmem_plugin_base.testing import TestPluginContext
@@ -73,6 +75,75 @@ def test_graph_parameter_type_completion(sort_test_graphs: SortTestGraphs) -> No
     assert sort_test_graphs.zulu_iri not in narrowed_values
 
     assert len(get_autocomplete_values(parameter, ["not there asödlkasöld"], context)) == 0
+
+
+def _build_graph(
+    iri: str, *, di_project_graph: bool = False, system_resource: bool = False
+) -> Graph:
+    """Build a Graph as cmem-client would parse it from a raw /graphs/list response."""
+    return Graph.model_validate(
+        {
+            "iri": iri,
+            "writeable": True,
+            "assignedClasses": [],
+            "diProjectGraph": di_project_graph,
+            "systemResource": system_resource,
+            "label": {"title": iri},
+        }
+    )
+
+
+class _FakeGraphsRepo:
+    """Stand-in for GraphsRepository exposing just what autocomplete() uses."""
+
+    def __init__(self, graphs: list[Graph]) -> None:
+        self._graphs = graphs
+
+    def values(self) -> list[Graph]:
+        """Return the configured graphs, matching Repository.values()."""
+        return self._graphs
+
+
+class _FakeClient:
+    """Stand-in for cmem_client.Client exposing just the .graphs repository."""
+
+    def __init__(self, graphs: list[Graph]) -> None:
+        self.graphs = _FakeGraphsRepo(graphs)
+
+
+def test_graph_parameter_type_filters_di_and_system_graphs(monkeypatch: pytest.MonkeyPatch) -> None:
+    """show_di_graphs/show_system_graphs must exclude/include the matching graphs.
+
+    Regression test for the getattr-then-model_extra fallback in
+    cmem_plugin_base.dataintegration.parameter.graph._get_untyped_flag: diProjectGraph
+    and systemResource aren't typed on cmem-client's Graph model yet, so this exercises
+    the fallback path directly without needing a live CMEM instance.
+    """
+    ordinary = _build_graph("urn:ordinary")
+    di_graph = _build_graph("urn:di", di_project_graph=True)
+    system_graph = _build_graph("urn:system", system_resource=True)
+    fake_client = _FakeClient([ordinary, di_graph, system_graph])
+    monkeypatch.setattr(graph_module, "get_client", lambda context: fake_client)  # noqa: ARG005
+    context = TestPluginContext()
+
+    default_values = get_autocomplete_values(
+        GraphParameterType(show_graphs_without_class=True), [], context
+    )
+    assert ordinary.iri in default_values
+    assert di_graph.iri not in default_values
+    assert system_graph.iri not in default_values
+
+    with_di = get_autocomplete_values(
+        GraphParameterType(show_di_graphs=True, show_graphs_without_class=True), [], context
+    )
+    assert di_graph.iri in with_di
+    assert system_graph.iri not in with_di
+
+    with_system = get_autocomplete_values(
+        GraphParameterType(show_system_graphs=True, show_graphs_without_class=True), [], context
+    )
+    assert system_graph.iri in with_system
+    assert di_graph.iri not in with_system
 
 
 def test_graph_validation() -> None:

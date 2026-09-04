@@ -1,17 +1,17 @@
 """pytest conftest module"""
 
-import io
+import tempfile
 from collections.abc import Generator
 from dataclasses import dataclass
 from pathlib import Path
 
 import pytest
-from cmem.cmempy.workspace.projects.datasets.dataset import (
-    get_dataset,
-    make_new_dataset,
-)
-from cmem.cmempy.workspace.projects.project import delete_project, make_new_project
-from cmem.cmempy.workspace.projects.resources.resource import create_resource
+from cmem_client.models.dataset import Dataset, DatasetData
+from cmem_client.models.project import Project
+from cmem_client.repositories.protocols.import_item import ImportConflictPolicy
+
+from cmem_plugin_base.dataintegration.client import get_client
+from cmem_plugin_base.testing import TestPluginContext
 
 PROJECT_NAME = "dateset_test_project"
 DATASET_NAME = "sample_test"
@@ -23,17 +23,17 @@ FIXTURE_DIR = Path(__file__).parent / "fixture"
 @pytest.fixture(name="json_dataset", scope="module")
 def _json_dataset() -> Generator[dict]:
     """Provide a dataset"""
-    make_new_project(PROJECT_NAME)
-    make_new_dataset(
-        project_name=PROJECT_NAME,
-        dataset_name=DATASET_NAME,
-        dataset_type="json",
-        parameters={"file": RESOURCE_NAME},
-        autoconfigure=False,
+    client = get_client(TestPluginContext())
+    client.projects.create_item(Project(name=PROJECT_NAME))
+    dataset = client.datasets.create_item(
+        Dataset(
+            project_id=PROJECT_NAME,
+            id=DATASET_NAME,
+            data=DatasetData(type="json", parameters={"file": RESOURCE_NAME}),
+        )
     )
-    dataset = get_dataset(PROJECT_NAME, DATASET_NAME)
-    yield dataset
-    delete_project(PROJECT_NAME)
+    yield {"project": dataset.project_id, "id": dataset.id}
+    client.projects.delete_item(PROJECT_NAME)
 
 
 @dataclass
@@ -49,17 +49,20 @@ def _json_resource() -> Generator[ResourceFixture]:
     """Set up json resource"""
     _project_name = "json_test_project"
     _resource_name = "sample_test.json"
-    make_new_project(_project_name)
-    create_resource(
-        project_name=_project_name,
-        resource_name=_resource_name,
-        file_resource=io.StringIO("SAMPLE CONTENT"),
-        replace=True,
-    )
+    client = get_client(TestPluginContext())
+    client.projects.create_item(Project(name=_project_name))
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".json", delete=True) as temp:
+        temp.write("SAMPLE CONTENT")
+        temp.flush()
+        client.files.import_item(
+            path=Path(temp.name),
+            key=f"{_project_name}:{_resource_name}",
+            on_conflict=ImportConflictPolicy.REPLACE,
+        )
 
     _ = ResourceFixture(project_name=_project_name, resource_name=_resource_name)
     yield _
-    delete_project(_project_name)
+    client.projects.delete_item(_project_name)
 
 
 @pytest.fixture(name="pdf_resource", scope="module")
@@ -67,15 +70,14 @@ def _pdf_resource() -> Generator[ResourceFixture]:
     """Set up pdf resource"""
     _project_name = "pdf_test_project"
     _resource_name = "sample.pdf"
-    make_new_project(_project_name)
-    with Path(FIXTURE_DIR / "sample.pdf").open("rb") as pdf:
-        create_resource(
-            project_name=_project_name,
-            resource_name=_resource_name,
-            file_resource=pdf,
-            replace=True,
-        )
+    client = get_client(TestPluginContext())
+    client.projects.create_item(Project(name=_project_name))
+    client.files.import_item(
+        path=FIXTURE_DIR / "sample.pdf",
+        key=f"{_project_name}:{_resource_name}",
+        on_conflict=ImportConflictPolicy.REPLACE,
+    )
 
     _ = ResourceFixture(project_name=_project_name, resource_name=_resource_name)
     yield _
-    delete_project(_project_name)
+    client.projects.delete_item(_project_name)
