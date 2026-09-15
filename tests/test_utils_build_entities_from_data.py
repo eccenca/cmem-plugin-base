@@ -254,3 +254,59 @@ def test_null_object_leaves_the_relation_empty() -> None:
     without_address, with_address = list(entities.entities)
     assert without_address.values == [["seebi"], []]
     assert with_address.values[1][0].startswith("urn:x-ulid:")
+
+
+def test_an_object_is_not_flattened_by_a_later_null() -> None:
+    """Test that the item order does not decide whether a key is a relation.
+
+    The same two items as above, the other way round. Reading the type off the last
+    item seen made `address` a plain path, and the object in the first item was then
+    written as its `str()` - `{'city': 'San Francisco'}` - instead of a sub entity.
+    """
+    test_data = """
+[{
+  "name": "sai",
+  "address": {"city": "San Francisco"}
+},
+{
+  "name": "seebi",
+  "address": null
+}]"""
+    entities = build_entities_from_json(test_data)
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_single_value=True),
+            EntityPath("address", True, is_single_value=True),
+        ],
+    )
+    with_address, without_address = list(entities.entities)
+    assert with_address.values[1][0].startswith("urn:x-ulid:")
+    assert without_address.values == [["seebi"], []]
+    assert entities.sub_entities is not None
+    assert len(entities.sub_entities) == 1
+    assert [_.values for _ in entities.sub_entities[0].entities] == [[["San Francisco"]]]
+
+
+def test_an_empty_list_does_not_flatten_a_list_of_objects() -> None:
+    """Test that a key empty in one item stays a relation because another item fills it"""
+    test_data = """
+[{
+  "name": "sai",
+  "pets": [{"name": "cat"}]
+},
+{
+  "name": "seebi",
+  "pets": []
+}]"""
+    entities = build_entities_from_json(test_data)
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_single_value=True),
+            EntityPath("pets", True, is_single_value=False),
+        ],
+    )
+    with_pets, without_pets = list(entities.entities)
+    assert with_pets.values[1][0].startswith("urn:x-ulid:")
+    assert without_pets.values == [["seebi"], []]
