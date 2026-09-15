@@ -16,6 +16,13 @@ def merge_path_values(paths_map1: dict, paths_map2: dict) -> dict:
         paths_map1 (dict): The first dictionary containing paths and values.
         paths_map2 (dict): The second dictionary containing paths and values.
 
+    Where both dictionaries know a type for the same key, the more specific one wins
+    rather than the one seen last - see `_more_specific_type`.
+
+    Args:
+        paths_map1 (dict): The first dictionary containing paths and values.
+        paths_map2 (dict): The second dictionary containing paths and values.
+
     Returns:
         dict: A merged dictionary containing combined values for common paths.
 
@@ -24,9 +31,34 @@ def merge_path_values(paths_map1: dict, paths_map2: dict) -> dict:
         current_path_map = {}
         if paths_map1.get(key) is not None:
             current_path_map = paths_map1[key]
-        current_path_map = current_path_map | value
+        current_path_map = current_path_map | {
+            _key: _more_specific_type(current_path_map.get(_key), _type)
+            for _key, _type in value.items()
+        }
         paths_map1[key] = current_path_map
     return paths_map1
+
+
+def _more_specific_type(known: str | None, found: str) -> str:
+    """Pick the type that says more about a key, out of the two seen for it.
+
+    A key's type is read off the values in the data, and two items can disagree about
+    it: one object carries a `lockedByUser` and the next has it as null, or one list is
+    empty and the next holds objects. Taking whichever came last then decides the schema
+    by the order of the data - and losing to `NoneType` or to an empty `list` is the
+    direction that loses information, because the object seen in the other item is no
+    longer described as a relation and gets flattened into its `str()` instead.
+
+    Genuinely conflicting types, say `str` against `int`, are left to the last one seen,
+    as before.
+    """
+    if known is None or known == "NoneType":
+        return found
+    if found == "NoneType":
+        return known
+    if {known, found} == {"list", "list_dict"}:
+        return "list_dict"
+    return found
 
 
 def generate_paths_from_data(data: dict | list, path: str | None = "root") -> dict:
@@ -128,7 +160,11 @@ def _get_entity(
     schema = path_to_schema_map[path_from_root]
     for _ in schema.paths:
         if data.get(_.path) is None:
-            values.append([""])
+            # A relation carries URIs pointing at sub entities, so a null has to leave the
+            # path empty. An "" there is a reference that resolves to nothing, which a
+            # dataset sink follows and fails on - a JSON dataset aborts the whole write
+            # with "Current context not Array but Object".
+            values.append([] if _.is_relation else [""])
         elif not _.is_relation:
             values.append(
                 [f"{data.get(_.path)}"]
