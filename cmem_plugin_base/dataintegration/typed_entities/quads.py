@@ -118,14 +118,14 @@ class QuadEntitySchema(TypedEntitySchema[Quad]):
             super().__init__(
                 type_uri=type_uri("Quad"),
                 paths=[
-                    EntityPath(path_uri("quad/subject")),
-                    EntityPath(path_uri("quad/subjectType")),
-                    EntityPath(path_uri("quad/predicate")),
-                    EntityPath(path_uri("quad/object")),
-                    EntityPath(path_uri("quad/objectType")),
-                    EntityPath(path_uri("quad/objectLanguage")),
-                    EntityPath(path_uri("quad/objectDataType")),
-                    EntityPath(path_uri("quad/graph")),
+                    EntityPath(path=path_uri("quad/subject")),
+                    EntityPath(path=path_uri("quad/subjectType")),
+                    EntityPath(path=path_uri("quad/predicate")),
+                    EntityPath(path=path_uri("quad/object")),
+                    EntityPath(path=path_uri("quad/objectType")),
+                    EntityPath(path=path_uri("quad/objectLanguage")),
+                    EntityPath(path=path_uri("quad/objectDataType")),
+                    EntityPath(path=path_uri("quad/graph")),
                 ],
             )
 

@@ -29,10 +29,10 @@ def test_single_object() -> None:
     assert len(entities.schema.paths) == 2
     assert entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("email", False, is_single_value=True),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="email", is_single_value=True),
+        ),
     )
 
 
@@ -56,11 +56,11 @@ def test_single_object_one_level() -> None:
     assert len(entities.schema.paths) == 3
     assert entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("email", False, is_single_value=True),
-            EntityPath("city", True, is_single_value=True),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="email", is_single_value=True),
+            EntityPath(path="city", is_relation=True, is_single_value=True),
+        ),
     )
     # Validate sub entities
     assert entities.sub_entities is not None
@@ -70,10 +70,10 @@ def test_single_object_one_level() -> None:
             assert _entity.values == [["San Francisco"], ["United States"]]
         assert _.schema == EntitySchema(
             type_uri="",
-            paths=[
-                EntityPath("name", False, is_single_value=True),
-                EntityPath("country", False, is_single_value=True),
-            ],
+            paths=(
+                EntityPath(path="name", is_single_value=True),
+                EntityPath(path="country", is_single_value=True),
+            ),
         )
 
 
@@ -104,11 +104,11 @@ def test_single_object_one_level_array() -> None:
     assert len(entities.schema.paths) == 3
     assert entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("email", False, is_single_value=True),
-            EntityPath("city", True, is_single_value=False),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="email", is_single_value=True),
+            EntityPath(path="city", is_relation=True, is_single_value=False),
+        ),
     )
     # Validate sub entities
     assert entities.sub_entities is not None
@@ -118,10 +118,10 @@ def test_single_object_one_level_array() -> None:
             assert len(_entity.values) == 2
         assert _.schema == EntitySchema(
             type_uri="",
-            paths=[
-                EntityPath("name", False, is_single_value=True),
-                EntityPath("country", False, is_single_value=True),
-            ],
+            paths=(
+                EntityPath(path="name", is_single_value=True),
+                EntityPath(path="country", is_single_value=True),
+            ),
         )
 
 
@@ -162,11 +162,11 @@ def test_single_object_two_level_array() -> None:
     assert len(entities.schema.paths) == 3
     assert entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("email", False, is_single_value=True),
-            EntityPath("city", True, is_single_value=False),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="email", is_single_value=True),
+            EntityPath(path="city", is_relation=True, is_single_value=False),
+        ),
     )
     # Validate sub entities
     assert entities.sub_entities is not None
@@ -177,19 +177,19 @@ def test_single_object_two_level_array() -> None:
 
     assert city_entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("country", False, is_single_value=True),
-            EntityPath("geo_location", True, is_single_value=True),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="country", is_single_value=True),
+            EntityPath(path="geo_location", is_relation=True, is_single_value=True),
+        ),
     )
 
     assert location_entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("lat", False, is_single_value=True),
-            EntityPath("long", False, is_single_value=True),
-        ],
+        paths=(
+            EntityPath(path="lat", is_single_value=True),
+            EntityPath(path="long", is_single_value=True),
+        ),
     )
 
 
@@ -213,10 +213,10 @@ def test_array_object() -> None:
     assert len(entities.schema.paths) == 2
     assert entities.schema == EntitySchema(
         type_uri="",
-        paths=[
-            EntityPath("name", False, is_single_value=True),
-            EntityPath("email", False, is_single_value=True),
-        ],
+        paths=(
+            EntityPath(path="name", is_single_value=True),
+            EntityPath(path="email", is_single_value=True),
+        ),
     )
 
 
