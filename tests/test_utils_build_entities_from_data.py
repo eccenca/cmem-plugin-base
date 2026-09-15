@@ -225,3 +225,32 @@ def test_empty_object() -> None:
     test_data = """[]"""
     data = json.loads(test_data)
     assert build_entities_from_data(data) is None
+
+
+def test_null_object_leaves_the_relation_empty() -> None:
+    """Test that an object which is null in one item does not fake a sub entity.
+
+    A relation path carries URIs pointing at sub entities. Writing "" there hands out
+    a reference that resolves to nothing, and a JSON dataset sink following it aborts
+    the whole write with "Current context not Array but Object".
+    """
+    test_data = """
+[{
+  "name": "seebi",
+  "address": null
+},
+{
+  "name": "sai",
+  "address": {"city": "San Francisco"}
+}]"""
+    entities = build_entities_from_json(test_data)
+    assert entities.schema == EntitySchema(
+        type_uri="",
+        paths=[
+            EntityPath("name", False, is_single_value=True),
+            EntityPath("address", True, is_single_value=True),
+        ],
+    )
+    without_address, with_address = list(entities.entities)
+    assert without_address.values == [["seebi"], []]
+    assert with_address.values[1][0].startswith("urn:x-ulid:")

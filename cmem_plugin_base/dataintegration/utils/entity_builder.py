@@ -16,6 +16,10 @@ def merge_path_values(paths_map1: dict, paths_map2: dict) -> dict:
         paths_map1 (dict): The first dictionary containing paths and values.
         paths_map2 (dict): The second dictionary containing paths and values.
 
+    Args:
+        paths_map1 (dict): The first dictionary containing paths and values.
+        paths_map2 (dict): The second dictionary containing paths and values.
+
     Returns:
         dict: A merged dictionary containing combined values for common paths.
 
@@ -128,7 +132,11 @@ def _get_entity(
     schema = path_to_schema_map[path_from_root]
     for _ in schema.paths:
         if data.get(_.path) is None:
-            values.append([""])
+            # A relation carries URIs pointing at sub entities, so a null has to leave the
+            # path empty. An "" there is a reference that resolves to nothing, which a
+            # dataset sink follows and fails on - a JSON dataset aborts the whole write
+            # with "Current context not Array but Object".
+            values.append([] if _.is_relation else [""])
         elif not _.is_relation:
             values.append(
                 [f"{data.get(_.path)}"]
