@@ -25,6 +25,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/) and this p
 ### Fixed
 
 - GraphParameterType.autocomplete: results are now sorted by label and only include graphs matching all given query terms, instead of an unsorted, non-deterministic order matching any single term
+- `build_entities_from_data`: a relation whose value is null now leaves the path empty instead of filling it with `""`. That empty string was a reference to a sub entity that does not exist, and a JSON dataset written from such entities failed the whole write with `Current context not Array but Object`
+- `build_entities_from_data`: a key that is an object in one item and null in another, or a list of objects in one item and an empty list in another, is now described as a relation whichever item comes first. The type used to be taken from the last item seen, so in one of the two orders the objects were flattened into their `str()` - `{'city': 'San Francisco'}` - rather than becoming sub entities
 
 
 ## [4.20.0] 2026-08-14 - shipped with DI v26.2.0
